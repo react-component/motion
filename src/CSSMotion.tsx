@@ -1,6 +1,7 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
 import raf from 'raf';
 import {
@@ -257,11 +258,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       const { internalRef } = this.props;
       this.node = node;
 
-      if (typeof internalRef === 'function') {
-        internalRef(node);
-      } else if (internalRef && 'current' in internalRef) {
-        (internalRef as React.MutableRefObject<any>).current = node;
-      }
+      fillRef(internalRef, node);
     };
 
     getElement = () => {

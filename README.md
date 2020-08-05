@@ -1,4 +1,4 @@
-# rc-motion 🐾
+# rc-motion
 
 [![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][travis-image]][travis-url] [![Codecov][codecov-image]][codecov-url] [![Dependencies][david-image]](david-url) [![DevDependencies][david-dev-image]][david-dev-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
 
