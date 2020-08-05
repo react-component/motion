@@ -1,6 +1,6 @@
-import CSSMotion from './CSSMotion';
-import CSSMotionList from './CSSMotionList';
+import CSSMotion, { CSSMotionProps } from './CSSMotion';
+import CSSMotionList, { CSSMotionListProps } from './CSSMotionList';
 
-export { CSSMotionList };
+export { CSSMotionProps, CSSMotionList, CSSMotionListProps };
 
 export default CSSMotion;

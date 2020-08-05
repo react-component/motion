@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { mount } from './wrapper';
 import RefCSSMotion, { genCSSMotion, CSSMotionProps } from '../src/CSSMotion';
 
-describe('motion', () => {
+describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
     transitionSupport: true,
     forwardRef: false,

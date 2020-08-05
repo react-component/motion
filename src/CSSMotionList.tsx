@@ -35,10 +35,9 @@ const MOTION_PROP_NAMES = [
   'onLeaveEnd',
 ];
 
-export interface CSSMotionListProps {
+export interface CSSMotionListProps extends CSSMotionProps {
   keys: React.Key[];
   component?: string | React.ComponentType;
-  children?: CSSMotionProps['children'];
 }
 
 export interface CSSMotionListState {
