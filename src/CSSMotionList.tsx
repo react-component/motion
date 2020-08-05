@@ -47,7 +47,7 @@ export interface CSSMotionListState {
 export function genCSSMotionList(
   transitionSupport: boolean,
   CSSMotion = OriginCSSMotion,
-) {
+): React.ComponentClass<CSSMotionListProps> {
   class CSSMotionList extends React.Component<
     CSSMotionListProps,
     CSSMotionListState

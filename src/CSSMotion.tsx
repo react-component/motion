@@ -102,7 +102,9 @@ export interface CSSMotionState {
  * `transitionSupport` is used for none transition test case.
  * Default we use browser transition event support check.
  */
-export function genCSSMotion(config: CSSMotionConfig) {
+export function genCSSMotion(
+  config: CSSMotionConfig,
+): React.ForwardRefExoticComponent<CSSMotionProps> {
   let transitionSupport = config;
   let forwardRef = !!React.forwardRef;
 
@@ -406,7 +408,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
   }
 
   if (!forwardRef) {
-    return CSSMotion;
+    return CSSMotion as any;
   }
 
   return React.forwardRef((props: CSSMotionProps, ref: any) => (
