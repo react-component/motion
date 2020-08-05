@@ -30,7 +30,7 @@ export type CSSMotionConfig =
 
 export type MotionEventHandler = (
   element: HTMLElement,
-  event: Event,
+  event: TransitionEvent | AnimationEvent | { deadline?: boolean },
 ) => React.CSSProperties | void;
 
 export interface CSSMotionProps {
@@ -229,7 +229,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
     };
 
-    onMotionEnd = event => {
+    onMotionEnd = (
+      event: TransitionEvent | AnimationEvent | { deadline?: boolean },
+    ) => {
       const { status, statusActive } = this.state;
       const { onAppearEnd, onEnterEnd, onLeaveEnd } = this.props;
       if (status === STATUS_APPEAR && statusActive) {
@@ -281,8 +283,8 @@ export function genCSSMotion(config: CSSMotionConfig) {
     updateStatus = (
       styleFunc: MotionEventHandler,
       additionalState: Partial<CSSMotionState>,
-      event?: Event,
-      callback?: Function,
+      event?: TransitionEvent | AnimationEvent | { deadline?: boolean },
+      callback?: (timestamp?: number) => void,
     ) => {
       const statusStyle = styleFunc
         ? styleFunc(this.getElement(), event)
@@ -331,7 +333,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       });
     };
 
-    nextFrame = func => {
+    nextFrame = (func: (timestamp?: number) => void) => {
       this.cancelNextFrame();
       this.raf = raf(func);
     };
