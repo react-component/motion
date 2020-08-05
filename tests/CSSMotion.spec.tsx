@@ -174,6 +174,53 @@ describe('CSSMotion', () => {
       expect(boxNode.hasClass('transition-appear')).toBeFalsy();
       expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
     });
+
+    it('quick switch should have correct status', () => {
+      const wrapper = mount(
+        <CSSMotion motionName="transition">
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+
+      wrapper.setProps({ visible: true });
+      jest.runAllTimers();
+      wrapper.setProps({ visible: false });
+
+      const boxNode = wrapper.find('.motion-box');
+      expect(boxNode.hasClass('transition')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave-active')).toBeFalsy();
+
+      wrapper.unmount();
+    });
+
+    it('deadline should work', () => {
+      const onAppearEnd = jest.fn();
+      mount(
+        <CSSMotion
+          motionName="transition"
+          motionDeadline={1000}
+          onAppearEnd={onAppearEnd}
+          visible
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+
+      expect(onAppearEnd).not.toHaveBeenCalled();
+      jest.runAllTimers();
+      expect(onAppearEnd).toHaveBeenCalled();
+    });
   });
 
   describe('animation', () => {
