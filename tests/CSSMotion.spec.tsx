@@ -149,6 +149,31 @@ describe('CSSMotion', () => {
         }
       });
     });
+
+    it('stop transition if config motion to false', () => {
+      const wrapper = mount(
+        <CSSMotion motionName="transition" visible>
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+      wrapper.update();
+      let boxNode = wrapper.find('.motion-box');
+      expect(boxNode.hasClass('transition')).toBeTruthy();
+      expect(boxNode.hasClass('transition-appear')).toBeTruthy();
+      expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
+
+      wrapper.setProps({ motionAppear: false });
+      jest.runAllTimers();
+      boxNode = wrapper.find('.motion-box');
+      expect(boxNode.hasClass('transition')).toBeFalsy();
+      expect(boxNode.hasClass('transition-appear')).toBeFalsy();
+      expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
+    });
   });
 
   describe('animation', () => {
