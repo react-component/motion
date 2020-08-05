@@ -37,7 +37,8 @@
     "postpublish": "npm run gh-pages",
     "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
     "test": "father test",
-    "coverage": "father test --coverage"
+    "coverage": "father test --coverage",
+    "now-build": "npm run build"
   },
   "dependencies": {
     "classnames": "^2.2.1",
