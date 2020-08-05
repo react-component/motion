@@ -36,8 +36,8 @@ const MOTION_PROP_NAMES = [
 ];
 
 export interface CSSMotionListProps extends CSSMotionProps {
-  keys: React.Key[];
-  component?: string | React.ComponentType;
+  keys: (React.Key | { key: React.Key; [name: string]: any })[];
+  component?: string | React.ComponentType | false;
 }
 
 export interface CSSMotionListState {
