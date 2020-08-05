@@ -8,7 +8,7 @@ import {
   animationEndName,
   transitionEndName,
   supportTransition,
-} from './util';
+} from './util/motion';
 
 const STATUS_NONE = 'none' as const;
 const STATUS_APPEAR = 'appear' as const;
@@ -389,7 +389,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
     return CSSMotion;
   }
 
-  return React.forwardRef((props, ref) => (
+  return React.forwardRef((props: CSSMotionProps, ref: any) => (
     <CSSMotion internalRef={ref} {...props} />
   ));
 }
