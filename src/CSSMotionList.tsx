@@ -1,6 +1,6 @@
 /* eslint react/prop-types: 0 */
 import React from 'react';
-import OriginCSSMotion from './CSSMotion';
+import OriginCSSMotion, { CSSMotionProps } from './CSSMotion';
 import { supportTransition } from './util/motion';
 import {
   STATUS_ADD,
@@ -9,6 +9,7 @@ import {
   STATUS_REMOVED,
   diffKeys,
   parseKeys,
+  KeyObject,
 } from './util/diff';
 
 const MOTION_PROP_NAMES = [
@@ -34,23 +35,45 @@ const MOTION_PROP_NAMES = [
   'onLeaveEnd',
 ];
 
-export function genCSSMotionList(transitionSupport, CSSMotion = OriginCSSMotion) {
-  class CSSMotionList extends React.Component {
+export interface CSSMotionListProps {
+  keys: React.Key[];
+  component?: string | React.ComponentType;
+  children?: CSSMotionProps['children'];
+}
+
+export interface CSSMotionListState {
+  keyEntities: KeyObject[];
+}
+
+export function genCSSMotionList(
+  transitionSupport: boolean,
+  CSSMotion = OriginCSSMotion,
+) {
+  class CSSMotionList extends React.Component<
+    CSSMotionListProps,
+    CSSMotionListState
+  > {
     static defaultProps = {
       component: 'div',
     };
 
-    state = {
+    state: CSSMotionListState = {
       keyEntities: [],
     };
 
-    static getDerivedStateFromProps({ keys }, { keyEntities }) {
+    static getDerivedStateFromProps(
+      { keys }: CSSMotionListProps,
+      { keyEntities }: CSSMotionListState,
+    ) {
       const parsedKeyObjects = parseKeys(keys);
 
       // Always as keep when motion not support
       if (!transitionSupport) {
         return {
-          keyEntities: parsedKeyObjects.map(obj => ({ ...obj, status: STATUS_KEEP })),
+          keyEntities: parsedKeyObjects.map(obj => ({
+            ...obj,
+            status: STATUS_KEEP,
+          })),
         };
       }
 
@@ -82,7 +105,7 @@ export function genCSSMotionList(transitionSupport, CSSMotion = OriginCSSMotion)
       };
     }
 
-    removeKey = removeKey => {
+    removeKey = (removeKey: React.Key) => {
       this.setState(({ keyEntities }) => ({
         keyEntities: keyEntities.map(entity => {
           if (entity.key !== removeKey) return entity;
@@ -100,7 +123,7 @@ export function genCSSMotionList(transitionSupport, CSSMotion = OriginCSSMotion)
 
       const Component = component || React.Fragment;
 
-      const motionProps = {};
+      const motionProps: CSSMotionProps = {};
       MOTION_PROP_NAMES.forEach(prop => {
         motionProps[prop] = restProps[prop];
         delete restProps[prop];

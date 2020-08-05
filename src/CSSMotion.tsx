@@ -31,7 +31,7 @@ export type CSSMotionConfig =
 export type MotionEventHandler = (
   element: HTMLElement,
   event: Event,
-) => React.CSSProperties | null;
+) => React.CSSProperties | void;
 
 export interface CSSMotionProps {
   motionName?: string;
@@ -45,21 +45,21 @@ export interface CSSMotionProps {
   leavedClassName?: string;
   eventProps?: object;
 
-  onAppearStart: MotionEventHandler;
-  onEnterStart: MotionEventHandler;
-  onLeaveStart: MotionEventHandler;
+  onAppearStart?: MotionEventHandler;
+  onEnterStart?: MotionEventHandler;
+  onLeaveStart?: MotionEventHandler;
 
-  onAppearActive: MotionEventHandler;
-  onEnterActive: MotionEventHandler;
-  onLeaveActive: MotionEventHandler;
+  onAppearActive?: MotionEventHandler;
+  onEnterActive?: MotionEventHandler;
+  onLeaveActive?: MotionEventHandler;
 
-  onAppearEnd: MotionEventHandler;
-  onEnterEnd: MotionEventHandler;
-  onLeaveEnd: MotionEventHandler;
+  onAppearEnd?: MotionEventHandler;
+  onEnterEnd?: MotionEventHandler;
+  onLeaveEnd?: MotionEventHandler;
 
   internalRef?: React.Ref<any>;
 
-  children: (
+  children?: (
     props: {
       className?: string;
       style?: React.CSSProperties;

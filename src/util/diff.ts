@@ -10,6 +10,7 @@ export type DiffStatus =
 
 export interface KeyObject {
   key: React.Key;
+  status?: DiffStatus;
 }
 
 export function wrapKeyToObject(key: React.Key) {
@@ -30,10 +31,10 @@ export function parseKeys(keys = []) {
 }
 
 export function diffKeys(
-  prevKeys: React.Key[] = [],
-  currentKeys: React.Key[] = [],
+  prevKeys: KeyObject[] = [],
+  currentKeys: KeyObject[] = [],
 ) {
-  let list: (KeyObject & { status: DiffStatus })[] = [];
+  let list: KeyObject[] = [];
   let currentIndex = 0;
   const currentLen = currentKeys.length;
 
