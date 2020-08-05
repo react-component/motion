@@ -43,8 +43,19 @@ export type MotionEndEventHandler = (
   event: MotionEvent,
 ) => boolean | void;
 
+export type MotionName =
+  | string
+  | {
+      appear?: string;
+      enter?: string;
+      leave?: string;
+      appearActive?: string;
+      enterActive?: string;
+      leaveActive?: string;
+    };
+
 export interface CSSMotionProps {
-  motionName?: string;
+  motionName?: MotionName;
   visible?: boolean;
   motionAppear?: boolean;
   motionEnter?: boolean;
@@ -385,7 +396,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
           ...eventProps,
           className: classNames(getTransitionName(motionName, status), {
             [getTransitionName(motionName, `${status}-active`)]: statusActive,
-            [motionName]: typeof motionName === 'string',
+            [motionName as string]: typeof motionName === 'string',
           }),
           style: statusStyle,
         },
