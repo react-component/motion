@@ -13,20 +13,13 @@ describe('motion', () => {
     forwardRef: false,
   });
 
-  // let div;
-  // beforeEach(() => {
-  //   div = document.createElement('div');
-  //   document.body.appendChild(div);
-  // });
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
 
-  // afterEach(() => {
-  //   try {
-  //     ReactDOM.unmountComponentAtNode(div);
-  //     document.body.removeChild(div);
-  //   } catch (e) {
-  //     // Do nothing
-  //   }
-  // });
+  afterEach(() => {
+    jest.useRealTimers();
+  });
 
   describe('transition', () => {
     function onCollapse() {
@@ -106,8 +99,6 @@ describe('motion', () => {
       }
 
       it(name, () => {
-        jest.useFakeTimers();
-
         const nextVisible = visible[1];
         const wrapper = mount(<Demo />);
 
@@ -156,8 +147,6 @@ describe('motion', () => {
         } else {
           doStartTest();
         }
-
-        jest.useRealTimers();
       });
     });
   });
@@ -209,8 +198,6 @@ describe('motion', () => {
       }
 
       it(name, () => {
-        jest.useFakeTimers();
-
         const wrapper = mount(<Demo />);
         wrapper.update();
         const nextVisible = visible[1];
@@ -240,105 +227,77 @@ describe('motion', () => {
         } else {
           doStartTest();
         }
-
-        jest.useRealTimers();
       });
     });
   });
 
-  // describe('immediately', () => {
-  //   it('motionLeaveImmediately', done => {
-  //     ReactDOM.render(
-  //       <CSSMotion
-  //         motionName="transition"
-  //         motionLeaveImmediately
-  //         visible={false}
-  //       >
-  //         {({ style, className }) => (
-  //           <div
-  //             style={style}
-  //             className={classNames('motion-box', className)}
-  //           />
-  //         )}
-  //       </CSSMotion>,
-  //       div,
-  //       function init() {
-  //         const instance = this;
+  describe('immediately', () => {
+    it('motionLeaveImmediately', () => {
+      const wrapper = mount(
+        <CSSMotion
+          motionName="transition"
+          motionLeaveImmediately
+          visible={false}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+      wrapper.update();
 
-  //         const basicClassName = TestUtils.findRenderedDOMComponentWithClass(
-  //           instance,
-  //           'motion-box',
-  //         ).className;
-  //         expect(basicClassName).to.contain('transition');
-  //         expect(basicClassName).to.contain('transition-leave');
-  //         expect(basicClassName).to.not.contain('transition-leave-active');
+      const boxNode = wrapper.find('.motion-box');
+      expect(boxNode.hasClass('transition')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave-active')).toBeFalsy();
 
-  //         setTimeout(() => {
-  //           const activeClassName = TestUtils.findRenderedDOMComponentWithClass(
-  //             instance,
-  //             'motion-box',
-  //           ).className;
-  //           expect(activeClassName).to.contain('transition');
-  //           expect(activeClassName).to.contain('transition-leave');
-  //           expect(activeClassName).to.contain('transition-leave-active');
+      // Motion active
+      jest.runAllTimers();
+      wrapper.update();
+      const activeBoxNode = wrapper.find('.motion-box');
+      expect(activeBoxNode.hasClass('transition')).toBeTruthy();
+      expect(activeBoxNode.hasClass('transition-leave')).toBeTruthy();
+      expect(activeBoxNode.hasClass('transition-leave-active')).toBeTruthy();
+    });
+  });
 
-  //           done();
-  //         }, 100);
-  //       },
-  //     );
-  //   });
-  // });
+  it('no transition', () => {
+    const NoCSSTransition = genCSSMotion({
+      transitionSupport: false,
+      forwardRef: false,
+    });
 
-  // it('no transition', done => {
-  //   const NoCSSTransition = genCSSMotion({
-  //     transitionSupport: false,
-  //     forwardRef: false,
-  //   });
+    const wrapper = mount(
+      <NoCSSTransition motionName="transition">
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </NoCSSTransition>,
+    );
 
-  //   ReactDOM.render(
-  //     <NoCSSTransition motionName="transition">
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </NoCSSTransition>,
-  //     div,
-  //     function init() {
-  //       const basicClassName = TestUtils.findRenderedDOMComponentWithClass(
-  //         this,
-  //         'motion-box',
-  //       ).className;
-  //       expect(basicClassName).to.not.contain('transition');
-  //       expect(basicClassName).to.not.contain('transition-appear');
-  //       expect(basicClassName).to.not.contain('transition-appear-active');
+    const boxNode = wrapper.find('.motion-box');
+    expect(boxNode.hasClass('transition')).toBeFalsy();
+    expect(boxNode.hasClass('transition-appear')).toBeFalsy();
+    expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
+  });
 
-  //       done();
-  //     },
-  //   );
-  // });
+  it('forwardRef', () => {
+    const domRef = React.createRef();
+    mount(
+      <RefCSSMotion motionName="transition" ref={domRef}>
+        {({ style, className }, ref) => (
+          <div
+            ref={ref}
+            style={style}
+            className={classNames('motion-box', className)}
+          />
+        )}
+      </RefCSSMotion>,
+    );
 
-  // it('forwardRef', done => {
-  //   let domNode;
-  //   const setRef = node => {
-  //     domNode = node;
-  //   };
-
-  //   ReactDOM.render(
-  //     <RefCSSMotion motionName="transition" ref={setRef}>
-  //       {({ style, className }, ref) => (
-  //         <div
-  //           ref={ref}
-  //           style={style}
-  //           className={classNames('motion-box', className)}
-  //         />
-  //       )}
-  //     </RefCSSMotion>,
-  //     div,
-  //     () => {
-  //       // eslint-disable-next-line no-undef
-  //       expect(domNode instanceof HTMLElement).to.be.ok();
-
-  //       done();
-  //     },
-  //   );
-  // });
+    expect(domRef.current instanceof HTMLElement).toBeTruthy();
+  });
 });
