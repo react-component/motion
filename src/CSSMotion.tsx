@@ -28,10 +28,19 @@ export type CSSMotionConfig =
       forwardRef?: boolean;
     };
 
+export type MotionEvent = (TransitionEvent | AnimationEvent) & {
+  deadline?: boolean;
+};
+
 export type MotionEventHandler = (
   element: HTMLElement,
-  event: TransitionEvent | AnimationEvent | { deadline?: boolean },
+  event: MotionEvent,
 ) => React.CSSProperties | void;
+
+export type MotionEndEventHandler = (
+  element: HTMLElement,
+  event: MotionEvent,
+) => boolean | void;
 
 export interface CSSMotionProps {
   motionName?: string;
@@ -53,9 +62,9 @@ export interface CSSMotionProps {
   onEnterActive?: MotionEventHandler;
   onLeaveActive?: MotionEventHandler;
 
-  onAppearEnd?: MotionEventHandler;
-  onEnterEnd?: MotionEventHandler;
-  onLeaveEnd?: MotionEventHandler;
+  onAppearEnd?: MotionEndEventHandler;
+  onEnterEnd?: MotionEndEventHandler;
+  onLeaveEnd?: MotionEndEventHandler;
 
   internalRef?: React.Ref<any>;
 
@@ -86,7 +95,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
   let forwardRef = !!React.forwardRef;
 
   if (typeof config === 'object') {
-    transitionSupport = config.transitionSupport;
+    ({ transitionSupport } = config);
     forwardRef = 'forwardRef' in config ? config.forwardRef : forwardRef;
   }
 
@@ -110,6 +119,8 @@ export function genCSSMotion(config: CSSMotionConfig) {
     raf = null;
 
     destroyed = false;
+
+    deadlineId = null;
 
     state: CSSMotionState = {
       status: STATUS_NONE,
@@ -185,6 +196,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       this.destroyed = true;
       this.removeEventListener(this.$cacheEle);
       this.cancelNextFrame();
+      clearTimeout(this.deadlineId);
     }
 
     onDomUpdate = () => {
@@ -229,9 +241,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
     };
 
-    onMotionEnd = (
-      event: TransitionEvent | AnimationEvent | { deadline?: boolean },
-    ) => {
+    onMotionEnd = (event: MotionEvent) => {
       const { status, statusActive } = this.state;
       const { onAppearEnd, onEnterEnd, onLeaveEnd } = this.props;
       if (status === STATUS_APPEAR && statusActive) {
@@ -281,9 +291,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
     };
 
     updateStatus = (
-      styleFunc: MotionEventHandler,
+      styleFunc: MotionEventHandler | MotionEndEventHandler,
       additionalState: Partial<CSSMotionState>,
-      event?: TransitionEvent | AnimationEvent | { deadline?: boolean },
+      event?: MotionEvent,
       callback?: (timestamp?: number) => void,
     ) => {
       const statusStyle = styleFunc
@@ -324,10 +334,10 @@ export function genCSSMotion(config: CSSMotionConfig) {
         this.updateStatus(styleFunc, { statusActive: true });
 
         if (motionDeadline > 0) {
-          setTimeout(() => {
+          this.deadlineId = setTimeout(() => {
             this.onMotionEnd({
               deadline: true,
-            });
+            } as MotionEvent);
           }, motionDeadline);
         }
       });

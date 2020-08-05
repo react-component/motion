@@ -25,8 +25,6 @@
 
 React lifecycle controlled motion library.
 
-![](https://gw.alipayobjects.com/zos/antfincdn/z4ie3X8x6u/1cb23945-ec67-45a3-b521-f8da62e12255.png)
-
 ## Live Demo
 
 https://react-component.github.io/motion/
