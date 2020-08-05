@@ -1,12 +1,6 @@
-# rc-motion 🐾
+# rc-motion
 
-[![NPM version][npm-image]][npm-url]
-[![npm download][download-image]][download-url]
-[![build status][travis-image]][travis-url]
-[![Codecov][codecov-image]][codecov-url]
-[![Dependencies][david-image]](david-url)
-[![DevDependencies][david-dev-image]][david-dev-url]
-[![bundle size][bundlephobia-image]][bundlephobia-url]
+[![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][travis-image]][travis-url] [![Codecov][codecov-image]][codecov-url] [![Dependencies][david-image]](david-url) [![DevDependencies][david-dev-image]][david-dev-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-motion.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-motion
@@ -25,8 +19,6 @@
 
 React lifecycle controlled motion library.
 
-![](https://gw.alipayobjects.com/zos/antfincdn/z4ie3X8x6u/1cb23945-ec67-45a3-b521-f8da62e12255.png)
-
 ## Live Demo
 
 https://react-component.github.io/motion/
@@ -35,11 +27,51 @@ https://react-component.github.io/motion/
 
 [![rc-motion](https://nodei.co/npm/rc-motion.png)](https://npmjs.org/package/rc-motion)
 
+## Example
+
+```tsx
+import CSSMotion from 'rc-motion';
+
+export default ({ visible }) => {
+  <CSSMotion visible={visible} motionName="my-motion">
+    {({ className, style }) => <div className={className} style={style} />}
+  </CSSMotion>;
+};
+```
+
 ## API
 
-| Property | Type | Default | Description |
-| -------- | ---- | ------- | ----------- |
+### CSSMotion
 
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| motionName | string | - | Config motion name, will dynamic update when status changed |
+| visible | boolean | true | Trigger motion events |
+| motionAppear | boolean | true | Use motion when appear |
+| motionEnter | boolean | true | Use motion when enter |
+| motionLeave | boolean | true | Use motion when leave |
+| motionLeaveImmediately | boolean | - | Will trigger leave even on mount |
+| motionDeadline | number | - | Trigger motion status change even when motion event not fire |
+| removeOnLeave | boolean | true | Remove element when motion leave end |
+| leavedClassName | string | - | Set leaved element className |
+| onAppearStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when appear start, return style will patch to element |
+| onEnterStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when enter start, return style will patch to element |
+| onLeaveStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when leave start, return style will patch to element |
+| onAppearActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when appear active, return style will patch to element |
+| onEnterActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when enter active, return style will patch to element |
+| onLeaveActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when leave active, return style will patch to element |
+| onAppearEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when appear end, will not finish when return false |
+| onEnterEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when enter end, will not finish when return false |
+| onLeaveEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when leave end, will not finish when return false |
+
+### CSSMotionList
+
+extends all the props from [CSSMotion](#CSSMotion)
+
+| Property  | Type                          | Default | Description       |
+| --------- | ----------------------------- | ------- | ----------------- |
+| keys      | React.Key[]                   | -       | Motion list keys  |
+| component | string \| React.ComponentType | div     | wrapper component |
 
 ## Development
 

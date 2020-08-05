@@ -1,6 +1,7 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
+import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
 import raf from 'raf';
 import {
@@ -28,13 +29,33 @@ export type CSSMotionConfig =
       forwardRef?: boolean;
     };
 
+export type MotionEvent = (TransitionEvent | AnimationEvent) & {
+  deadline?: boolean;
+};
+
 export type MotionEventHandler = (
   element: HTMLElement,
-  event: TransitionEvent | AnimationEvent | { deadline?: boolean },
+  event: MotionEvent,
 ) => React.CSSProperties | void;
 
+export type MotionEndEventHandler = (
+  element: HTMLElement,
+  event: MotionEvent,
+) => boolean | void;
+
+export type MotionName =
+  | string
+  | {
+      appear?: string;
+      enter?: string;
+      leave?: string;
+      appearActive?: string;
+      enterActive?: string;
+      leaveActive?: string;
+    };
+
 export interface CSSMotionProps {
-  motionName?: string;
+  motionName?: MotionName;
   visible?: boolean;
   motionAppear?: boolean;
   motionEnter?: boolean;
@@ -53,9 +74,9 @@ export interface CSSMotionProps {
   onEnterActive?: MotionEventHandler;
   onLeaveActive?: MotionEventHandler;
 
-  onAppearEnd?: MotionEventHandler;
-  onEnterEnd?: MotionEventHandler;
-  onLeaveEnd?: MotionEventHandler;
+  onAppearEnd?: MotionEndEventHandler;
+  onEnterEnd?: MotionEndEventHandler;
+  onLeaveEnd?: MotionEndEventHandler;
 
   internalRef?: React.Ref<any>;
 
@@ -86,7 +107,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
   let forwardRef = !!React.forwardRef;
 
   if (typeof config === 'object') {
-    transitionSupport = config.transitionSupport;
+    ({ transitionSupport } = config);
     forwardRef = 'forwardRef' in config ? config.forwardRef : forwardRef;
   }
 
@@ -110,6 +131,8 @@ export function genCSSMotion(config: CSSMotionConfig) {
     raf = null;
 
     destroyed = false;
+
+    deadlineId = null;
 
     state: CSSMotionState = {
       status: STATUS_NONE,
@@ -185,6 +208,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       this.destroyed = true;
       this.removeEventListener(this.$cacheEle);
       this.cancelNextFrame();
+      clearTimeout(this.deadlineId);
     }
 
     onDomUpdate = () => {
@@ -229,9 +253,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
     };
 
-    onMotionEnd = (
-      event: TransitionEvent | AnimationEvent | { deadline?: boolean },
-    ) => {
+    onMotionEnd = (event: MotionEvent) => {
       const { status, statusActive } = this.state;
       const { onAppearEnd, onEnterEnd, onLeaveEnd } = this.props;
       if (status === STATUS_APPEAR && statusActive) {
@@ -247,11 +269,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       const { internalRef } = this.props;
       this.node = node;
 
-      if (typeof internalRef === 'function') {
-        internalRef(node);
-      } else if (internalRef && 'current' in internalRef) {
-        (internalRef as React.MutableRefObject<any>).current = node;
-      }
+      fillRef(internalRef, node);
     };
 
     getElement = () => {
@@ -281,9 +299,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
     };
 
     updateStatus = (
-      styleFunc: MotionEventHandler,
+      styleFunc: MotionEventHandler | MotionEndEventHandler,
       additionalState: Partial<CSSMotionState>,
-      event?: TransitionEvent | AnimationEvent | { deadline?: boolean },
+      event?: MotionEvent,
       callback?: (timestamp?: number) => void,
     ) => {
       const statusStyle = styleFunc
@@ -324,10 +342,10 @@ export function genCSSMotion(config: CSSMotionConfig) {
         this.updateStatus(styleFunc, { statusActive: true });
 
         if (motionDeadline > 0) {
-          setTimeout(() => {
+          this.deadlineId = setTimeout(() => {
             this.onMotionEnd({
               deadline: true,
-            });
+            } as MotionEvent);
           }, motionDeadline);
         }
       });
@@ -378,7 +396,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
           ...eventProps,
           className: classNames(getTransitionName(motionName, status), {
             [getTransitionName(motionName, `${status}-active`)]: statusActive,
-            [motionName]: typeof motionName === 'string',
+            [motionName as string]: typeof motionName === 'string',
           }),
           style: statusStyle,
         },

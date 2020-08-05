@@ -1,3 +1,5 @@
+import { MotionName } from '../CSSMotion';
+
 const canUseDOM = !!(
   typeof window !== 'undefined' &&
   window.document &&
@@ -48,7 +50,7 @@ const vendorPrefixes = getVendorPrefixes(
 let style = {};
 
 if (canUseDOM) {
-  style = document.createElement('div').style;
+  ({ style } = document.createElement('div'));
 }
 
 const prefixedEventNames = {};
@@ -82,7 +84,10 @@ export const animationEndName = getVendorPrefixedEventName('animationend');
 export const transitionEndName = getVendorPrefixedEventName('transitionend');
 export const supportTransition = !!(animationEndName && transitionEndName);
 
-export function getTransitionName(transitionName: string, transitionType: string) {
+export function getTransitionName(
+  transitionName: MotionName,
+  transitionType: string,
+) {
   if (!transitionName) return null;
 
   if (typeof transitionName === 'object') {
