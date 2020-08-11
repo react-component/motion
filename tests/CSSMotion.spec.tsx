@@ -372,4 +372,40 @@ describe('CSSMotion', () => {
 
     expect(domRef.current instanceof HTMLElement).toBeTruthy();
   });
+
+  it("onMotionEnd shouldn't be fired by inner element", () => {
+    const onLeaveEnd = jest.fn();
+    const wrapper = mount(
+      <CSSMotion visible onLeaveEnd={onLeaveEnd}>
+        {(_, ref) => (
+          <div className="outer-block" ref={ref}>
+            <div className="inner-block" />
+          </div>
+        )}
+      </CSSMotion>,
+    );
+    wrapper.setState({
+      status: 'leave',
+      statusActive: true,
+    });
+    const motionInstance = wrapper.find('CSSMotion').instance() as any;
+    motionInstance.onMotionEnd({ deadline: true });
+    expect(onLeaveEnd).toHaveBeenCalledTimes(1);
+    wrapper.setState({
+      status: 'leave',
+      statusActive: true,
+    });
+    motionInstance.onMotionEnd({
+      target: wrapper.find('.outer-block').getDOMNode(),
+    });
+    expect(onLeaveEnd).toHaveBeenCalledTimes(2);
+    wrapper.setState({
+      status: 'leave',
+      statusActive: true,
+    });
+    motionInstance.onMotionEnd({
+      target: wrapper.find('.inner-block').getDOMNode(),
+    });
+    expect(onLeaveEnd).toHaveBeenCalledTimes(2);
+  });
 });

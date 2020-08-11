@@ -256,6 +256,12 @@ export function genCSSMotion(
     };
 
     onMotionEnd = (event: MotionEvent) => {
+      if (event && !event.deadline && event.target !== this.getElement()) {
+        // event exists
+        // not initiated by deadline
+        // transitionend not fired by inner elements
+        return;
+      }
       const { status, statusActive } = this.state;
       const { onAppearEnd, onEnterEnd, onLeaveEnd } = this.props;
       if (status === STATUS_APPEAR && statusActive) {
