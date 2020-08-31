@@ -1,5 +1,5 @@
 /* eslint react/prop-types: 0 */
-import React from 'react';
+import * as React from 'react';
 import OriginCSSMotion, { CSSMotionProps } from './CSSMotion';
 import { supportTransition } from './util/motion';
 import {

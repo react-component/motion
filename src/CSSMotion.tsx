@@ -1,5 +1,5 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
-import React from 'react';
+import * as React from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
