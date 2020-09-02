@@ -113,7 +113,7 @@ class Demo extends React.Component<{}, DemoState> {
 
           <div>
             <h2>With Animation Class</h2>
-            <CSSMotion
+            {/* <CSSMotion
               visible={show}
               motionName={hasMotionClassName ? 'animation' : null}
               removeOnLeave={removeOnLeave}
@@ -126,7 +126,7 @@ class Demo extends React.Component<{}, DemoState> {
                   style={style}
                 />
               )}
-            </CSSMotion>
+            </CSSMotion> */}
           </div>
         </div>
 

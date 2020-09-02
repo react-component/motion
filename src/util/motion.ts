@@ -1,10 +1,5 @@
+import canUseDOM from 'rc-util/lib/Dom/canUseDom';
 import { MotionName } from '../CSSMotion';
-
-const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-);
 
 // ================= Transition =================
 // Event wrapper. Copy from react source code
