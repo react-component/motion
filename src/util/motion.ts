@@ -38,13 +38,13 @@ export function getVendorPrefixes(domSupport: boolean, win: object) {
 }
 
 const vendorPrefixes = getVendorPrefixes(
-  canUseDOM,
+  canUseDOM(),
   typeof window !== 'undefined' ? window : {},
 );
 
 let style = {};
 
-if (canUseDOM) {
+if (canUseDOM()) {
   ({ style } = document.createElement('div'));
 }
 

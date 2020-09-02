@@ -14,7 +14,7 @@ import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
 
 // It's safe to use `useLayoutEffect` but the warning is annoying
-const useIsomorphicLayoutEffect = canUseDom ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = canUseDom() ? useLayoutEffect : useEffect;
 
 export default function useStatus(
   supportMotion: boolean,
