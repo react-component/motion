@@ -10,17 +10,16 @@ import {
   transitionEndName,
   supportTransition,
 } from './util/motion';
-
-const STATUS_NONE = 'none' as const;
-const STATUS_APPEAR = 'appear' as const;
-const STATUS_ENTER = 'enter' as const;
-const STATUS_LEAVE = 'leave' as const;
-
-export type MotionStatus =
-  | typeof STATUS_NONE
-  | typeof STATUS_APPEAR
-  | typeof STATUS_ENTER
-  | typeof STATUS_LEAVE;
+import {
+  MotionEventHandler,
+  MotionEndEventHandler,
+  MotionStatus,
+  STATUS_NONE,
+  STATUS_APPEAR,
+  STATUS_ENTER,
+  STATUS_LEAVE,
+  MotionEvent,
+} from './interface';
 
 export type CSSMotionConfig =
   | boolean
@@ -28,20 +27,6 @@ export type CSSMotionConfig =
       transitionSupport?: boolean;
       forwardRef?: boolean;
     };
-
-export type MotionEvent = (TransitionEvent | AnimationEvent) & {
-  deadline?: boolean;
-};
-
-export type MotionEventHandler = (
-  element: HTMLElement,
-  event: MotionEvent,
-) => React.CSSProperties | void;
-
-export type MotionEndEventHandler = (
-  element: HTMLElement,
-  event: MotionEvent,
-) => boolean | void;
 
 export type MotionName =
   | string
