@@ -8,8 +8,8 @@ import { getTransitionName, supportTransition } from './util/motion';
 import {
   MotionStatus,
   STATUS_NONE,
+  MotionEvent,
   MotionEventHandler,
-  MotionEndEventHandler,
 } from './interface';
 import useStatus from './hooks/useStatus';
 import DomWrapper from './DomWrapper';
@@ -21,6 +21,11 @@ export type CSSMotionConfig =
       /** @deprecated, no need this anymore since `rc-motion` only support latest react */
       forwardRef?: boolean;
     };
+
+export type MotionEndEventHandler = (
+  element: HTMLElement,
+  event: MotionEvent,
+) => boolean | void;
 
 export type MotionName =
   | string

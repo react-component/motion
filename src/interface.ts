@@ -17,8 +17,3 @@ export type MotionEventHandler = (
   element: HTMLElement,
   event: MotionEvent,
 ) => React.CSSProperties | void;
-
-export type MotionEndEventHandler = (
-  element: HTMLElement,
-  event: MotionEvent,
-) => boolean | void;
