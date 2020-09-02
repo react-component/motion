@@ -216,29 +216,55 @@ describe('CSSMotion', () => {
       wrapper.unmount();
     });
 
-    it('deadline should work', () => {
-      const onAppearEnd = jest.fn();
-      mount(
-        <CSSMotion
-          motionName="transition"
-          motionDeadline={1000}
-          onAppearEnd={onAppearEnd}
-          visible
-        >
-          {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
-          )}
-        </CSSMotion>,
+    describe('deadline should work', () => {
+      function test(name: string, Component: React.ComponentType<any>) {
+        it(name, () => {
+          const onAppearEnd = jest.fn();
+
+          mount(
+            <CSSMotion
+              motionName="transition"
+              motionDeadline={1000}
+              onAppearEnd={onAppearEnd}
+              visible
+            >
+              {({ style, className }, ref) => (
+                <Component
+                  ref={ref}
+                  style={style}
+                  className={classNames('motion-box', className)}
+                />
+              )}
+            </CSSMotion>,
+          );
+
+          expect(onAppearEnd).not.toHaveBeenCalled();
+          act(() => {
+            jest.runAllTimers();
+          });
+          expect(onAppearEnd).toHaveBeenCalled();
+        });
+      }
+
+      test('without ref', React.forwardRef(props => <div {...props} />));
+
+      test(
+        'FC with ref',
+        React.forwardRef((props, ref) => <div {...props} ref={ref} />),
       );
 
-      expect(onAppearEnd).not.toHaveBeenCalled();
-      act(() => {
-        jest.runAllTimers();
-      });
-      expect(onAppearEnd).toHaveBeenCalled();
+      test(
+        'FC but not dom ref',
+        React.forwardRef((props, ref) => {
+          React.useImperativeHandle(ref, () => ({}));
+          return <div {...props} />;
+        }),
+      );
+    });
+
+    it('not crash when no children', () => {
+      const wrapper = mount(<CSSMotion motionName="transition" visible />);
+      expect(wrapper.render()).toMatchSnapshot();
     });
   });
 

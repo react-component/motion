@@ -11,9 +11,14 @@ Enzyme.configure({ adapter: new Adapter() });
 Object.assign(Enzyme.ReactWrapper.prototype, {
   triggerMotionEvent(target) {
     const motionEvent = new Event('transitionend');
+    if (target) {
+      Object.defineProperty(motionEvent, 'target', {
+        get: () => target.getDOMNode(),
+      });
+    }
 
     act(() => {
-      const element = (target || this.find('CSSMotion')).getDOMNode();
+      const element = this.find('CSSMotion').getDOMNode();
       element.dispatchEvent(motionEvent);
       this.update();
     });
