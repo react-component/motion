@@ -4,10 +4,7 @@ import { useRef } from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
-import {
-  getTransitionName,
-  supportTransition,
-} from './util/motion';
+import { getTransitionName, supportTransition } from './util/motion';
 import {
   MotionStatus,
   STATUS_NONE,

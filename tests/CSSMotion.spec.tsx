@@ -3,6 +3,7 @@
   react/prefer-stateless-function, react/no-multi-comp
 */
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import classNames from 'classnames';
 import { mount } from './wrapper';
 import RefCSSMotion, { genCSSMotion, CSSMotionProps } from '../src/CSSMotion';
@@ -111,8 +112,11 @@ describe('CSSMotion', () => {
           expect(boxNode.props().style.height).toEqual(oriHeight);
 
           // Motion active
-          jest.runAllTimers();
-          wrapper.update();
+          act(() => {
+            jest.runAllTimers();
+            wrapper.update();
+          });
+
           const activeBoxNode = wrapper.find('.motion-box');
           expect(activeBoxNode.hasClass('transition')).toBeTruthy();
           expect(activeBoxNode.hasClass(`transition-${name}`)).toBeTruthy();
@@ -123,8 +127,11 @@ describe('CSSMotion', () => {
 
           // Motion end
           wrapper.triggerMotionEvent();
-          jest.runAllTimers();
-          wrapper.update();
+
+          act(() => {
+            jest.runAllTimers();
+            wrapper.update();
+          });
 
           if (nextVisible === false) {
             expect(wrapper.find('.motion-box')).toHaveLength(0);
@@ -167,8 +174,12 @@ describe('CSSMotion', () => {
       expect(boxNode.hasClass('transition-appear')).toBeTruthy();
       expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
 
-      wrapper.setProps({ motionAppear: false });
-      jest.runAllTimers();
+      act(() => {
+        wrapper.setProps({ motionAppear: false });
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
       boxNode = wrapper.find('.motion-box');
       expect(boxNode.hasClass('transition')).toBeFalsy();
       expect(boxNode.hasClass('transition-appear')).toBeFalsy();
@@ -188,13 +199,19 @@ describe('CSSMotion', () => {
       );
 
       wrapper.setProps({ visible: true });
-      jest.runAllTimers();
+      act(() => {
+        jest.runAllTimers();
+      });
       wrapper.setProps({ visible: false });
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
 
       const boxNode = wrapper.find('.motion-box');
       expect(boxNode.hasClass('transition')).toBeTruthy();
       expect(boxNode.hasClass('transition-leave')).toBeTruthy();
-      expect(boxNode.hasClass('transition-leave-active')).toBeFalsy();
+      expect(boxNode.hasClass('transition-leave-active')).toBeTruthy();
 
       wrapper.unmount();
     });
@@ -218,7 +235,9 @@ describe('CSSMotion', () => {
       );
 
       expect(onAppearEnd).not.toHaveBeenCalled();
-      jest.runAllTimers();
+      act(() => {
+        jest.runAllTimers();
+      });
       expect(onAppearEnd).toHaveBeenCalled();
     });
   });

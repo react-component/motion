@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import raf from 'rc-util/lib/raf';
+import canUseDom from 'rc-util/lib/Dom/canUseDom';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
@@ -11,6 +12,9 @@ import {
 } from '../interface';
 import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
+
+// It's safe to use `useLayoutEffect` but the warning is annoying
+const useIsomorphicLayoutEffect = canUseDom ? useLayoutEffect : useEffect;
 
 export default function useStatus(
   supportMotion: boolean,
@@ -51,9 +55,14 @@ export default function useStatus(
   }
 
   // ========================== Next Frame ==========================
+  function cancelNextFrame() {
+    raf.cancel(nextFrameRef.current);
+  }
+
   /** `useLayoutEffect` will render in the closest frame which motion may not ready */
   function nextFrame(callback: () => void, delay = 2) {
-    raf.cancel(nextFrameRef.current);
+    cancelNextFrame();
+
     nextFrameRef.current = raf(() => {
       if (delay <= 1) {
         callback();
@@ -126,13 +135,13 @@ export default function useStatus(
 
   // =========================== Clean Up ===========================
   function cleanUp() {
-    raf.cancel(nextFrameRef.current);
+    cancelNextFrame();
     clearTimeout(deadlineRef.current);
   }
 
   // ============================ Status ============================
   // Update with new status
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!supportMotion) {
       return;
     }
@@ -178,7 +187,7 @@ export default function useStatus(
   }, [visible]);
 
   // Update active status
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!supportMotion) {
       return;
     }
@@ -230,6 +239,7 @@ export default function useStatus(
       (status === STATUS_ENTER && !motionEnter) ||
       (status === STATUS_LEAVE && !motionLeave)
     ) {
+      cancelNextFrame();
       setStatus(STATUS_NONE);
       setActive(false);
     }

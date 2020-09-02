@@ -75,9 +75,14 @@ export function getVendorPrefixedEventName(eventName: string) {
   return '';
 }
 
-export const animationEndName = getVendorPrefixedEventName('animationend');
-export const transitionEndName = getVendorPrefixedEventName('transitionend');
-export const supportTransition = !!(animationEndName && transitionEndName);
+const internalAnimationEndName = getVendorPrefixedEventName('animationend');
+const internalTransitionEndName = getVendorPrefixedEventName('transitionend');
+export const supportTransition = !!(
+  internalAnimationEndName && internalTransitionEndName
+);
+
+export const animationEndName = internalAnimationEndName || 'animationend';
+export const transitionEndName = internalTransitionEndName || 'transitionend';
 
 export function getTransitionName(
   transitionName: MotionName,
@@ -86,7 +91,7 @@ export function getTransitionName(
   if (!transitionName) return null;
 
   if (typeof transitionName === 'object') {
-    const type = transitionType.replace(/-\w/g, match =>
+    const type = transitionType.replace(/-\w/g, (match) =>
       match[1].toUpperCase(),
     );
     return transitionName[type];
