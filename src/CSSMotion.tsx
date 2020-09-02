@@ -1,24 +1,30 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import * as React from 'react';
-import { useRef } from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
-import { getTransitionName, supportTransition } from './util/motion';
+import raf from 'raf';
 import {
-  MotionStatus,
-  STATUS_NONE,
+  getTransitionName,
+  animationEndName,
+  transitionEndName,
+  supportTransition,
+} from './util/motion';
+import {
   MotionEventHandler,
   MotionEndEventHandler,
+  MotionStatus,
+  STATUS_NONE,
+  STATUS_APPEAR,
+  STATUS_ENTER,
+  STATUS_LEAVE,
+  MotionEvent,
 } from './interface';
-import useStatus from './hooks/useStatus';
-import DomWrapper from './DomWrapper';
 
 export type CSSMotionConfig =
   | boolean
   | {
       transitionSupport?: boolean;
-      /** @deprecated, no need this anymore since `rc-motion` only support latest react */
       forwardRef?: boolean;
     };
 
@@ -66,7 +72,7 @@ export interface CSSMotionProps {
       [key: string]: any;
     },
     ref: (node: any) => void,
-  ) => React.ReactElement;
+  ) => React.ReactNode;
 }
 
 export interface CSSMotionState {
@@ -83,97 +89,322 @@ export interface CSSMotionState {
  */
 export function genCSSMotion(
   config: CSSMotionConfig,
-): React.ForwardRefExoticComponent<CSSMotionProps & { ref?: React.Ref<any> }> {
+): React.ForwardRefExoticComponent<CSSMotionProps> {
   let transitionSupport = config;
+  let forwardRef = !!React.forwardRef;
 
   if (typeof config === 'object') {
     ({ transitionSupport } = config);
+    forwardRef = 'forwardRef' in config ? config.forwardRef : forwardRef;
   }
 
   function isSupportTransition(props: CSSMotionProps) {
     return !!(props.motionName && transitionSupport);
   }
 
-  const CSSMotion = React.forwardRef<any, CSSMotionProps>((props, ref) => {
-    const {
-      // Default config
-      visible = true,
-      removeOnLeave = true,
-
-      children,
-      motionName,
-      leavedClassName,
-      eventProps,
-    } = props;
-
-    const supportMotion = isSupportTransition(props);
-
-    // Ref to the react node, it may be a HTMLElement
-    const nodeRef = useRef();
-    // Ref to the dom wrapper in case ref can not pass to HTMLElement
-    const wrapperNodeRef = useRef();
-
-    function getDomElement() {
-      try {
-        return findDOMNode<HTMLElement>(
-          nodeRef.current || wrapperNodeRef.current,
-        );
-      } catch (e) {
-        // Only happen when `motionDeadline` trigger but element removed.
-        return null;
-      }
-    }
-
-    const [status, statusActive, statusStyle] = useStatus(
-      supportMotion,
-      visible,
-      getDomElement,
-      props,
-    );
-
-    const setNodeRef = (node: any) => {
-      nodeRef.current = node;
-
-      fillRef(ref, node);
+  class CSSMotion extends React.Component<CSSMotionProps, CSSMotionState> {
+    static defaultProps = {
+      visible: true,
+      motionEnter: true,
+      motionAppear: true,
+      motionLeave: true,
+      removeOnLeave: true,
     };
 
-    if (!children) return null;
+    $cacheEle: HTMLElement = null;
 
-    if (status === STATUS_NONE || !isSupportTransition(props)) {
-      if (visible) {
-        return children({ ...eventProps }, setNodeRef);
+    node = null;
+
+    raf = null;
+
+    destroyed = false;
+
+    deadlineId = null;
+
+    state: CSSMotionState = {
+      status: STATUS_NONE,
+      statusActive: false,
+      newStatus: false,
+      statusStyle: null,
+    };
+
+    static getDerivedStateFromProps(
+      props: CSSMotionProps,
+      { prevProps, status: prevStatus },
+    ) {
+      if (!isSupportTransition(props)) return {};
+
+      const {
+        visible,
+        motionAppear,
+        motionEnter,
+        motionLeave,
+        motionLeaveImmediately,
+      } = props;
+      const newState: Partial<CSSMotionState> = {
+        prevProps: props,
+      };
+
+      // Clean up status if prop set to false
+      if (
+        (prevStatus === STATUS_APPEAR && !motionAppear) ||
+        (prevStatus === STATUS_ENTER && !motionEnter) ||
+        (prevStatus === STATUS_LEAVE && !motionLeave)
+      ) {
+        newState.status = STATUS_NONE;
+        newState.statusActive = false;
+        newState.newStatus = false;
       }
 
-      if (!removeOnLeave) {
-        return children(
-          { ...eventProps, className: leavedClassName },
-          setNodeRef,
-        );
+      // Appear
+      if (!prevProps && visible && motionAppear) {
+        newState.status = STATUS_APPEAR;
+        newState.statusActive = false;
+        newState.newStatus = true;
       }
 
-      return null;
+      // Enter
+      if (prevProps && !prevProps.visible && visible && motionEnter) {
+        newState.status = STATUS_ENTER;
+        newState.statusActive = false;
+        newState.newStatus = true;
+      }
+
+      // Leave
+      if (
+        (prevProps && prevProps.visible && !visible && motionLeave) ||
+        (!prevProps && motionLeaveImmediately && !visible && motionLeave)
+      ) {
+        newState.status = STATUS_LEAVE;
+        newState.statusActive = false;
+        newState.newStatus = true;
+      }
+
+      return newState;
     }
 
-    return (
-      <DomWrapper ref={wrapperNodeRef}>
-        {children(
-          {
-            ...eventProps,
-            className: classNames(getTransitionName(motionName, status), {
-              [getTransitionName(motionName, `${status}-active`)]: statusActive,
-              [motionName as string]: typeof motionName === 'string',
-            }),
-            style: statusStyle,
-          },
-          setNodeRef,
-        )}
-      </DomWrapper>
-    );
-  });
+    componentDidMount() {
+      this.onDomUpdate();
+    }
 
-  CSSMotion.displayName = 'CSSMotion';
+    componentDidUpdate() {
+      this.onDomUpdate();
+    }
 
-  return CSSMotion;
+    componentWillUnmount() {
+      this.destroyed = true;
+      this.removeEventListener(this.$cacheEle);
+      this.cancelNextFrame();
+      clearTimeout(this.deadlineId);
+    }
+
+    onDomUpdate = () => {
+      const { status, newStatus } = this.state;
+      const {
+        onAppearStart,
+        onEnterStart,
+        onLeaveStart,
+        onAppearActive,
+        onEnterActive,
+        onLeaveActive,
+        motionAppear,
+        motionEnter,
+        motionLeave,
+      } = this.props;
+
+      if (!isSupportTransition(this.props)) {
+        return;
+      }
+
+      // Event injection
+      const $ele = this.getElement();
+      if (this.$cacheEle !== $ele) {
+        this.removeEventListener(this.$cacheEle);
+        this.addEventListener($ele);
+        this.$cacheEle = $ele;
+      }
+
+      // Init status
+      if (newStatus && status === STATUS_APPEAR && motionAppear) {
+        this.updateStatus(onAppearStart, null, null, () => {
+          this.updateActiveStatus(onAppearActive, STATUS_APPEAR);
+        });
+      } else if (newStatus && status === STATUS_ENTER && motionEnter) {
+        this.updateStatus(onEnterStart, null, null, () => {
+          this.updateActiveStatus(onEnterActive, STATUS_ENTER);
+        });
+      } else if (newStatus && status === STATUS_LEAVE && motionLeave) {
+        this.updateStatus(onLeaveStart, null, null, () => {
+          this.updateActiveStatus(onLeaveActive, STATUS_LEAVE);
+        });
+      }
+    };
+
+    onMotionEnd = (event: MotionEvent) => {
+      if (event && !event.deadline && event.target !== this.getElement()) {
+        // event exists
+        // not initiated by deadline
+        // transitionend not fired by inner elements
+        return;
+      }
+      const { status, statusActive } = this.state;
+      const { onAppearEnd, onEnterEnd, onLeaveEnd } = this.props;
+      if (status === STATUS_APPEAR && statusActive) {
+        this.updateStatus(onAppearEnd, { status: STATUS_NONE }, event);
+      } else if (status === STATUS_ENTER && statusActive) {
+        this.updateStatus(onEnterEnd, { status: STATUS_NONE }, event);
+      } else if (status === STATUS_LEAVE && statusActive) {
+        this.updateStatus(onLeaveEnd, { status: STATUS_NONE }, event);
+      }
+    };
+
+    setNodeRef = (node: any) => {
+      const { internalRef } = this.props;
+      this.node = node;
+
+      fillRef(internalRef, node);
+    };
+
+    getElement = () => {
+      try {
+        return findDOMNode<HTMLElement>(this.node || this);
+      } catch (e) {
+        /**
+         * Fallback to cache element.
+         * This is only happen when `motionDeadline` trigger but element removed.
+         */
+        return this.$cacheEle;
+      }
+    };
+
+    addEventListener = ($ele: HTMLElement) => {
+      if (!$ele) return;
+
+      $ele.addEventListener(transitionEndName, this.onMotionEnd);
+      $ele.addEventListener(animationEndName, this.onMotionEnd);
+    };
+
+    removeEventListener = ($ele: HTMLElement) => {
+      if (!$ele) return;
+
+      $ele.removeEventListener(transitionEndName, this.onMotionEnd);
+      $ele.removeEventListener(animationEndName, this.onMotionEnd);
+    };
+
+    updateStatus = (
+      styleFunc: MotionEventHandler | MotionEndEventHandler,
+      additionalState: Partial<CSSMotionState>,
+      event?: MotionEvent,
+      callback?: (timestamp?: number) => void,
+    ) => {
+      const statusStyle = styleFunc
+        ? styleFunc(this.getElement(), event)
+        : null;
+
+      if (statusStyle === false || this.destroyed) return;
+
+      let nextStep;
+      if (callback) {
+        nextStep = () => {
+          this.nextFrame(callback);
+        };
+      }
+
+      this.setState(
+        {
+          statusStyle: typeof statusStyle === 'object' ? statusStyle : null,
+          newStatus: false,
+          ...additionalState,
+        },
+        nextStep,
+      ); // Trigger before next frame & after `componentDidMount`
+    };
+
+    updateActiveStatus = (
+      styleFunc: MotionEventHandler,
+      currentStatus: MotionStatus,
+    ) => {
+      // `setState` use `postMessage` to trigger at the end of frame.
+      // Let's use requestAnimationFrame to update new state in next frame.
+      this.nextFrame(() => {
+        const { status } = this.state;
+        if (status !== currentStatus) return;
+
+        const { motionDeadline } = this.props;
+
+        this.updateStatus(styleFunc, { statusActive: true });
+
+        if (motionDeadline > 0) {
+          this.deadlineId = setTimeout(() => {
+            this.onMotionEnd({
+              deadline: true,
+            } as MotionEvent);
+          }, motionDeadline);
+        }
+      });
+    };
+
+    nextFrame = (func: (timestamp?: number) => void) => {
+      this.cancelNextFrame();
+      this.raf = raf(func);
+    };
+
+    cancelNextFrame = () => {
+      if (this.raf) {
+        raf.cancel(this.raf);
+        this.raf = null;
+      }
+    };
+
+    render() {
+      const { status, statusActive, statusStyle } = this.state;
+      const {
+        children,
+        motionName,
+        visible,
+        removeOnLeave,
+        leavedClassName,
+        eventProps,
+      } = this.props;
+
+      if (!children) return null;
+
+      if (status === STATUS_NONE || !isSupportTransition(this.props)) {
+        if (visible) {
+          return children({ ...eventProps }, this.setNodeRef);
+        }
+
+        if (!removeOnLeave) {
+          return children(
+            { ...eventProps, className: leavedClassName },
+            this.setNodeRef,
+          );
+        }
+
+        return null;
+      }
+
+      return children(
+        {
+          ...eventProps,
+          className: classNames(getTransitionName(motionName, status), {
+            [getTransitionName(motionName, `${status}-active`)]: statusActive,
+            [motionName as string]: typeof motionName === 'string',
+          }),
+          style: statusStyle,
+        },
+        this.setNodeRef,
+      );
+    }
+  }
+
+  if (!forwardRef) {
+    return CSSMotion as any;
+  }
+
+  return React.forwardRef((props: CSSMotionProps, ref: any) => (
+    <CSSMotion internalRef={ref} {...props} />
+  ));
 }
 
 export default genCSSMotion(supportTransition);
