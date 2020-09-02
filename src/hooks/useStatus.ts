@@ -51,9 +51,16 @@ export default function useStatus(
   }
 
   // ========================== Next Frame ==========================
-  function nextFrame(callback: () => void) {
+  /** `useLayoutEffect` will render in the closest frame which motion may not ready */
+  function nextFrame(callback: () => void, delay = 2) {
     raf.cancel(nextFrameRef.current);
-    nextFrameRef.current = raf(callback);
+    nextFrameRef.current = raf(() => {
+      if (delay <= 1) {
+        callback();
+      } else {
+        nextFrame(callback, delay - 1);
+      }
+    });
   }
 
   // ============================ Motion ============================
@@ -202,8 +209,8 @@ export default function useStatus(
         // Add event handler with element
         patchMotionEvents(element);
 
-        setStyle(nextStyle as React.CSSProperties);
         setActive(true);
+        setStyle(nextStyle as React.CSSProperties);
 
         if (motionDeadline > 0) {
           deadlineRef.current = setTimeout(() => {
