@@ -294,15 +294,12 @@ describe('CSSMotion', () => {
         const nextVisible = visible[1];
 
         function doStartTest() {
-          const boxNode = wrapper.find('.motion-box');
-
-          expect(boxNode.hasClass('animation')).toBeTruthy();
-          expect(boxNode.hasClass(`animation-${name}`)).toBeTruthy();
-          expect(boxNode.hasClass(`animation-${name}-active`)).toBeFalsy();
-
           // Motion active
-          jest.runAllTimers();
-          wrapper.update();
+          act(() => {
+            jest.runAllTimers();
+            wrapper.update();
+          });
+
           const activeBoxNode = wrapper.find('.motion-box');
           expect(activeBoxNode.hasClass('animation')).toBeTruthy();
           expect(activeBoxNode.hasClass(`animation-${name}`)).toBeTruthy();
