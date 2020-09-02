@@ -88,7 +88,7 @@ export interface CSSMotionState {
  */
 export function genCSSMotion(
   config: CSSMotionConfig,
-): React.ForwardRefRenderFunction<any, CSSMotionProps> {
+): React.ForwardRefExoticComponent<CSSMotionProps & { ref?: React.Ref<any> }> {
   let transitionSupport = config;
 
   if (typeof config === 'object') {
@@ -99,10 +99,7 @@ export function genCSSMotion(
     return !!(props.motionName && transitionSupport);
   }
 
-  const CSSMotion: React.ForwardRefRenderFunction<any, CSSMotionProps> = (
-    props,
-    ref,
-  ) => {
+  const CSSMotion = React.forwardRef<any, CSSMotionProps>((props, ref) => {
     const {
       // Default config
       visible = true,
@@ -177,7 +174,9 @@ export function genCSSMotion(
         )}
       </DomWrapper>
     );
-  };
+  });
+
+  CSSMotion.displayName = 'CSSMotion';
 
   return CSSMotion;
 }

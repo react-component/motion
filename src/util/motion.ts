@@ -91,7 +91,7 @@ export function getTransitionName(
   if (!transitionName) return null;
 
   if (typeof transitionName === 'object') {
-    const type = transitionType.replace(/-\w/g, (match) =>
+    const type = transitionType.replace(/-\w/g, match =>
       match[1].toUpperCase(),
     );
     return transitionName[type];

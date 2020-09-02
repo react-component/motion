@@ -395,7 +395,12 @@ describe('CSSMotion', () => {
   it("onMotionEnd shouldn't be fired by inner element", () => {
     const onLeaveEnd = jest.fn();
     const wrapper = mount(
-      <CSSMotion visible onLeaveEnd={onLeaveEnd}>
+      <CSSMotion
+        visible
+        motionName="bamboo"
+        onLeaveEnd={onLeaveEnd}
+        removeOnLeave={false}
+      >
         {(_, ref) => (
           <div className="outer-block" ref={ref}>
             <div className="inner-block" />
@@ -403,28 +408,29 @@ describe('CSSMotion', () => {
         )}
       </CSSMotion>,
     );
-    wrapper.setState({
-      status: 'leave',
-      statusActive: true,
-    });
-    const motionInstance = wrapper.find('CSSMotion').instance() as any;
-    motionInstance.onMotionEnd({ deadline: true });
+
+    function resetLeave() {
+      act(() => {
+        wrapper.setProps({ visible: true });
+        jest.runAllTimers();
+        wrapper.update();
+
+        wrapper.setProps({ visible: false });
+        jest.runAllTimers();
+        wrapper.update();
+      });
+    }
+
+    resetLeave();
+    wrapper.triggerMotionEvent();
     expect(onLeaveEnd).toHaveBeenCalledTimes(1);
-    wrapper.setState({
-      status: 'leave',
-      statusActive: true,
-    });
-    motionInstance.onMotionEnd({
-      target: wrapper.find('.outer-block').getDOMNode(),
-    });
+
+    resetLeave();
+    wrapper.triggerMotionEvent(wrapper.find('.outer-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
-    wrapper.setState({
-      status: 'leave',
-      statusActive: true,
-    });
-    motionInstance.onMotionEnd({
-      target: wrapper.find('.inner-block').getDOMNode(),
-    });
+
+    resetLeave();
+    wrapper.triggerMotionEvent(wrapper.find('.inner-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
   });
 });
