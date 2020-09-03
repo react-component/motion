@@ -1,25 +1,22 @@
 import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import raf from 'rc-util/lib/raf';
+import { useState, useRef } from 'react';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
   MotionStatus,
   STATUS_LEAVE,
   STATUS_ENTER,
-  MotionEvent,
   MotionEventHandler,
   STEP_PREPARE,
-  MotionPrepareEventHandler,
   STEP_START,
   STEP_ACTIVE,
   STEP_ACTIVATED,
-  StepStatus,
+  MotionEvent,
 } from '../interface';
-import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useStepQueue, { DoStep, SkipStep } from './useStepQueue';
+import useDomMotionEvents from './useDomMotionEvents';
 // import useFrameStep, { StepMap, StepCell } from './useFrameStep';
 
 export default function useStatus(
@@ -35,12 +32,6 @@ export default function useStatus(
     onAppearStart,
     onEnterStart,
     onLeaveStart,
-    onAppearPrepareStart,
-    onEnterPrepareStart,
-    onLeavePrepareStart,
-    onAppearPrepareEnd,
-    onEnterPrepareEnd,
-    onLeavePrepareEnd,
     onAppearActive,
     onEnterActive,
     onLeaveActive,
@@ -64,6 +55,8 @@ export default function useStatus(
   }
 
   // ============================= Step =============================
+  let patchMotionEvents: (element: HTMLElement) => void;
+
   const eventHandlers = React.useMemo<{
     [STEP_START]?: MotionEventHandler;
     [STEP_ACTIVE]?: MotionEventHandler;
@@ -102,7 +95,39 @@ export default function useStatus(
       setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
     }
 
+    if (step === STEP_ACTIVE) {
+      // Patch events when motion needed
+      patchMotionEvents(getDomElement());
+    }
+
     return DoStep;
+  });
+
+  const active = step === STEP_ACTIVE || step === STEP_ACTIVATED;
+
+  // ========================== Motion End ==========================
+  [patchMotionEvents] = useDomMotionEvents((event) => {
+    const element = getDomElement();
+    if (event && !event.deadline && event.target !== element) {
+      // event exists
+      // not initiated by deadline
+      // transitionEnd not fired by inner elements
+      return;
+    }
+
+    let canEnd: boolean | void;
+    if (status === STATUS_APPEAR && active) {
+      canEnd = onAppearEnd?.(element, event);
+    } else if (status === STATUS_ENTER && active) {
+      canEnd = onEnterEnd?.(element, event);
+    } else if (status === STATUS_LEAVE && active) {
+      canEnd = onLeaveEnd?.(element, event);
+    }
+
+    if (canEnd !== false) {
+      setStatus(STATUS_NONE);
+      setStyle(null);
+    }
   });
 
   // ============================ Status ============================
@@ -142,5 +167,5 @@ export default function useStatus(
     }
   }, [visible]);
 
-  return [status, step === STEP_ACTIVE || step === STEP_ACTIVATED, style];
+  return [status, active, style];
 }

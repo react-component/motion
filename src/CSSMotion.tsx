@@ -47,13 +47,9 @@ export interface CSSMotionProps {
   eventProps?: object;
 
   // Prepare groups
-  onAppearPrepareStart?: MotionPrepareEventHandler;
-  onEnterPrepareStart?: MotionPrepareEventHandler;
-  onLeavePrepareStart?: MotionPrepareEventHandler;
-
-  onAppearPrepareEnd?: MotionPrepareEventHandler;
-  onEnterPrepareEnd?: MotionPrepareEventHandler;
-  onLeavePrepareEnd?: MotionPrepareEventHandler;
+  onAppearPrepare?: MotionPrepareEventHandler;
+  onEnterPrepare?: MotionPrepareEventHandler;
+  onLeavePrepare?: MotionPrepareEventHandler;
 
   // Normal motion groups
   onAppearStart?: MotionEventHandler;
@@ -142,44 +138,50 @@ export function genCSSMotion(
       props,
     );
 
-    const setNodeRef = (node: any) => {
+    // ====================== Refs ======================
+    const originRef = useRef(ref);
+    originRef.current = ref;
+
+    const setNodeRef = React.useCallback((node: any) => {
       nodeRef.current = node;
 
-      fillRef(ref, node);
-    };
+      fillRef(originRef.current, node);
+    }, []);
 
-    if (!children) return null;
+    // ===================== Render =====================
+    let motionChildren: React.ReactNode;
 
-    if (status === STATUS_NONE || !isSupportTransition(props)) {
+    if (!children) {
+      // No children
+      motionChildren = null;
+    } else if (status === STATUS_NONE || !isSupportTransition(props)) {
+      // Stable children
       if (visible) {
-        return children({ ...eventProps }, setNodeRef);
-      }
-
-      if (!removeOnLeave) {
-        return children(
+        motionChildren = children({ ...eventProps }, setNodeRef);
+      } else if (!removeOnLeave) {
+        motionChildren = children(
           { ...eventProps, className: leavedClassName },
           setNodeRef,
         );
+      } else {
+        motionChildren = null;
       }
-
-      return null;
+    } else {
+      // In motion
+      motionChildren = children(
+        {
+          ...eventProps,
+          className: classNames(getTransitionName(motionName, status), {
+            [getTransitionName(motionName, `${status}-active`)]: statusActive,
+            [motionName as string]: typeof motionName === 'string',
+          }),
+          style: statusStyle,
+        },
+        setNodeRef,
+      );
     }
 
-    return (
-      <DomWrapper ref={wrapperNodeRef}>
-        {children(
-          {
-            ...eventProps,
-            className: classNames(getTransitionName(motionName, status), {
-              [getTransitionName(motionName, `${status}-active`)]: statusActive,
-              [motionName as string]: typeof motionName === 'string',
-            }),
-            style: statusStyle,
-          },
-          setNodeRef,
-        )}
-      </DomWrapper>
-    );
+    return <DomWrapper ref={wrapperNodeRef}>{motionChildren}</DomWrapper>;
   });
 
   CSSMotion.displayName = 'CSSMotion';
