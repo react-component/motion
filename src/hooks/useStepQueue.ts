@@ -56,12 +56,19 @@ export default (
       } else {
         // Do as frame for step update
         nextFrame(info => {
-          Promise.resolve<boolean | void>(result).then(() => {
+          function doNext() {
             // Skip since current queue is ood
             if (info.isCanceled()) return;
 
             setStep(nextStep);
-          });
+          }
+
+          if (result === true) {
+            doNext();
+          } else {
+            // Only promise should be async
+            Promise.resolve(result).then(doNext);
+          }
         });
       }
     }

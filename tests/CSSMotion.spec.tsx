@@ -419,7 +419,7 @@ describe('CSSMotion', () => {
     expect(domRef.current instanceof HTMLElement).toBeTruthy();
   });
 
-  it("onMotionEnd shouldn't be fired by inner element", () => {
+  it("onMotionEnd shouldn't be fired by inner element", async () => {
     const onLeaveEnd = jest.fn();
     const wrapper = mount(
       <CSSMotion
@@ -448,15 +448,15 @@ describe('CSSMotion', () => {
       });
     }
 
-    resetLeave();
+    await resetLeave();
     wrapper.triggerMotionEvent();
     expect(onLeaveEnd).toHaveBeenCalledTimes(1);
 
-    resetLeave();
+    await resetLeave();
     wrapper.triggerMotionEvent(wrapper.find('.outer-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
 
-    resetLeave();
+    await resetLeave();
     wrapper.triggerMotionEvent(wrapper.find('.inner-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
   });
