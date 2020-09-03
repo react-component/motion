@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
@@ -194,7 +194,21 @@ export default function useStatus(
   }, [visible]);
 
   // ============================ Effect ============================
-  React.useEffect(
+  // Reset when motion changed
+  useEffect(() => {
+    if (
+      // Cancel appear
+      (status === STATUS_APPEAR && !motionAppear) ||
+      // Cancel enter
+      (status === STATUS_ENTER && !motionEnter) ||
+      // Cancel leave
+      (status === STATUS_LEAVE && !motionLeave)
+    ) {
+      setStatus(STATUS_NONE);
+    }
+  }, [motionAppear, motionEnter, motionLeave]);
+
+  useEffect(
     () => () => {
       clearTimeout(deadlineRef.current);
     },
