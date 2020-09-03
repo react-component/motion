@@ -47,13 +47,13 @@ export default (
         setStep(nextStep);
       } else {
         // Do as frame for step update
-        nextFrame(async info => {
-          await result;
+        nextFrame(info => {
+          Promise.resolve<boolean | void>(result).then(() => {
+            // Skip since current queue is ood
+            if (info.isCanceled()) return;
 
-          // Skip since current queue is ood
-          if (info.isCanceled()) return;
-
-          setStep(nextStep);
+            setStep(nextStep);
+          });
         });
       }
     }
