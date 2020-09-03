@@ -419,7 +419,7 @@ describe('CSSMotion', () => {
     expect(domRef.current instanceof HTMLElement).toBeTruthy();
   });
 
-  it("onMotionEnd shouldn't be fired by inner element", async () => {
+  it("onMotionEnd shouldn't be fired by inner element", () => {
     const onLeaveEnd = jest.fn();
     const wrapper = mount(
       <CSSMotion
@@ -448,16 +448,100 @@ describe('CSSMotion', () => {
       });
     }
 
-    await resetLeave();
+    resetLeave();
     wrapper.triggerMotionEvent();
     expect(onLeaveEnd).toHaveBeenCalledTimes(1);
 
-    await resetLeave();
+    resetLeave();
     wrapper.triggerMotionEvent(wrapper.find('.outer-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
 
-    await resetLeave();
+    resetLeave();
     wrapper.triggerMotionEvent(wrapper.find('.inner-block'));
     expect(onLeaveEnd).toHaveBeenCalledTimes(2);
+  });
+
+  it('switch dom should work', () => {
+    const Demo = ({
+      Component,
+      ...props
+    }: Partial<CSSMotionProps> & { Component: any }) => {
+      return (
+        <CSSMotion {...props} motionName="bamboo">
+          {({ style, className }) => (
+            <Component
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
+    };
+
+    const onLeaveEnd = jest.fn();
+    const wrapper = mount(
+      <Demo
+        visible
+        onLeaveEnd={onLeaveEnd}
+        motionDeadline={233}
+        Component="div"
+      />,
+    );
+
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    wrapper.setProps({ Component: 'p', visible: false });
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    expect(onLeaveEnd).toHaveBeenCalled();
+  });
+
+  it('prepare should block motion start', async () => {
+    let lockResolve: Function;
+    const onAppearPrepare = jest.fn(
+      () =>
+        new Promise(resolve => {
+          lockResolve = resolve;
+        }),
+    );
+
+    const wrapper = mount(
+      <CSSMotion visible motionName="bamboo" onAppearPrepare={onAppearPrepare}>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
+
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    // Locked
+    expect(
+      wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
+    ).toBeTruthy();
+
+    // Release
+    await act(async () => {
+      lockResolve();
+      await Promise.resolve();
+
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    console.log(wrapper.html());
+
+    expect(
+      wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
+    ).toBeFalsy();
   });
 });

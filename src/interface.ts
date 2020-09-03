@@ -26,7 +26,9 @@ export type MotionEvent = (TransitionEvent | AnimationEvent) & {
   deadline?: boolean;
 };
 
-export type MotionPrepareEventHandler = (element: HTMLElement) => Promise<void>;
+export type MotionPrepareEventHandler = (
+  element: HTMLElement,
+) => Promise<unknown>;
 
 export type MotionEventHandler = (
   element: HTMLElement,
