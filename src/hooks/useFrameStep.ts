@@ -5,19 +5,13 @@ import useNextFrame from './useNextFrame';
 
 export type StepCell = {
   step: StepStatus;
-  doNext?: () => Promise<void>;
+  doNext?: (info: { isCanceled: () => boolean }) => Promise<void>;
 };
 
-export type MergedStepCell = StepCell | StepStatus;
-
-export type StepMap = Record<MotionStatus, MergedStepCell[]>;
-
-function toCell(cell: MergedStepCell): StepCell {
-  return typeof cell === 'object' ? cell : { step: cell };
-}
+export type StepMap = Record<MotionStatus, StepCell[]>;
 
 export default (status: MotionStatus, stepMap: StepMap): [StepStatus] => {
-  const [stepQueue, setStepQueue] = useState<MergedStepCell[]>(null);
+  const [stepQueue, setStepQueue] = useState<StepCell[]>(null);
   const [step, setStep] = useState<StepStatus>(STEP_NONE);
 
   const [nextFrame, cancelNextFrame] = useNextFrame();
@@ -35,26 +29,22 @@ export default (status: MotionStatus, stepMap: StepMap): [StepStatus] => {
   // Update step by frame
   useIsomorphicLayoutEffect(() => {
     nextFrame(async (info) => {
-      if (stepQueue && stepQueue.length) {
-        const [current, ...rest] = stepQueue;
+      if (stepQueue) {
+        const index = stepQueue.findIndex((cell) => cell.step === step);
+        const nextStep = stepQueue[index + 1];
 
-        // No more steps
-        if (!current) {
-          setStepQueue(rest);
-          setStep(STEP_END);
-        } else {
-          const stepCell = toCell(current);
-          await stepCell.doNext?.();
+        if (nextStep) {
+          // Wait until `doNext` finished
+          await nextStep.doNext?.(info);
 
           // Skip when canceled
           if (info.isCanceled()) return;
 
-          setStepQueue(rest);
-          setStep(stepCell.step);
+          setStep(nextStep.step);
         }
       }
     });
-  }, [stepQueue]);
+  }, [stepQueue, step]);
 
   return [step];
 };

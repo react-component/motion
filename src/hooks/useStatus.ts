@@ -8,10 +8,16 @@ import {
   STATUS_LEAVE,
   STATUS_ENTER,
   MotionEvent,
+  MotionEventHandler,
+  STEP_PREPARE,
+  MotionPrepareEventHandler,
+  STEP_START,
+  STEP_ACTIVE,
 } from '../interface';
 import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
+import useFrameStep, { StepMap, StepCell } from './useFrameStep';
 
 export default function useStatus(
   supportMotion: boolean,
@@ -26,6 +32,12 @@ export default function useStatus(
     onAppearStart,
     onEnterStart,
     onLeaveStart,
+    onAppearPrepareStart,
+    onEnterPrepareStart,
+    onLeavePrepareStart,
+    onAppearPrepareEnd,
+    onEnterPrepareEnd,
+    onLeavePrepareEnd,
     onAppearActive,
     onEnterActive,
     onLeaveActive,
@@ -34,13 +46,10 @@ export default function useStatus(
     onLeaveEnd,
   }: CSSMotionProps,
 ): [MotionStatus, boolean, React.CSSProperties] {
-  const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
-  const [active, setActive] = useState(false);
+  const [status, setStatus] = useState<MotionStatus>();
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
   const mountedRef = useRef(false);
-  const nextFrameRef = useRef(null);
-  const deadlineRef = useRef(null);
 
   // =========================== Dom Node ===========================
   const cacheElementRef = useRef<HTMLElement>(null);
@@ -51,90 +60,75 @@ export default function useStatus(
     return element || cacheElementRef.current;
   }
 
-  // ========================== Next Frame ==========================
-  function cancelNextFrame() {
-    raf.cancel(nextFrameRef.current);
-  }
+  // ============================= Step =============================
+  const stepMap = {} as StepMap;
 
-  /** `useLayoutEffect` will render in the closest frame which motion may not ready */
-  function nextFrame(callback: () => void, delay = 2) {
-    cancelNextFrame();
+  function fillStepMap(
+    filledStatus: MotionStatus,
+    enabled: boolean,
+    onPrepareStart: MotionPrepareEventHandler,
+    onPrepareEnd: MotionPrepareEventHandler,
+  ) {
+    if (enabled) {
+      const stepList: StepCell[] = [];
 
-    nextFrameRef.current = raf(() => {
-      if (delay <= 1) {
-        callback();
-      } else {
-        nextFrame(callback, delay - 1);
-      }
-    });
-  }
+      const fillEventHandler = (onPrepare: MotionPrepareEventHandler) => {
+        if (onPrepare) {
+          stepList.push({
+            step: STEP_PREPARE,
+            doNext: async (info) => {
+              const nextStyle = await onPrepare(getDomElement(), null);
 
-  // ============================ Motion ============================
-  const motionEndRef = useRef({
-    status,
-    active,
-    onAppearEnd,
-    onEnterEnd,
-    onLeaveEnd,
-  });
-  motionEndRef.current = {
-    status,
-    active,
-    onAppearEnd,
-    onEnterEnd,
-    onLeaveEnd,
-  };
+              // Skip when ood
+              if (info.isCanceled()) return;
 
-  const onInternalMotionEnd = React.useCallback((event: MotionEvent) => {
-    const element = getDomElement();
-    if (event && !event.deadline && event.target !== element) {
-      // event exists
-      // not initiated by deadline
-      // transitionEnd not fired by inner elements
-      return;
-    }
+              setStyle(nextStyle as React.CSSProperties);
+            },
+          });
+        }
+      };
 
-    let canEnd: boolean | void;
-    const cache = motionEndRef.current;
-    if (cache.status === STATUS_APPEAR && cache.active) {
-      canEnd = cache.onAppearEnd?.(element, event);
-    } else if (cache.status === STATUS_ENTER && cache.active) {
-      canEnd = cache.onEnterEnd?.(element, event);
-    } else if (cache.status === STATUS_LEAVE && cache.active) {
-      canEnd = cache.onLeaveEnd?.(element, event);
-    }
+      // onPrepareStart
+      fillEventHandler(onPrepareStart);
 
-    if (canEnd !== false) {
-      setStatus(STATUS_NONE);
-    }
-  }, []);
+      // onPrepareEnd
+      fillEventHandler(onPrepareEnd);
 
-  function removeMotionEvents(element: HTMLElement) {
-    if (element) {
-      element.removeEventListener(transitionEndName, onInternalMotionEnd);
-      element.removeEventListener(animationEndName, onInternalMotionEnd);
+      // onStart
+      stepList.push({ step: STEP_START });
+
+      // onActive
+      stepList.push({ step: STEP_ACTIVE });
+
+      stepMap[filledStatus] = stepList;
     }
   }
 
-  function patchMotionEvents(element: HTMLElement) {
-    if (cacheElementRef.current && cacheElementRef.current !== element) {
-      removeMotionEvents(cacheElementRef.current);
-    }
+  // Appear
+  fillStepMap(
+    STATUS_APPEAR,
+    motionAppear,
+    onAppearPrepareStart,
+    onAppearPrepareEnd,
+  );
 
-    if (element && element !== cacheElementRef.current) {
-      element.addEventListener(transitionEndName, onInternalMotionEnd);
-      element.addEventListener(animationEndName, onInternalMotionEnd);
+  // Enter
+  fillStepMap(
+    STATUS_ENTER,
+    motionEnter,
+    onEnterPrepareStart,
+    onEnterPrepareEnd,
+  );
 
-      // Save as cache in case dom removed trigger by `motionDeadline`
-      cacheElementRef.current = element;
-    }
-  }
+  // Leave
+  fillStepMap(
+    STATUS_LEAVE,
+    motionLeave,
+    onLeavePrepareStart,
+    onLeavePrepareEnd,
+  );
 
-  // =========================== Clean Up ===========================
-  function cleanUp() {
-    cancelNextFrame();
-    clearTimeout(deadlineRef.current);
-  }
+  const [step] = useFrameStep(status, stepMap);
 
   // ============================ Status ============================
   // Update with new status
@@ -146,7 +140,6 @@ export default function useStatus(
     const isMounted = mountedRef.current;
     mountedRef.current = true;
 
-    // nextFrame(() => {
     let nextStatus: MotionStatus;
     let nextStyle: React.CSSProperties | void;
 
@@ -171,85 +164,14 @@ export default function useStatus(
       nextStyle = onLeaveStart?.(getDomElement(), null);
     }
 
-    // Merge status
+    // Update to next status
     if (nextStatus) {
-      // Clean up when status changed
-      cleanUp();
-
       setStatus(nextStatus);
-      setActive(false);
       setStyle(nextStyle as React.CSSProperties);
     }
-    // });
   }, [visible]);
 
-  // Update active status
-  useIsomorphicLayoutEffect(() => {
-    if (!supportMotion) {
-      return;
-    }
+  console.log('>>>>>', status, step);
 
-    if (status && status !== STATUS_NONE && !active) {
-      // Delay one frame for motion active change
-      nextFrame(() => {
-        let nextStyle: React.CSSProperties | void;
-        const element = getDomElement();
-
-        switch (status) {
-          case 'appear': {
-            nextStyle = onAppearActive?.(element, null);
-            break;
-          }
-
-          case 'enter': {
-            nextStyle = onEnterActive?.(element, null);
-            break;
-          }
-
-          case 'leave': {
-            nextStyle = onLeaveActive?.(element, null);
-            break;
-          }
-        }
-
-        // Add event handler with element
-        patchMotionEvents(element);
-
-        setActive(true);
-        setStyle(nextStyle as React.CSSProperties);
-
-        if (motionDeadline > 0) {
-          deadlineRef.current = setTimeout(() => {
-            onInternalMotionEnd({
-              deadline: true,
-            } as MotionEvent);
-          }, motionDeadline);
-        }
-      });
-    }
-  }, [status, active]);
-
-  // Clean up status if prop set to false
-  useEffect(() => {
-    if (
-      (status === STATUS_APPEAR && !motionAppear) ||
-      (status === STATUS_ENTER && !motionEnter) ||
-      (status === STATUS_LEAVE && !motionLeave)
-    ) {
-      cancelNextFrame();
-      setStatus(STATUS_NONE);
-      setActive(false);
-    }
-  }, [status, motionAppear, motionEnter, motionLeave]);
-
-  // Clean up when removed
-  useEffect(
-    () => () => {
-      removeMotionEvents(cacheElementRef.current);
-      cleanUp();
-    },
-    [],
-  );
-
-  return [status, status !== STATUS_NONE ? active : false, style];
+  return [status, step === STEP_ACTIVE, style];
 }

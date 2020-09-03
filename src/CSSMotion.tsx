@@ -10,6 +10,7 @@ import {
   STATUS_NONE,
   MotionEventHandler,
   MotionEndEventHandler,
+  MotionPrepareEventHandler,
 } from './interface';
 import useStatus from './hooks/useStatus';
 import DomWrapper from './DomWrapper';
@@ -45,10 +46,16 @@ export interface CSSMotionProps {
   leavedClassName?: string;
   eventProps?: object;
 
-  onAppearPrepare?: MotionEventHandler;
-  onEnterPrepare?: MotionEventHandler;
-  onLeavePrepare?: MotionEventHandler;
+  // Prepare groups
+  onAppearPrepareStart?: MotionPrepareEventHandler;
+  onEnterPrepareStart?: MotionPrepareEventHandler;
+  onLeavePrepareStart?: MotionPrepareEventHandler;
 
+  onAppearPrepareEnd?: MotionPrepareEventHandler;
+  onEnterPrepareEnd?: MotionPrepareEventHandler;
+  onLeavePrepareEnd?: MotionPrepareEventHandler;
+
+  // Normal motion groups
   onAppearStart?: MotionEventHandler;
   onEnterStart?: MotionEventHandler;
   onLeaveStart?: MotionEventHandler;
@@ -157,6 +164,8 @@ export function genCSSMotion(
 
       return null;
     }
+
+    console.log('>>>> RENDER:', status, statusActive, statusStyle);
 
     return (
       <DomWrapper ref={wrapperNodeRef}>
