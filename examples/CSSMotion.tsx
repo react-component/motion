@@ -113,7 +113,7 @@ class Demo extends React.Component<{}, DemoState> {
             </CSSMotion>
           </div>
 
-          {/* <div>
+          <div>
             <h2>With Animation Class</h2>
             <CSSMotion
               visible={show}
@@ -129,10 +129,10 @@ class Demo extends React.Component<{}, DemoState> {
                 />
               )}
             </CSSMotion>
-          </div> */}
+          </div>
         </div>
 
-        {/* <div>
+        <div>
           <button type="button" onClick={this.onMotionLeaveImmediately}>
             motionLeaveImmediately
           </button>
@@ -157,7 +157,7 @@ class Demo extends React.Component<{}, DemoState> {
               </CSSMotion>
             )}
           </div>
-        </div> */}
+        </div>
       </div>
     );
   }

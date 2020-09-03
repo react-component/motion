@@ -44,6 +44,7 @@ export default function useStatus(
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
   const mountedRef = useRef(false);
+  const deadlineRef = useRef(null);
 
   // =========================== Dom Node ===========================
   const cacheElementRef = useRef<HTMLElement>(null);
@@ -54,9 +55,36 @@ export default function useStatus(
     return element || cacheElementRef.current;
   }
 
-  // ============================= Step =============================
-  let patchMotionEvents: (element: HTMLElement) => void;
+  // ========================== Motion End ==========================
+  const activeRef = useRef(false);
 
+  function onInternalMotionEnd(event: MotionEvent) {
+    const element = getDomElement();
+    if (event && !event.deadline && event.target !== element) {
+      // event exists
+      // not initiated by deadline
+      // transitionEnd not fired by inner elements
+      return;
+    }
+
+    let canEnd: boolean | void;
+    if (status === STATUS_APPEAR && activeRef.current) {
+      canEnd = onAppearEnd?.(element, event);
+    } else if (status === STATUS_ENTER && activeRef.current) {
+      canEnd = onEnterEnd?.(element, event);
+    } else if (status === STATUS_LEAVE && activeRef.current) {
+      canEnd = onLeaveEnd?.(element, event);
+    }
+
+    if (canEnd !== false) {
+      setStatus(STATUS_NONE);
+      setStyle(null);
+    }
+  }
+
+  const [patchMotionEvents] = useDomMotionEvents(onInternalMotionEnd);
+
+  // ============================= Step =============================
   const eventHandlers = React.useMemo<{
     [STEP_START]?: MotionEventHandler;
     [STEP_ACTIVE]?: MotionEventHandler;
@@ -98,37 +126,21 @@ export default function useStatus(
     if (step === STEP_ACTIVE) {
       // Patch events when motion needed
       patchMotionEvents(getDomElement());
+
+      if (motionDeadline > 0) {
+        deadlineRef.current = setTimeout(() => {
+          onInternalMotionEnd({
+            deadline: true,
+          } as MotionEvent);
+        }, motionDeadline);
+      }
     }
 
     return DoStep;
   });
 
   const active = step === STEP_ACTIVE || step === STEP_ACTIVATED;
-
-  // ========================== Motion End ==========================
-  [patchMotionEvents] = useDomMotionEvents((event) => {
-    const element = getDomElement();
-    if (event && !event.deadline && event.target !== element) {
-      // event exists
-      // not initiated by deadline
-      // transitionEnd not fired by inner elements
-      return;
-    }
-
-    let canEnd: boolean | void;
-    if (status === STATUS_APPEAR && active) {
-      canEnd = onAppearEnd?.(element, event);
-    } else if (status === STATUS_ENTER && active) {
-      canEnd = onEnterEnd?.(element, event);
-    } else if (status === STATUS_LEAVE && active) {
-      canEnd = onLeaveEnd?.(element, event);
-    }
-
-    if (canEnd !== false) {
-      setStatus(STATUS_NONE);
-      setStyle(null);
-    }
-  });
+  activeRef.current = active;
 
   // ============================ Status ============================
   // Update with new status
@@ -166,6 +178,14 @@ export default function useStatus(
       startStep();
     }
   }, [visible]);
+
+  // ============================ Effect ============================
+  React.useEffect(
+    () => () => {
+      clearTimeout(deadlineRef.current);
+    },
+    [],
+  );
 
   return [status, active, style];
 }
