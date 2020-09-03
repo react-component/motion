@@ -97,6 +97,11 @@ class Demo extends React.Component<{}, DemoState> {
               motionName={hasMotionClassName ? 'transition' : null}
               removeOnLeave={removeOnLeave}
               leavedClassName="hidden"
+              onAppearPrepare={() => {
+                return new Promise((resolve) => {
+                  setTimeout(resolve, 3000);
+                });
+              }}
               onAppearStart={this.onCollapse}
               onEnterStart={this.onCollapse}
               onLeaveActive={this.onCollapse}

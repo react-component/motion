@@ -131,7 +131,7 @@ export function genCSSMotion(
       }
     }
 
-    const [status, statusActive, statusStyle] = useStatus(
+    const [status, statusActive, statusPrepare, statusStyle] = useStatus(
       supportMotion,
       visible,
       getDomElement,
@@ -172,6 +172,7 @@ export function genCSSMotion(
         {
           ...eventProps,
           className: classNames(getTransitionName(motionName, status), {
+            [getTransitionName(motionName, `${status}-prepare`)]: statusPrepare,
             [getTransitionName(motionName, `${status}-active`)]: statusActive,
             [motionName as string]: typeof motionName === 'string',
           }),

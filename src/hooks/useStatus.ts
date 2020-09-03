@@ -12,6 +12,7 @@ import {
   STEP_ACTIVE,
   STEP_ACTIVATED,
   MotionEvent,
+  MotionPrepareEventHandler,
 } from '../interface';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
@@ -29,6 +30,9 @@ export default function useStatus(
     motionLeave = true,
     motionDeadline,
     motionLeaveImmediately,
+    onAppearPrepare,
+    onEnterPrepare,
+    onLeavePrepare,
     onAppearStart,
     onEnterStart,
     onLeaveStart,
@@ -39,7 +43,7 @@ export default function useStatus(
     onEnterEnd,
     onLeaveEnd,
   }: CSSMotionProps,
-): [MotionStatus, boolean, React.CSSProperties] {
+): [MotionStatus, boolean, boolean, React.CSSProperties] {
   const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
@@ -86,24 +90,28 @@ export default function useStatus(
 
   // ============================= Step =============================
   const eventHandlers = React.useMemo<{
+    [STEP_PREPARE]?: MotionPrepareEventHandler;
     [STEP_START]?: MotionEventHandler;
     [STEP_ACTIVE]?: MotionEventHandler;
   }>(() => {
     switch (status) {
       case 'appear':
         return {
+          [STEP_PREPARE]: onAppearPrepare,
           [STEP_START]: onAppearStart,
           [STEP_ACTIVE]: onAppearActive,
         };
 
       case 'enter':
         return {
+          [STEP_PREPARE]: onEnterPrepare,
           [STEP_START]: onEnterStart,
           [STEP_ACTIVE]: onEnterActive,
         };
 
       case 'leave':
         return {
+          [STEP_PREPARE]: onLeavePrepare,
           [STEP_START]: onLeaveStart,
           [STEP_ACTIVE]: onLeaveActive,
         };
@@ -116,9 +124,15 @@ export default function useStatus(
   const [startStep, step] = useStepQueue((newStep) => {
     // Only prepare step can be skip
     if (newStep === STEP_PREPARE) {
-      return SkipStep;
+      const onPrepare = eventHandlers[STEP_PREPARE];
+      if (!onPrepare) {
+        return SkipStep;
+      }
+
+      return onPrepare(getDomElement());
     }
 
+    // Rest step is sync update
     if (step in eventHandlers) {
       setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
     }
@@ -187,5 +201,5 @@ export default function useStatus(
     [],
   );
 
-  return [status, active, style];
+  return [status, active, step === STEP_PREPARE, style];
 }
