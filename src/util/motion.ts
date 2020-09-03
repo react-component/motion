@@ -1,10 +1,5 @@
+import canUseDOM from 'rc-util/lib/Dom/canUseDom';
 import { MotionName } from '../CSSMotion';
-
-const canUseDOM = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
-);
 
 // ================= Transition =================
 // Event wrapper. Copy from react source code
@@ -43,13 +38,13 @@ export function getVendorPrefixes(domSupport: boolean, win: object) {
 }
 
 const vendorPrefixes = getVendorPrefixes(
-  canUseDOM,
+  canUseDOM(),
   typeof window !== 'undefined' ? window : {},
 );
 
 let style = {};
 
-if (canUseDOM) {
+if (canUseDOM()) {
   ({ style } = document.createElement('div'));
 }
 
@@ -80,9 +75,14 @@ export function getVendorPrefixedEventName(eventName: string) {
   return '';
 }
 
-export const animationEndName = getVendorPrefixedEventName('animationend');
-export const transitionEndName = getVendorPrefixedEventName('transitionend');
-export const supportTransition = !!(animationEndName && transitionEndName);
+const internalAnimationEndName = getVendorPrefixedEventName('animationend');
+const internalTransitionEndName = getVendorPrefixedEventName('transitionend');
+export const supportTransition = !!(
+  internalAnimationEndName && internalTransitionEndName
+);
+
+export const animationEndName = internalAnimationEndName || 'animationend';
+export const transitionEndName = internalTransitionEndName || 'transitionend';
 
 export function getTransitionName(
   transitionName: MotionName,
