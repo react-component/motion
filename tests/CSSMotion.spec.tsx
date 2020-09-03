@@ -346,7 +346,7 @@ describe('CSSMotion', () => {
   });
 
   describe('immediately', () => {
-    it('motionLeaveImmediately', () => {
+    it('motionLeaveImmediately', async () => {
       const wrapper = mount(
         <CSSMotion
           motionName="transition"

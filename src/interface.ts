@@ -33,7 +33,7 @@ export type MotionEvent = (TransitionEvent | AnimationEvent) & {
 export type MotionPrepareEventHandler = (
   element: HTMLElement,
   event: MotionEvent,
-) => Promise<React.CSSProperties | void>;
+) => Promise<void>;
 
 export type MotionEventHandler = (
   element: HTMLElement,
