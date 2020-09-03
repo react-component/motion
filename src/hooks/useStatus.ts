@@ -14,6 +14,7 @@ import {
   STEP_START,
   STEP_ACTIVE,
   STEP_ACTIVATED,
+  StepStatus,
 } from '../interface';
 import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
@@ -63,23 +64,43 @@ export default function useStatus(
   }
 
   // ============================= Step =============================
+  const eventHandlers = React.useMemo<{
+    [STEP_START]?: MotionEventHandler;
+    [STEP_ACTIVE]?: MotionEventHandler;
+  }>(() => {
+    switch (status) {
+      case 'appear':
+        return {
+          [STEP_START]: onAppearStart,
+          [STEP_ACTIVE]: onAppearActive,
+        };
+
+      case 'enter':
+        return {
+          [STEP_START]: onEnterStart,
+          [STEP_ACTIVE]: onEnterActive,
+        };
+
+      case 'leave':
+        return {
+          [STEP_START]: onLeaveStart,
+          [STEP_ACTIVE]: onLeaveActive,
+        };
+
+      default:
+        return {};
+    }
+  }, [status]);
+
   const [startStep, step] = useStepQueue((newStep) => {
     // Only prepare step can be skip
     if (newStep === STEP_PREPARE) {
       return SkipStep;
     }
 
-    let nextStyle: React.CSSProperties | void;
-
-    if (step === STEP_START) {
-      nextStyle = onAppearStart?.(getDomElement(), null);
-    } else if (step === STEP_ACTIVE) {
-      nextStyle = onAppearActive?.(getDomElement(), null);
+    if (step in eventHandlers) {
+      setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
     }
-
-    console.log('QUEUE: >>>>>>>', step, nextStyle);
-
-    setStyle(nextStyle || null);
 
     return DoStep;
   });
@@ -120,8 +141,6 @@ export default function useStatus(
       startStep();
     }
   }, [visible]);
-
-  console.log('>>>>>', status, step, style);
 
   return [status, step === STEP_ACTIVE || step === STEP_ACTIVATED, style];
 }

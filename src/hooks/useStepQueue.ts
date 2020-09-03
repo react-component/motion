@@ -47,7 +47,7 @@ export default (
         setStep(nextStep);
       } else {
         // Do as frame for step update
-        nextFrame(async (info) => {
+        nextFrame(async info => {
           await result;
 
           // Skip since current queue is ood

@@ -33,7 +33,6 @@ class Demo extends React.Component<{}, DemoState> {
   };
 
   onCollapse = () => {
-    console.error('FFF >>>>>>');
     return { height: 0 };
   };
 
