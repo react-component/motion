@@ -45,6 +45,10 @@ export interface CSSMotionProps {
   leavedClassName?: string;
   eventProps?: object;
 
+  onAppearPrepare?: MotionEventHandler;
+  onEnterPrepare?: MotionEventHandler;
+  onLeavePrepare?: MotionEventHandler;
+
   onAppearStart?: MotionEventHandler;
   onEnterStart?: MotionEventHandler;
   onLeaveStart?: MotionEventHandler;
