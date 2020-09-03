@@ -17,7 +17,8 @@ import {
 import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
-import useFrameStep, { StepMap, StepCell } from './useFrameStep';
+import useStepQueue, { DoStep, SkipStep } from './useStepQueue';
+// import useFrameStep, { StepMap, StepCell } from './useFrameStep';
 
 export default function useStatus(
   supportMotion: boolean,
@@ -61,74 +62,12 @@ export default function useStatus(
   }
 
   // ============================= Step =============================
-  const stepMap = {} as StepMap;
-
-  function fillStepMap(
-    filledStatus: MotionStatus,
-    enabled: boolean,
-    onPrepareStart: MotionPrepareEventHandler,
-    onPrepareEnd: MotionPrepareEventHandler,
-  ) {
-    if (enabled) {
-      const stepList: StepCell[] = [];
-
-      const fillEventHandler = (onPrepare: MotionPrepareEventHandler) => {
-        if (onPrepare) {
-          stepList.push({
-            step: STEP_PREPARE,
-            doNext: async (info) => {
-              const nextStyle = await onPrepare(getDomElement(), null);
-
-              // Skip when ood
-              if (info.isCanceled()) return;
-
-              setStyle(nextStyle as React.CSSProperties);
-            },
-          });
-        }
-      };
-
-      // onPrepareStart
-      fillEventHandler(onPrepareStart);
-
-      // onPrepareEnd
-      fillEventHandler(onPrepareEnd);
-
-      // onStart
-      stepList.push({ step: STEP_START });
-
-      // onActive
-      stepList.push({ step: STEP_ACTIVE });
-
-      stepMap[filledStatus] = stepList;
+  const [startStep, step] = useStepQueue((newStep) => {
+    if (newStep === STEP_PREPARE) {
+      return SkipStep;
     }
-  }
-
-  // Appear
-  fillStepMap(
-    STATUS_APPEAR,
-    motionAppear,
-    onAppearPrepareStart,
-    onAppearPrepareEnd,
-  );
-
-  // Enter
-  fillStepMap(
-    STATUS_ENTER,
-    motionEnter,
-    onEnterPrepareStart,
-    onEnterPrepareEnd,
-  );
-
-  // Leave
-  fillStepMap(
-    STATUS_LEAVE,
-    motionLeave,
-    onLeavePrepareStart,
-    onLeavePrepareEnd,
-  );
-
-  const [step] = useFrameStep(status, stepMap);
+    return DoStep;
+  });
 
   // ============================ Status ============================
   // Update with new status
@@ -141,18 +80,15 @@ export default function useStatus(
     mountedRef.current = true;
 
     let nextStatus: MotionStatus;
-    let nextStyle: React.CSSProperties | void;
 
     // Appear
     if (!isMounted && visible && motionAppear) {
       nextStatus = STATUS_APPEAR;
-      nextStyle = onAppearStart?.(getDomElement(), null);
     }
 
     // Enter
     if (isMounted && visible && motionEnter) {
       nextStatus = STATUS_ENTER;
-      nextStyle = onEnterStart?.(getDomElement(), null);
     }
 
     // Leave
@@ -161,13 +97,12 @@ export default function useStatus(
       (!isMounted && motionLeaveImmediately && !visible && motionLeave)
     ) {
       nextStatus = STATUS_LEAVE;
-      nextStyle = onLeaveStart?.(getDomElement(), null);
     }
 
     // Update to next status
     if (nextStatus) {
       setStatus(nextStatus);
-      setStyle(nextStyle as React.CSSProperties);
+      startStep();
     }
   }, [visible]);
 

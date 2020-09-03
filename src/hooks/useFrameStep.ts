@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
-import { MotionStatus, StepStatus, STEP_NONE, STEP_END } from '../interface';
+import { MotionStatus, StepStatus, STEP_NONE } from '../interface';
 import useNextFrame from './useNextFrame';
 
 export type StepCell = {
   step: StepStatus;
-  doNext?: (info: { isCanceled: () => boolean }) => Promise<void>;
+  doNext?: (info: { isCanceled: () => boolean }) => void | Promise<void>;
 };
 
 export type StepMap = Record<MotionStatus, StepCell[]>;

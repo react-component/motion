@@ -32,7 +32,10 @@ class Demo extends React.Component<{}, DemoState> {
     }));
   };
 
-  onCollapse = () => ({ height: 0 });
+  onCollapse = () => {
+    console.error('FFF >>>>>>');
+    return { height: 0 };
+  };
 
   onMotionLeaveImmediately = () => {
     this.setState(({ motionLeaveImmediately }) => ({
