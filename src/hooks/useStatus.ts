@@ -40,7 +40,7 @@ export default function useStatus(
     onLeaveEnd,
   }: CSSMotionProps,
 ): [MotionStatus, boolean, React.CSSProperties] {
-  const [status, setStatus] = useState<MotionStatus>();
+  const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
   const mountedRef = useRef(false);
