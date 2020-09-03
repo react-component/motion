@@ -201,5 +201,14 @@ export default function useStatus(
     [],
   );
 
-  return [status, step, style];
+  // ============================ Styles ============================
+  let mergedStyle = style;
+  if (eventHandlers[STEP_PREPARE] && step === STEP_START) {
+    mergedStyle = {
+      transition: 'none',
+      ...mergedStyle,
+    };
+  }
+
+  return [status, step, mergedStyle];
 }

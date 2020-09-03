@@ -55,7 +55,7 @@ export default (
         setStep(nextStep);
       } else {
         // Do as frame for step update
-        nextFrame((info) => {
+        nextFrame(info => {
           Promise.resolve<boolean | void>(result).then(() => {
             // Skip since current queue is ood
             if (info.isCanceled()) return;
