@@ -9,6 +9,19 @@ export type MotionStatus =
   | typeof STATUS_ENTER
   | typeof STATUS_LEAVE;
 
+export const STEP_NONE = 'none' as const;
+export const STEP_PREPARE = 'prepare' as const;
+export const STEP_START = 'start' as const;
+export const STEP_ACTIVE = 'active' as const;
+export const STEP_END = 'end' as const;
+
+export type StepStatus =
+  | typeof STEP_NONE
+  | typeof STEP_PREPARE
+  | typeof STEP_START
+  | typeof STEP_ACTIVE
+  | typeof STEP_END;
+
 export type MotionEvent = (TransitionEvent | AnimationEvent) & {
   deadline?: boolean;
 };

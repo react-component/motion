@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import raf from 'rc-util/lib/raf';
-import canUseDom from 'rc-util/lib/Dom/canUseDom';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
@@ -12,9 +11,7 @@ import {
 } from '../interface';
 import { animationEndName, transitionEndName } from '../util/motion';
 import { CSSMotionProps } from '../CSSMotion';
-
-// It's safe to use `useLayoutEffect` but the warning is annoying
-const useIsomorphicLayoutEffect = canUseDom() ? useLayoutEffect : useEffect;
+import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 export default function useStatus(
   supportMotion: boolean,
