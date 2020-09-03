@@ -369,8 +369,12 @@ describe('CSSMotion', () => {
       expect(boxNode.hasClass('transition-leave-active')).toBeFalsy();
 
       // Motion active
-      jest.runAllTimers();
-      wrapper.update();
+      await act(async () => {
+        jest.runAllTimers();
+        await Promise.resolve();
+        wrapper.update();
+      });
+
       const activeBoxNode = wrapper.find('.motion-box');
       expect(activeBoxNode.hasClass('transition')).toBeTruthy();
       expect(activeBoxNode.hasClass('transition-leave')).toBeTruthy();
