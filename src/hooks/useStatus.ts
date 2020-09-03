@@ -10,13 +10,13 @@ import {
   STEP_PREPARE,
   STEP_START,
   STEP_ACTIVE,
-  STEP_ACTIVATED,
   MotionEvent,
   MotionPrepareEventHandler,
+  StepStatus,
 } from '../interface';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
-import useStepQueue, { DoStep, SkipStep } from './useStepQueue';
+import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';
 import useDomMotionEvents from './useDomMotionEvents';
 // import useFrameStep, { StepMap, StepCell } from './useFrameStep';
 
@@ -43,7 +43,7 @@ export default function useStatus(
     onEnterEnd,
     onLeaveEnd,
   }: CSSMotionProps,
-): [MotionStatus, boolean, boolean, React.CSSProperties] {
+): [MotionStatus, StepStatus, React.CSSProperties] {
   const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
@@ -153,7 +153,7 @@ export default function useStatus(
     return DoStep;
   });
 
-  const active = step === STEP_ACTIVE || step === STEP_ACTIVATED;
+  const active = isActive(step);
   activeRef.current = active;
 
   // ============================ Status ============================
@@ -201,5 +201,5 @@ export default function useStatus(
     [],
   );
 
-  return [status, active, step === STEP_PREPARE, style];
+  return [status, step, style];
 }

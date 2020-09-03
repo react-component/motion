@@ -118,7 +118,7 @@ class Demo extends React.Component<{}, DemoState> {
             </CSSMotion>
           </div>
 
-          <div>
+          {/* <div>
             <h2>With Animation Class</h2>
             <CSSMotion
               visible={show}
@@ -134,7 +134,7 @@ class Demo extends React.Component<{}, DemoState> {
                 />
               )}
             </CSSMotion>
-          </div>
+          </div> */}
         </div>
 
         <div>

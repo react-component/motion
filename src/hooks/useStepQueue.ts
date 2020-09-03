@@ -22,6 +22,10 @@ export const SkipStep = false as const;
 /** Current step should be update in */
 export const DoStep = true as const;
 
+export function isActive(step: StepStatus) {
+  return step === STEP_ACTIVE || step === STEP_ACTIVATED;
+}
+
 export default (
   callback: (
     step: StepStatus,
@@ -36,6 +40,10 @@ export default (
   }
 
   useIsomorphicLayoutEffect(() => {
+    // if (step === STEP_START) {
+    //   return;
+    // }
+
     if (step !== STEP_NONE && step !== STEP_ACTIVATED) {
       const index = STEP_QUEUE.indexOf(step);
       const nextStep = STEP_QUEUE[index + 1];
@@ -47,7 +55,7 @@ export default (
         setStep(nextStep);
       } else {
         // Do as frame for step update
-        nextFrame(info => {
+        nextFrame((info) => {
           Promise.resolve<boolean | void>(result).then(() => {
             // Skip since current queue is ood
             if (info.isCanceled()) return;

@@ -11,9 +11,12 @@ import {
   MotionEventHandler,
   MotionEndEventHandler,
   MotionPrepareEventHandler,
+  STEP_PREPARE,
+  STEP_START,
 } from './interface';
 import useStatus from './hooks/useStatus';
 import DomWrapper from './DomWrapper';
+import { isActive } from './hooks/useStepQueue';
 
 export type CSSMotionConfig =
   | boolean
@@ -131,7 +134,7 @@ export function genCSSMotion(
       }
     }
 
-    const [status, statusActive, statusPrepare, statusStyle] = useStatus(
+    const [status, statusStep, statusStyle] = useStatus(
       supportMotion,
       visible,
       getDomElement,
@@ -168,12 +171,23 @@ export function genCSSMotion(
       }
     } else {
       // In motion
+      let statusSuffix: string;
+      if (statusStep === STEP_PREPARE) {
+        statusSuffix = 'prepare';
+      } else if (isActive(statusStep)) {
+        statusSuffix = 'active';
+      } else if (statusStep === STEP_START) {
+        statusSuffix = 'start';
+      }
+
       motionChildren = children(
         {
           ...eventProps,
           className: classNames(getTransitionName(motionName, status), {
-            [getTransitionName(motionName, `${status}-prepare`)]: statusPrepare,
-            [getTransitionName(motionName, `${status}-active`)]: statusActive,
+            [getTransitionName(
+              motionName,
+              `${status}-${statusSuffix}`,
+            )]: statusSuffix,
             [motionName as string]: typeof motionName === 'string',
           }),
           style: statusStyle,
