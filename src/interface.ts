@@ -15,7 +15,7 @@ export const STEP_PREPARE_START = 'prepareStart' as const;
 export const STEP_PREPARE_END = 'prepareEnd' as const;
 export const STEP_START = 'start' as const;
 export const STEP_ACTIVE = 'active' as const;
-export const STEP_END = 'end' as const;
+export const STEP_ACTIVATED = 'end' as const;
 
 export type StepStatus =
   | typeof STEP_NONE
@@ -24,7 +24,7 @@ export type StepStatus =
   | typeof STEP_PREPARE_END
   | typeof STEP_START
   | typeof STEP_ACTIVE
-  | typeof STEP_END;
+  | typeof STEP_ACTIVATED;
 
 export type MotionEvent = (TransitionEvent | AnimationEvent) & {
   deadline?: boolean;

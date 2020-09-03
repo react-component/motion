@@ -165,8 +165,6 @@ export function genCSSMotion(
       return null;
     }
 
-    console.log('>>>> RENDER:', status, statusActive, statusStyle);
-
     return (
       <DomWrapper ref={wrapperNodeRef}>
         {children(
