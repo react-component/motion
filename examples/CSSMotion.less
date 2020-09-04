@@ -16,7 +16,8 @@
 }
 
 .transition {
-  transition: background .3s, height 1.3s, opacity 1.3s;
+  transition: background 0.3s, height 1.3s, opacity 1.3s;
+  // transition: all 5s!important;
 
   &.transition-appear,
   &.transition-enter {
@@ -64,7 +65,7 @@
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 @keyframes enter {

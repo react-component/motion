@@ -8,6 +8,13 @@ interface DemoState {
   motionLeaveImmediately: boolean;
   removeOnLeave: boolean;
   hasMotionClassName: boolean;
+  prepare: boolean;
+}
+
+async function forceDelay(): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
 }
 
 class Demo extends React.Component<{}, DemoState> {
@@ -16,10 +23,15 @@ class Demo extends React.Component<{}, DemoState> {
     motionLeaveImmediately: false,
     removeOnLeave: true,
     hasMotionClassName: true,
+    prepare: false,
   };
 
   onTrigger = () => {
     this.setState(({ show }) => ({ show: !show }));
+  };
+
+  onTriggerDelay = () => {
+    this.setState(({ prepare }) => ({ prepare: !prepare }));
   };
 
   onRemoveOnLeave = () => {
@@ -32,7 +44,9 @@ class Demo extends React.Component<{}, DemoState> {
     }));
   };
 
-  onCollapse = () => ({ height: 0 });
+  onCollapse = () => {
+    return { height: 0 };
+  };
 
   onMotionLeaveImmediately = () => {
     this.setState(({ motionLeaveImmediately }) => ({
@@ -59,6 +73,7 @@ class Demo extends React.Component<{}, DemoState> {
       motionLeaveImmediately,
       removeOnLeave,
       hasMotionClassName,
+      prepare,
     } = this.state;
 
     return (
@@ -87,6 +102,15 @@ class Demo extends React.Component<{}, DemoState> {
           {removeOnLeave ? '' : ' (use leavedClassName)'}
         </label>
 
+        <label>
+          <input
+            type="checkbox"
+            onChange={this.onTriggerDelay}
+            checked={prepare}
+          />{' '}
+          prepare before motion
+        </label>
+
         <div className="grid">
           <div>
             <h2>With Transition Class</h2>
@@ -95,6 +119,8 @@ class Demo extends React.Component<{}, DemoState> {
               motionName={hasMotionClassName ? 'transition' : null}
               removeOnLeave={removeOnLeave}
               leavedClassName="hidden"
+              onAppearPrepare={prepare && forceDelay}
+              onEnterPrepare={prepare && forceDelay}
               onAppearStart={this.onCollapse}
               onEnterStart={this.onCollapse}
               onLeaveActive={this.onCollapse}
