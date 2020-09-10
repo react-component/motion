@@ -142,6 +142,7 @@ export default function useStatus(
       patchMotionEvents(getDomElement());
 
       if (motionDeadline > 0) {
+        clearTimeout(deadlineRef.current);
         deadlineRef.current = setTimeout(() => {
           onInternalMotionEnd({
             deadline: true,
