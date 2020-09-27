@@ -43,7 +43,9 @@ export default function useStatus(
     onEnterEnd,
     onLeaveEnd,
   }: CSSMotionProps,
-): [MotionStatus, StepStatus, React.CSSProperties] {
+): [MotionStatus, StepStatus, React.CSSProperties, boolean] {
+  // Used for outer render usage to avoid `visible: false & status: none` to render nothing
+  const [asyncVisible, setAsyncVisible] = useState(visible);
   const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
@@ -192,6 +194,8 @@ export default function useStatus(
       setStatus(nextStatus);
       startStep();
     }
+
+    setAsyncVisible(visible);
   }, [visible]);
 
   // ============================ Effect ============================
@@ -225,5 +229,5 @@ export default function useStatus(
     };
   }
 
-  return [status, step, mergedStyle];
+  return [status, step, mergedStyle, asyncVisible];
 }

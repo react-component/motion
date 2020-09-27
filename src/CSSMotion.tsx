@@ -134,7 +134,7 @@ export function genCSSMotion(
       }
     }
 
-    const [status, statusStep, statusStyle] = useStatus(
+    const [status, statusStep, statusStyle, mergedVisible] = useStatus(
       supportMotion,
       visible,
       getDomElement,
@@ -159,7 +159,7 @@ export function genCSSMotion(
       motionChildren = null;
     } else if (status === STATUS_NONE || !isSupportTransition(props)) {
       // Stable children
-      if (visible) {
+      if (mergedVisible) {
         motionChildren = children({ ...eventProps }, setNodeRef);
       } else if (!removeOnLeave) {
         motionChildren = children(

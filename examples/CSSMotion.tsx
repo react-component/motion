@@ -17,6 +17,18 @@ async function forceDelay(): Promise<void> {
   });
 }
 
+const Div = React.forwardRef<HTMLDivElement, any>((props, ref) => {
+  React.useEffect(() => {
+    console.log('DIV >>> Mounted!');
+
+    return () => {
+      console.log('DIV >>> UnMounted!');
+    };
+  }, []);
+
+  return <div {...props} ref={ref} />;
+});
+
 class Demo extends React.Component<{}, DemoState> {
   state: DemoState = {
     show: true,
@@ -27,7 +39,9 @@ class Demo extends React.Component<{}, DemoState> {
   };
 
   onTrigger = () => {
-    this.setState(({ show }) => ({ show: !show }));
+    setTimeout(() => {
+      this.setState(({ show }) => ({ show: !show }));
+    }, 100);
   };
 
   onTriggerDelay = () => {
@@ -128,7 +142,7 @@ class Demo extends React.Component<{}, DemoState> {
               onLeaveEnd={this.skipColorTransition}
             >
               {({ style, className }, ref) => (
-                <div
+                <Div
                   ref={ref}
                   className={classNames('demo-block', className)}
                   style={style}
