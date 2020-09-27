@@ -19,7 +19,6 @@ import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';
 import useDomMotionEvents from './useDomMotionEvents';
-// import useFrameStep, { StepMap, StepCell } from './useFrameStep';
 
 export default function useStatus(
   supportMotion: boolean,
@@ -47,7 +46,7 @@ export default function useStatus(
   }: CSSMotionProps,
 ): [MotionStatus, StepStatus, React.CSSProperties, boolean] {
   // Used for outer render usage to avoid `visible: false & status: none` to render nothing
-  const [asyncVisible, setAsyncVisible] = useState(visible);
+  const [asyncVisible, setAsyncVisible] = useState<boolean>();
   const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
 
@@ -224,7 +223,7 @@ export default function useStatus(
 
   // Trigger `onVisibleChanged`
   useEffect(() => {
-    if (status === STATUS_NONE) {
+    if (asyncVisible !== undefined && status === STATUS_NONE) {
       onVisibleChanged?.(asyncVisible);
     }
   }, [asyncVisible, status]);
@@ -238,5 +237,5 @@ export default function useStatus(
     };
   }
 
-  return [status, step, mergedStyle, asyncVisible];
+  return [status, step, mergedStyle, asyncVisible ?? visible];
 }

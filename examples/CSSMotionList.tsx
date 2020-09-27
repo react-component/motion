@@ -93,7 +93,7 @@ class Demo extends React.Component<{}, DemoState> {
           onEnterStart={this.onCollapse}
           onLeaveActive={this.onCollapse}
           onVisibleChanged={(changedVisible, info) => {
-            console.log('Visible Changed:', changedVisible, info);
+            console.log('Visible Changed >>>', changedVisible, info);
           }}
         >
           {({ key, background, className, style }) => {

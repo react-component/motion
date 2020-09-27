@@ -126,7 +126,6 @@ export function genCSSMotionList(
       const {
         component,
         children,
-        onLeaveEnd,
         onVisibleChanged,
         ...restProps
       } = this.props;
@@ -150,12 +149,12 @@ export function genCSSMotionList(
                 key={eventProps.key}
                 visible={visible}
                 eventProps={eventProps}
-                onLeaveEnd={(...args) => {
-                  onLeaveEnd?.(...args);
-                  this.removeKey(eventProps.key);
-                }}
                 onVisibleChanged={(changedVisible) => {
                   onVisibleChanged?.(changedVisible, { key: eventProps.key });
+
+                  if (!changedVisible) {
+                    this.removeKey(eventProps.key);
+                  }
                 }}
               >
                 {children}
