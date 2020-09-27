@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
@@ -14,6 +14,7 @@ import {
   MotionPrepareEventHandler,
   StepStatus,
 } from '../interface';
+import useState from './useState';
 import { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';

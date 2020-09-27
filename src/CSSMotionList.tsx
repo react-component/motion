@@ -123,7 +123,13 @@ export function genCSSMotionList(
 
     render() {
       const { keyEntities } = this.state;
-      const { component, children, onLeaveEnd, ...restProps } = this.props;
+      const {
+        component,
+        children,
+        onLeaveEnd,
+        onVisibleChanged,
+        ...restProps
+      } = this.props;
 
       const Component = component || React.Fragment;
 
@@ -145,10 +151,11 @@ export function genCSSMotionList(
                 visible={visible}
                 eventProps={eventProps}
                 onLeaveEnd={(...args) => {
-                  if (onLeaveEnd) {
-                    onLeaveEnd(...args);
-                  }
+                  onLeaveEnd?.(...args);
                   this.removeKey(eventProps.key);
+                }}
+                onVisibleChanged={(changedVisible) => {
+                  onVisibleChanged?.(changedVisible, { key: eventProps.key });
                 }}
               >
                 {children}
