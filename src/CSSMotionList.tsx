@@ -11,6 +11,7 @@ import {
   parseKeys,
   KeyObject,
 } from './util/diff';
+import { ListMotionEndEventHandler } from './interface';
 
 const MOTION_PROP_NAMES = [
   'eventProps',
@@ -35,9 +36,10 @@ const MOTION_PROP_NAMES = [
   'onLeaveEnd',
 ];
 
-export interface CSSMotionListProps extends CSSMotionProps {
+export interface CSSMotionListProps extends Omit<CSSMotionProps, 'onLeaveEnd'> {
   keys: (React.Key | { key: React.Key; [name: string]: any })[];
   component?: string | React.ComponentType | false;
+  onLeaveEnd?: ListMotionEndEventHandler;
 }
 
 export interface CSSMotionListState {
@@ -118,7 +120,7 @@ export function genCSSMotionList(
 
     render() {
       const { keyEntities } = this.state;
-      const { component, children, ...restProps } = this.props;
+      const { component, children, onLeaveEnd, ...restProps } = this.props;
 
       const Component = component || React.Fragment;
 
@@ -140,8 +142,8 @@ export function genCSSMotionList(
                 visible={visible}
                 eventProps={eventProps}
                 onLeaveEnd={(...args) => {
-                  if (motionProps.onLeaveEnd) {
-                    motionProps.onLeaveEnd(...args);
+                  if (onLeaveEnd) {
+                    onLeaveEnd(...args, { key: eventProps.key });
                   }
                   this.removeKey(eventProps.key);
                 }}

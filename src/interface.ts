@@ -37,3 +37,9 @@ export type MotionEndEventHandler = (
   element: HTMLElement,
   event: MotionEvent,
 ) => boolean | void;
+
+export type ListMotionEndEventHandler = (
+  element: HTMLElement,
+  event: MotionEvent,
+  info: { key: React.Key },
+) => void;
