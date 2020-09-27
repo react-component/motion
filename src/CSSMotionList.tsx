@@ -11,7 +11,6 @@ import {
   parseKeys,
   KeyObject,
 } from './util/diff';
-import { ListMotionEndEventHandler } from './interface';
 
 const MOTION_PROP_NAMES = [
   'eventProps',
@@ -49,6 +48,11 @@ export interface CSSMotionListState {
   keyEntities: KeyObject[];
 }
 
+/**
+ * Generate a CSSMotionList component with config
+ * @param transitionSupport No need since CSSMotionList no longer depends on transition support
+ * @param CSSMotion CSSMotion component
+ */
 export function genCSSMotionList(
   transitionSupport: boolean,
   CSSMotion = OriginCSSMotion,
@@ -70,31 +74,11 @@ export function genCSSMotionList(
       { keyEntities }: CSSMotionListState,
     ) {
       const parsedKeyObjects = parseKeys(keys);
-
-      // Always as keep when motion not support
-      if (!transitionSupport) {
-        return {
-          keyEntities: parsedKeyObjects.map((obj) => ({
-            ...obj,
-            status: STATUS_KEEP,
-          })),
-        };
-      }
-
       const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
-      const keyEntitiesLen = keyEntities.length;
       return {
         keyEntities: mixedKeyEntities.filter((entity) => {
-          // IE 9 not support Array.prototype.find
-          let prevEntity = null;
-          for (let i = 0; i < keyEntitiesLen; i += 1) {
-            const currentEntity = keyEntities[i];
-            if (currentEntity.key === entity.key) {
-              prevEntity = currentEntity;
-              break;
-            }
-          }
+          const prevEntity = keyEntities.find(({ key }) => entity.key === key);
 
           // Remove if already mark as removed
           if (
