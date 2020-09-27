@@ -11,7 +11,6 @@ import {
   parseKeys,
   KeyObject,
 } from './util/diff';
-import { ListMotionEndEventHandler } from './interface';
 
 const MOTION_PROP_NAMES = [
   'eventProps',
@@ -36,16 +35,24 @@ const MOTION_PROP_NAMES = [
   'onLeaveEnd',
 ];
 
-export interface CSSMotionListProps extends Omit<CSSMotionProps, 'onLeaveEnd'> {
+export interface CSSMotionListProps
+  extends Omit<CSSMotionProps, 'onVisibleChanged'> {
   keys: (React.Key | { key: React.Key; [name: string]: any })[];
   component?: string | React.ComponentType | false;
-  onLeaveEnd?: ListMotionEndEventHandler;
+
+  /** This will always trigger after final visible changed. Even if no motion configured. */
+  onVisibleChanged?: (visible: boolean, info: { key: React.Key }) => void;
 }
 
 export interface CSSMotionListState {
   keyEntities: KeyObject[];
 }
 
+/**
+ * Generate a CSSMotionList component with config
+ * @param transitionSupport No need since CSSMotionList no longer depends on transition support
+ * @param CSSMotion CSSMotion component
+ */
 export function genCSSMotionList(
   transitionSupport: boolean,
   CSSMotion = OriginCSSMotion,
@@ -67,31 +74,11 @@ export function genCSSMotionList(
       { keyEntities }: CSSMotionListState,
     ) {
       const parsedKeyObjects = parseKeys(keys);
-
-      // Always as keep when motion not support
-      if (!transitionSupport) {
-        return {
-          keyEntities: parsedKeyObjects.map(obj => ({
-            ...obj,
-            status: STATUS_KEEP,
-          })),
-        };
-      }
-
       const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
-      const keyEntitiesLen = keyEntities.length;
       return {
-        keyEntities: mixedKeyEntities.filter(entity => {
-          // IE 9 not support Array.prototype.find
-          let prevEntity = null;
-          for (let i = 0; i < keyEntitiesLen; i += 1) {
-            const currentEntity = keyEntities[i];
-            if (currentEntity.key === entity.key) {
-              prevEntity = currentEntity;
-              break;
-            }
-          }
+        keyEntities: mixedKeyEntities.filter((entity) => {
+          const prevEntity = keyEntities.find(({ key }) => entity.key === key);
 
           // Remove if already mark as removed
           if (
@@ -108,7 +95,7 @@ export function genCSSMotionList(
 
     removeKey = (removeKey: React.Key) => {
       this.setState(({ keyEntities }) => ({
-        keyEntities: keyEntities.map(entity => {
+        keyEntities: keyEntities.map((entity) => {
           if (entity.key !== removeKey) return entity;
           return {
             ...entity,
@@ -120,12 +107,17 @@ export function genCSSMotionList(
 
     render() {
       const { keyEntities } = this.state;
-      const { component, children, onLeaveEnd, ...restProps } = this.props;
+      const {
+        component,
+        children,
+        onVisibleChanged,
+        ...restProps
+      } = this.props;
 
       const Component = component || React.Fragment;
 
       const motionProps: CSSMotionProps = {};
-      MOTION_PROP_NAMES.forEach(prop => {
+      MOTION_PROP_NAMES.forEach((prop) => {
         motionProps[prop] = restProps[prop];
         delete restProps[prop];
       });
@@ -141,11 +133,12 @@ export function genCSSMotionList(
                 key={eventProps.key}
                 visible={visible}
                 eventProps={eventProps}
-                onLeaveEnd={(...args) => {
-                  if (onLeaveEnd) {
-                    onLeaveEnd(...args, { key: eventProps.key });
+                onVisibleChanged={(changedVisible) => {
+                  onVisibleChanged?.(changedVisible, { key: eventProps.key });
+
+                  if (!changedVisible) {
+                    this.removeKey(eventProps.key);
                   }
-                  this.removeKey(eventProps.key);
                 }}
               >
                 {children}

@@ -1,6 +1,8 @@
-/* eslint-disable react/no-render-return-value, react/prefer-stateless-function, react/no-multi-comp */
+/* eslint-disable react/no-render-return-value, react/prefer-stateless-function,
+react/no-multi-comp, @typescript-eslint/no-implied-eval */
 import React from 'react';
 import classNames from 'classnames';
+import { act } from 'react-dom/test-utils';
 import { genCSSMotionList, CSSMotionListProps } from '../src/CSSMotionList';
 import { genCSSMotion } from '../src/CSSMotion';
 import { mount, WrapperType } from './wrapper';
@@ -55,19 +57,35 @@ describe('CSSMotionList', () => {
 
       function checkKeys(targetKeys: React.Key[]) {
         const nodeList = wrapper.find('.motion-box');
-        const keys = nodeList.map(node => node.text());
+        const keys = nodeList.map((node) => node.text());
         expect(keys).toEqual(targetKeys);
       }
 
       checkKeys(['a', 'b']);
-      wrapper.setState({ keys: ['c', 'd'] });
 
+      // Change to ['c', 'd']
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      wrapper.setState({ keys: ['c', 'd'] });
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      // Inject leave event
       if (injectLeave) {
-        injectLeave(wrapper);
+        act(() => {
+          injectLeave(wrapper);
+        });
       }
 
-      jest.runAllTimers();
-      wrapper.update();
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
       checkKeys(['c', 'd']);
 
       if (injectLeave) {
@@ -81,10 +99,12 @@ describe('CSSMotionList', () => {
         forwardRef: false,
       });
       const CSSMotionList = genCSSMotionList(true, CSSMotion);
-      testMotion(CSSMotionList, wrapper => {
+      testMotion(CSSMotionList, (wrapper) => {
         const motionList = wrapper.find(CSSMotion);
-        motionList.slice(0, 2).forEach(cssMotion => {
-          cssMotion.props().onLeaveEnd(null, null);
+        motionList.slice(0, 2).forEach((cssMotion) => {
+          const node = cssMotion.getDOMNode();
+          const transitionEndEvent = new Event('transitionend');
+          node.dispatchEvent(transitionEndEvent);
         });
       });
     });
@@ -93,5 +113,48 @@ describe('CSSMotionList', () => {
       const CSSMotionList = genCSSMotionList(false);
       testMotion(CSSMotionList);
     });
+  });
+
+  it('onVisibleChanged', () => {
+    const onVisibleChanged = jest.fn();
+    const CSSMotionList = genCSSMotionList(false);
+
+    const Demo = ({ keys }) => {
+      return (
+        <CSSMotionList
+          motionName="transition"
+          keys={keys}
+          onVisibleChanged={onVisibleChanged}
+        >
+          {({ key, style, className }) => (
+            <div
+              key={key}
+              style={style}
+              className={classNames('motion-box', className)}
+            >
+              {key}
+            </div>
+          )}
+        </CSSMotionList>
+      );
+    };
+
+    const wrapper = mount(<Demo keys={['a']} />);
+
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    expect(onVisibleChanged).toHaveBeenCalledWith(true, { key: 'a' });
+    onVisibleChanged.mockReset();
+
+    // Remove
+    wrapper.setProps({ keys: [] });
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+    expect(onVisibleChanged).toHaveBeenCalledWith(false, { key: 'a' });
   });
 });

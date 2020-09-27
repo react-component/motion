@@ -33,7 +33,7 @@ class Demo extends React.Component<{}, DemoState> {
       }
     }
 
-    keyList = keyList.map(key => {
+    keyList = keyList.map((key) => {
       if (key === 3) {
         return { key, background: 'orange' };
       }
@@ -92,6 +92,9 @@ class Demo extends React.Component<{}, DemoState> {
           onAppearStart={this.onCollapse}
           onEnterStart={this.onCollapse}
           onLeaveActive={this.onCollapse}
+          onVisibleChanged={(changedVisible, info) => {
+            console.log('Visible Changed >>>', changedVisible, info);
+          }}
         >
           {({ key, background, className, style }) => {
             return (

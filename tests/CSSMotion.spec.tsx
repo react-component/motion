@@ -246,7 +246,10 @@ describe('CSSMotion', () => {
         });
       }
 
-      test('without ref', React.forwardRef(props => <div {...props} />));
+      test(
+        'without ref',
+        React.forwardRef((props) => <div {...props} />),
+      );
 
       test(
         'FC with ref',
@@ -506,7 +509,7 @@ describe('CSSMotion', () => {
     let lockResolve: Function;
     const onAppearPrepare = jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           lockResolve = resolve;
         }),
     );
@@ -537,8 +540,6 @@ describe('CSSMotion', () => {
       jest.runAllTimers();
       wrapper.update();
     });
-
-    console.log(wrapper.html());
 
     expect(
       wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
