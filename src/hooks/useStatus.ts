@@ -42,6 +42,7 @@ export default function useStatus(
     onAppearEnd,
     onEnterEnd,
     onLeaveEnd,
+    onVisibleChanged,
   }: CSSMotionProps,
 ): [MotionStatus, StepStatus, React.CSSProperties, boolean] {
   // Used for outer render usage to avoid `visible: false & status: none` to render nothing
@@ -219,6 +220,13 @@ export default function useStatus(
     },
     [],
   );
+
+  // Trigger `onVisibleChanged`
+  useEffect(() => {
+    if (status === STATUS_NONE) {
+      onVisibleChanged?.(asyncVisible);
+    }
+  }, [asyncVisible, status]);
 
   // ============================ Styles ============================
   let mergedStyle = style;

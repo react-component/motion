@@ -140,6 +140,9 @@ class Demo extends React.Component<{}, DemoState> {
               onLeaveActive={this.onCollapse}
               onEnterEnd={this.skipColorTransition}
               onLeaveEnd={this.skipColorTransition}
+              onVisibleChanged={(visible) => {
+                console.log('Visible Changed:', visible);
+              }}
             >
               {({ style, className }, ref) => (
                 <Div

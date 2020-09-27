@@ -36,10 +36,13 @@ const MOTION_PROP_NAMES = [
   'onLeaveEnd',
 ];
 
-export interface CSSMotionListProps extends Omit<CSSMotionProps, 'onLeaveEnd'> {
+export interface CSSMotionListProps
+  extends Omit<CSSMotionProps, 'onVisibleChanged'> {
   keys: (React.Key | { key: React.Key; [name: string]: any })[];
   component?: string | React.ComponentType | false;
-  onLeaveEnd?: ListMotionEndEventHandler;
+
+  /** This will always trigger after final visible changed. Even if no motion configured. */
+  onVisibleChanged?: (visible: boolean, info: { key: React.Key }) => void;
 }
 
 export interface CSSMotionListState {
@@ -71,7 +74,7 @@ export function genCSSMotionList(
       // Always as keep when motion not support
       if (!transitionSupport) {
         return {
-          keyEntities: parsedKeyObjects.map(obj => ({
+          keyEntities: parsedKeyObjects.map((obj) => ({
             ...obj,
             status: STATUS_KEEP,
           })),
@@ -82,7 +85,7 @@ export function genCSSMotionList(
 
       const keyEntitiesLen = keyEntities.length;
       return {
-        keyEntities: mixedKeyEntities.filter(entity => {
+        keyEntities: mixedKeyEntities.filter((entity) => {
           // IE 9 not support Array.prototype.find
           let prevEntity = null;
           for (let i = 0; i < keyEntitiesLen; i += 1) {
@@ -108,7 +111,7 @@ export function genCSSMotionList(
 
     removeKey = (removeKey: React.Key) => {
       this.setState(({ keyEntities }) => ({
-        keyEntities: keyEntities.map(entity => {
+        keyEntities: keyEntities.map((entity) => {
           if (entity.key !== removeKey) return entity;
           return {
             ...entity,
@@ -125,7 +128,7 @@ export function genCSSMotionList(
       const Component = component || React.Fragment;
 
       const motionProps: CSSMotionProps = {};
-      MOTION_PROP_NAMES.forEach(prop => {
+      MOTION_PROP_NAMES.forEach((prop) => {
         motionProps[prop] = restProps[prop];
         delete restProps[prop];
       });
@@ -143,7 +146,7 @@ export function genCSSMotionList(
                 eventProps={eventProps}
                 onLeaveEnd={(...args) => {
                   if (onLeaveEnd) {
-                    onLeaveEnd(...args, { key: eventProps.key });
+                    onLeaveEnd(...args);
                   }
                   this.removeKey(eventProps.key);
                 }}

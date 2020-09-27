@@ -67,6 +67,10 @@ export interface CSSMotionProps {
   onEnterEnd?: MotionEndEventHandler;
   onLeaveEnd?: MotionEndEventHandler;
 
+  // Special
+  /** This will always trigger after final visible changed. Even if no motion configured. */
+  onVisibleChanged?: (visible: boolean) => void;
+
   internalRef?: React.Ref<any>;
 
   children?: (
