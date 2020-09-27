@@ -162,6 +162,8 @@ export default function useStatus(
   // ============================ Status ============================
   // Update with new status
   useIsomorphicLayoutEffect(() => {
+    setAsyncVisible(visible);
+
     if (!supportMotion) {
       return;
     }
@@ -194,8 +196,6 @@ export default function useStatus(
       setStatus(nextStatus);
       startStep();
     }
-
-    setAsyncVisible(visible);
   }, [visible]);
 
   // ============================ Effect ============================
