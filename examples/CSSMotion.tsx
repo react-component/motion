@@ -5,6 +5,7 @@ import './CSSMotion.less';
 
 interface DemoState {
   show: boolean;
+  forceRender: boolean;
   motionLeaveImmediately: boolean;
   removeOnLeave: boolean;
   hasMotionClassName: boolean;
@@ -12,7 +13,7 @@ interface DemoState {
 }
 
 async function forceDelay(): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, 2000);
   });
 }
@@ -32,6 +33,7 @@ const Div = React.forwardRef<HTMLDivElement, any>((props, ref) => {
 class Demo extends React.Component<{}, DemoState> {
   state: DemoState = {
     show: true,
+    forceRender: false,
     motionLeaveImmediately: false,
     removeOnLeave: true,
     hasMotionClassName: true,
@@ -46,6 +48,10 @@ class Demo extends React.Component<{}, DemoState> {
 
   onTriggerDelay = () => {
     this.setState(({ prepare }) => ({ prepare: !prepare }));
+  };
+
+  onForceRender = () => {
+    this.setState(({ forceRender }) => ({ forceRender: !forceRender }));
   };
 
   onRemoveOnLeave = () => {
@@ -84,6 +90,7 @@ class Demo extends React.Component<{}, DemoState> {
   render() {
     const {
       show,
+      forceRender,
       motionLeaveImmediately,
       removeOnLeave,
       hasMotionClassName,
@@ -104,6 +111,15 @@ class Demo extends React.Component<{}, DemoState> {
             checked={hasMotionClassName}
           />{' '}
           hasMotionClassName
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            onChange={this.onForceRender}
+            checked={forceRender}
+          />{' '}
+          forceRender
         </label>
 
         <label>
@@ -130,6 +146,7 @@ class Demo extends React.Component<{}, DemoState> {
             <h2>With Transition Class</h2>
             <CSSMotion
               visible={show}
+              forceRender={forceRender}
               motionName={hasMotionClassName ? 'transition' : null}
               removeOnLeave={removeOnLeave}
               leavedClassName="hidden"
@@ -140,7 +157,7 @@ class Demo extends React.Component<{}, DemoState> {
               onLeaveActive={this.onCollapse}
               onEnterEnd={this.skipColorTransition}
               onLeaveEnd={this.skipColorTransition}
-              onVisibleChanged={(visible) => {
+              onVisibleChanged={visible => {
                 console.log('Visible Changed:', visible);
               }}
             >
@@ -158,6 +175,7 @@ class Demo extends React.Component<{}, DemoState> {
             <h2>With Animation Class</h2>
             <CSSMotion
               visible={show}
+              forceRender={forceRender}
               motionName={hasMotionClassName ? 'animation' : null}
               removeOnLeave={removeOnLeave}
               leavedClassName="hidden"

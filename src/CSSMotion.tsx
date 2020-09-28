@@ -45,8 +45,17 @@ export interface CSSMotionProps {
   motionLeave?: boolean;
   motionLeaveImmediately?: boolean;
   motionDeadline?: number;
+  /**
+   * Create element in view even the element is invisible.
+   * Will patch `display: none` style on it.
+   */
+  forceRender?: boolean;
+  /**
+   * Remove element when motion end. This will not work when `forceRender` is set.
+   */
   removeOnLeave?: boolean;
   leavedClassName?: string;
+  /** @private Used by CSSMotionList. Do not use in your production. */
   eventProps?: object;
 
   // Prepare groups
@@ -114,6 +123,7 @@ export function genCSSMotion(
       visible = true,
       removeOnLeave = true,
 
+      forceRender,
       children,
       motionName,
       leavedClassName,
@@ -168,6 +178,11 @@ export function genCSSMotion(
       } else if (!removeOnLeave) {
         motionChildren = children(
           { ...eventProps, className: leavedClassName },
+          setNodeRef,
+        );
+      } else if (forceRender) {
+        motionChildren = children(
+          { ...eventProps, style: { display: 'none' } },
           setNodeRef,
         );
       } else {

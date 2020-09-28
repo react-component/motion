@@ -246,10 +246,7 @@ describe('CSSMotion', () => {
         });
       }
 
-      test(
-        'without ref',
-        React.forwardRef((props) => <div {...props} />),
-      );
+      test('without ref', React.forwardRef(props => <div {...props} />));
 
       test(
         'FC with ref',
@@ -509,7 +506,7 @@ describe('CSSMotion', () => {
     let lockResolve: Function;
     const onAppearPrepare = jest.fn(
       () =>
-        new Promise((resolve) => {
+        new Promise(resolve => {
           lockResolve = resolve;
         }),
     );
@@ -544,5 +541,23 @@ describe('CSSMotion', () => {
     expect(
       wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
     ).toBeFalsy();
+  });
+
+  it('forceRender', () => {
+    const wrapper = mount(
+      <CSSMotion forceRender motionName="bamboo" visible={false}>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
+
+    expect(wrapper.find('.motion-box').props().style).toEqual({
+      display: 'none',
+    });
+
+    // Reset should hide
+    wrapper.setProps({ forceRender: false });
+    expect(wrapper.find('.motion-box')).toHaveLength(0);
   });
 });
