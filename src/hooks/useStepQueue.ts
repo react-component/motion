@@ -29,7 +29,7 @@ export function isActive(step: StepStatus) {
 export default (
   callback: (
     step: StepStatus,
-  ) => Promise<void> | typeof SkipStep | typeof DoStep,
+  ) => Promise<void> | void | typeof SkipStep | typeof DoStep,
 ): [() => void, StepStatus] => {
   const [step, setStep] = React.useState<StepStatus>(STEP_NONE);
 
