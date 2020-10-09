@@ -52,6 +52,7 @@ export default function useStatus(
 
   const mountedRef = useRef(false);
   const deadlineRef = useRef(null);
+  const destroyedRef = useRef(false);
 
   // =========================== Dom Node ===========================
   const cacheElementRef = useRef<HTMLElement>(null);
@@ -83,7 +84,8 @@ export default function useStatus(
       canEnd = onLeaveEnd?.(element, event);
     }
 
-    if (canEnd !== false) {
+    // Only update status when `canEnd` and not destroyed
+    if (canEnd !== false && !destroyedRef.current) {
       setStatus(STATUS_NONE);
       setStyle(null);
     }
@@ -217,6 +219,7 @@ export default function useStatus(
   useEffect(
     () => () => {
       clearTimeout(deadlineRef.current);
+      destroyedRef.current = true;
     },
     [],
   );
