@@ -126,7 +126,7 @@ export default function useStatus(
     }
   }, [status]);
 
-  const [startStep, step] = useStepQueue((newStep) => {
+  const [startStep, step] = useStepQueue(status, (newStep) => {
     // Only prepare step can be skip
     if (newStep === STEP_PREPARE) {
       const onPrepare = eventHandlers[STEP_PREPARE];

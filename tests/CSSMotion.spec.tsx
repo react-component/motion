@@ -186,7 +186,7 @@ describe('CSSMotion', () => {
       expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
     });
 
-    it('quick switch should have correct status', () => {
+    it('quick switch should have correct status', async () => {
       const wrapper = mount(
         <CSSMotion motionName="transition">
           {({ style, className }) => (
@@ -208,7 +208,23 @@ describe('CSSMotion', () => {
         wrapper.update();
       });
 
-      const boxNode = wrapper.find('.motion-box');
+      let boxNode = wrapper.find('.motion-box');
+      expect(boxNode.hasClass('transition')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave')).toBeTruthy();
+      expect(boxNode.hasClass('transition-leave-active')).toBeTruthy();
+
+      wrapper.setProps({ visible: true });
+      await act(() => {
+        return Promise.resolve().then(() => {
+          wrapper.setProps({ visible: false });
+        });
+      });
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      boxNode = wrapper.find('.motion-box');
       expect(boxNode.hasClass('transition')).toBeTruthy();
       expect(boxNode.hasClass('transition-leave')).toBeTruthy();
       expect(boxNode.hasClass('transition-leave-active')).toBeTruthy();
