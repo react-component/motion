@@ -6,6 +6,7 @@ import {
   STEP_START,
   STEP_ACTIVATED,
   STEP_NONE,
+  MotionStatus,
 } from '../interface';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useNextFrame from './useNextFrame';
@@ -27,6 +28,7 @@ export function isActive(step: StepStatus) {
 }
 
 export default (
+  status: MotionStatus,
   callback: (
     step: StepStatus,
   ) => Promise<void> | void | typeof SkipStep | typeof DoStep,
@@ -68,7 +70,7 @@ export default (
         });
       }
     }
-  }, [step]);
+  }, [status, step]);
 
   React.useEffect(
     () => () => {
