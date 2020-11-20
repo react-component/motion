@@ -1,11 +1,17 @@
 # rc-motion
 
-[![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][travis-image]][travis-url] [![Codecov][codecov-image]][codecov-url] [![Dependencies][david-image]](david-url) [![DevDependencies][david-dev-image]][david-dev-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
+[![build status][github-actions-image]][github-actions-url]
+[![Codecov][codecov-image]][codecov-url]
+[![Dependencies][david-image]](david-url)
+[![DevDependencies][david-dev-image]][david-dev-url]
+[![bundle size][bundlephobia-image]][bundlephobia-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-motion.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-motion
-[travis-image]: https://img.shields.io/travis/com/react-component/motion.svg?style=flat-square
-[travis-url]: https://travis-ci.com/react-component/motion
+[github-actions-image]: https://github.com/react-component/motion/workflows/CI/badge.svg
+[github-actions-url]: https://github.com/react-component/motion/actions
 [codecov-image]: https://img.shields.io/codecov/c/github/react-component/motion/master.svg?style=flat-square
 [codecov-url]: https://codecov.io/gh/react-component/motion/branch/master
 [david-url]: https://david-dm.org/react-component/motion
