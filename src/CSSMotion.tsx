@@ -84,6 +84,7 @@ export interface CSSMotionProps {
 
   children?: (
     props: {
+      visible: boolean;
       className?: string;
       style?: React.CSSProperties;
       [key: string]: any;
@@ -167,6 +168,7 @@ export function genCSSMotion(
 
     // ===================== Render =====================
     let motionChildren: React.ReactNode;
+    const mergedProps = { ...eventProps, visible };
 
     if (!children) {
       // No children
@@ -174,15 +176,15 @@ export function genCSSMotion(
     } else if (status === STATUS_NONE || !isSupportTransition(props)) {
       // Stable children
       if (mergedVisible) {
-        motionChildren = children({ ...eventProps }, setNodeRef);
+        motionChildren = children({ ...mergedProps }, setNodeRef);
       } else if (!removeOnLeave) {
         motionChildren = children(
-          { ...eventProps, className: leavedClassName },
+          { ...mergedProps, className: leavedClassName },
           setNodeRef,
         );
       } else if (forceRender) {
         motionChildren = children(
-          { ...eventProps, style: { display: 'none' } },
+          { ...mergedProps, style: { display: 'none' } },
           setNodeRef,
         );
       } else {
@@ -201,7 +203,7 @@ export function genCSSMotion(
 
       motionChildren = children(
         {
-          ...eventProps,
+          ...mergedProps,
           className: classNames(getTransitionName(motionName, status), {
             [getTransitionName(
               motionName,

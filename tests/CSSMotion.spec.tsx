@@ -88,12 +88,15 @@ describe('CSSMotion', () => {
               visible={this.state.visible}
               {...props}
             >
-              {({ style, className }) => (
-                <div
-                  style={style}
-                  className={classNames('motion-box', className)}
-                />
-              )}
+              {({ style, className, visible: motionVisible }) => {
+                expect(motionVisible).toEqual(this.state.visible);
+                return (
+                  <div
+                    style={style}
+                    className={classNames('motion-box', className)}
+                  />
+                );
+              }}
             </CSSMotion>
           );
         }
