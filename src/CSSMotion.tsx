@@ -84,7 +84,7 @@ export interface CSSMotionProps {
 
   children?: (
     props: {
-      visible: boolean;
+      visible?: boolean;
       className?: string;
       style?: React.CSSProperties;
       [key: string]: any;
