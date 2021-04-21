@@ -4,5 +4,6 @@
   "singleQuote": true,
   "tabWidth": 2,
   "proseWrap": "never",
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "arrowParens": "avoid"
 }

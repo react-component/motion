@@ -6,7 +6,8 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import classNames from 'classnames';
 import { mount } from './wrapper';
-import RefCSSMotion, { genCSSMotion, CSSMotionProps } from '../src/CSSMotion';
+import type { CSSMotionProps } from '../src/CSSMotion';
+import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
 
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
@@ -267,7 +268,7 @@ describe('CSSMotion', () => {
 
       test(
         'without ref',
-        React.forwardRef((props) => <div {...props} />),
+        React.forwardRef(props => <div {...props} />),
       );
 
       test(
@@ -552,7 +553,7 @@ describe('CSSMotion', () => {
     let lockResolve: Function;
     const onAppearPrepare = jest.fn(
       () =>
-        new Promise((resolve) => {
+        new Promise(resolve => {
           lockResolve = resolve;
         }),
     );
@@ -605,5 +606,47 @@ describe('CSSMotion', () => {
     // Reset should hide
     wrapper.setProps({ forceRender: false });
     expect(wrapper.find('.motion-box')).toHaveLength(0);
+  });
+
+  it('render null on first when removeOnLeave is false', () => {
+    const wrapper = mount(
+      <CSSMotion
+        motionName="bamboo"
+        removeOnLeave={false}
+        leavedClassName="removed"
+        visible={false}
+      >
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
+
+    expect(wrapper.find('.motion-box')).toHaveLength(0);
+
+    // Visible
+    wrapper.setProps({ visible: true });
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+    expect(wrapper.find('.motion-box')).toHaveLength(1);
+
+    // Hide again
+    wrapper.setProps({ visible: false });
+    act(() => {
+      jest.runAllTimers();
+
+      const transitionEndEvent = new Event('transitionend');
+      ((wrapper
+        .find('.motion-box')
+        .instance() as any) as HTMLElement).dispatchEvent(transitionEndEvent);
+
+      jest.runAllTimers();
+
+      wrapper.update();
+    });
+    expect(wrapper.find('.motion-box')).toHaveLength(1);
+    expect(wrapper.find('.motion-box').hasClass('removed')).toBeTruthy();
   });
 });

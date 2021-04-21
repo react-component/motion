@@ -29,4 +29,3 @@ yarn.lock
 package-lock.json
 coverage/
 .doc
-tsconfig.json
