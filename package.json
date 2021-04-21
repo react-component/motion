@@ -1,6 +1,6 @@
 {
   "name": "rc-motion",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "React lifecycle controlled motion library",
   "keywords": [
     "react",
