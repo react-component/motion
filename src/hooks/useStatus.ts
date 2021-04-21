@@ -167,12 +167,12 @@ export default function useStatus(
   useIsomorphicLayoutEffect(() => {
     setAsyncVisible(visible);
 
+    const isMounted = mountedRef.current;
+    mountedRef.current = true;
+
     if (!supportMotion) {
       return;
     }
-
-    const isMounted = mountedRef.current;
-    mountedRef.current = true;
 
     let nextStatus: MotionStatus;
 

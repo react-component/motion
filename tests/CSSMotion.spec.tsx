@@ -265,7 +265,10 @@ describe('CSSMotion', () => {
         });
       }
 
-      test('without ref', React.forwardRef(props => <div {...props} />));
+      test(
+        'without ref',
+        React.forwardRef((props) => <div {...props} />),
+      );
 
       test(
         'FC with ref',
@@ -362,6 +365,30 @@ describe('CSSMotion', () => {
         }
       });
     });
+  });
+
+  it('not block motion when motion set delay', () => {
+    const wrapper = mount(
+      <CSSMotion visible>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
+
+    wrapper.setProps({
+      motionName: 'animation',
+      motionLeave: true,
+      visible: false,
+    });
+
+    act(() => {
+      jest.runAllTimers();
+      wrapper.update();
+    });
+
+    const activeBoxNode = wrapper.find('.motion-box');
+    expect(activeBoxNode.hasClass(`animation-leave-active`)).toBeTruthy();
   });
 
   describe('immediately', () => {
@@ -525,7 +552,7 @@ describe('CSSMotion', () => {
     let lockResolve: Function;
     const onAppearPrepare = jest.fn(
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           lockResolve = resolve;
         }),
     );
