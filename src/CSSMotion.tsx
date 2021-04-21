@@ -5,12 +5,13 @@ import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
 import { getTransitionName, supportTransition } from './util/motion';
-import {
+import type {
   MotionStatus,
-  STATUS_NONE,
   MotionEventHandler,
   MotionEndEventHandler,
-  MotionPrepareEventHandler,
+  MotionPrepareEventHandler} from './interface';
+import {
+  STATUS_NONE,
   STEP_PREPARE,
   STEP_START,
 } from './interface';
@@ -156,6 +157,13 @@ export function genCSSMotion(
       props,
     );
 
+    // Record whether content has rended
+    // Will return null for un-rendered even when `removeOnLeave={false}`
+    const renderedRef = React.useRef(mergedVisible);
+    if (mergedVisible) {
+      renderedRef.current = true;
+    }
+
     // ====================== Refs ======================
     const originRef = useRef(ref);
     originRef.current = ref;
@@ -177,7 +185,7 @@ export function genCSSMotion(
       // Stable children
       if (mergedVisible) {
         motionChildren = children({ ...mergedProps }, setNodeRef);
-      } else if (!removeOnLeave) {
+      } else if (!removeOnLeave && renderedRef.current) {
         motionChildren = children(
           { ...mergedProps, className: leavedClassName },
           setNodeRef,
