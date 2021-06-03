@@ -1,6 +1,7 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
-import OriginCSSMotion, { CSSMotionProps } from './CSSMotion';
+import OriginCSSMotion from './CSSMotion';
+import type { CSSMotionProps } from './CSSMotion';
 import { supportTransition } from './util/motion';
 import {
   STATUS_ADD,
@@ -9,8 +10,8 @@ import {
   STATUS_REMOVED,
   diffKeys,
   parseKeys,
-  KeyObject,
 } from './util/diff';
+import type { KeyObject } from './util/diff';
 
 const MOTION_PROP_NAMES = [
   'eventProps',
@@ -36,7 +37,8 @@ const MOTION_PROP_NAMES = [
 ];
 
 export interface CSSMotionListProps
-  extends Omit<CSSMotionProps, 'onVisibleChanged'> {
+  extends Omit<CSSMotionProps, 'onVisibleChanged'>,
+    Omit<React.HTMLAttributes<any>, 'children'> {
   keys: (React.Key | { key: React.Key; [name: string]: any })[];
   component?: string | React.ComponentType | false;
 
@@ -77,7 +79,7 @@ export function genCSSMotionList(
       const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
       return {
-        keyEntities: mixedKeyEntities.filter((entity) => {
+        keyEntities: mixedKeyEntities.filter(entity => {
           const prevEntity = keyEntities.find(({ key }) => entity.key === key);
 
           // Remove if already mark as removed
@@ -95,7 +97,7 @@ export function genCSSMotionList(
 
     removeKey = (removeKey: React.Key) => {
       this.setState(({ keyEntities }) => ({
-        keyEntities: keyEntities.map((entity) => {
+        keyEntities: keyEntities.map(entity => {
           if (entity.key !== removeKey) return entity;
           return {
             ...entity,
@@ -117,7 +119,7 @@ export function genCSSMotionList(
       const Component = component || React.Fragment;
 
       const motionProps: CSSMotionProps = {};
-      MOTION_PROP_NAMES.forEach((prop) => {
+      MOTION_PROP_NAMES.forEach(prop => {
         motionProps[prop] = restProps[prop];
         delete restProps[prop];
       });
@@ -133,7 +135,7 @@ export function genCSSMotionList(
                 key={eventProps.key}
                 visible={visible}
                 eventProps={eventProps}
-                onVisibleChanged={(changedVisible) => {
+                onVisibleChanged={changedVisible => {
                   onVisibleChanged?.(changedVisible, { key: eventProps.key });
 
                   if (!changedVisible) {
