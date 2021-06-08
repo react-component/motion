@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { mount } from './wrapper';
 import type { CSSMotionProps } from '../src/CSSMotion';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
+import ReactDOM from 'react-dom';
 
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
@@ -638,9 +639,9 @@ describe('CSSMotion', () => {
       jest.runAllTimers();
 
       const transitionEndEvent = new Event('transitionend');
-      ((wrapper
-        .find('.motion-box')
-        .instance() as any) as HTMLElement).dispatchEvent(transitionEndEvent);
+      (
+        wrapper.find('.motion-box').instance() as any as HTMLElement
+      ).dispatchEvent(transitionEndEvent);
 
       jest.runAllTimers();
 
@@ -648,5 +649,79 @@ describe('CSSMotion', () => {
     });
     expect(wrapper.find('.motion-box')).toHaveLength(1);
     expect(wrapper.find('.motion-box').hasClass('removed')).toBeTruthy();
+  });
+
+  describe('strict mode', () => {
+    beforeEach(() => {
+      jest.spyOn(ReactDOM, 'findDOMNode');
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('calls findDOMNode when no refs are passed', () => {
+      const wrapper = mount(
+        <CSSMotion motionName="transition" visible>
+          {() => <div />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+    });
+
+    it('does not call findDOMNode when ref is passed internally', () => {
+      const wrapper = mount(
+        <CSSMotion motionName="transition" visible>
+          {(props, ref) => <div ref={ref} />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
+
+    it('calls findDOMNode when refs are forwarded but not assigned', () => {
+      const domRef = React.createRef();
+
+      const wrapper = mount(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {() => <div />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+    });
+
+    it('does not call findDOMNode when refs are forwarded and assigned', () => {
+      const domRef = React.createRef();
+
+      const wrapper = mount(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {(props, ref) => <div ref={ref} />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+        wrapper.update();
+      });
+
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
   });
 });
