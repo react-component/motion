@@ -100,21 +100,21 @@ export default function useStatus(
     [STEP_ACTIVE]?: MotionEventHandler;
   }>(() => {
     switch (status) {
-      case 'appear':
+      case STATUS_APPEAR:
         return {
           [STEP_PREPARE]: onAppearPrepare,
           [STEP_START]: onAppearStart,
           [STEP_ACTIVE]: onAppearActive,
         };
 
-      case 'enter':
+      case STATUS_ENTER:
         return {
           [STEP_PREPARE]: onEnterPrepare,
           [STEP_START]: onEnterStart,
           [STEP_ACTIVE]: onEnterActive,
         };
 
-      case 'leave':
+      case STATUS_LEAVE:
         return {
           [STEP_PREPARE]: onLeavePrepare,
           [STEP_START]: onLeaveStart,
