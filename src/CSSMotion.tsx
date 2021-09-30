@@ -9,12 +9,9 @@ import type {
   MotionStatus,
   MotionEventHandler,
   MotionEndEventHandler,
-  MotionPrepareEventHandler} from './interface';
-import {
-  STATUS_NONE,
-  STEP_PREPARE,
-  STEP_START,
+  MotionPrepareEventHandler,
 } from './interface';
+import { STATUS_NONE, STEP_PREPARE, STEP_START } from './interface';
 import useStatus from './hooks/useStatus';
 import DomWrapper from './DomWrapper';
 import { isActive } from './hooks/useStepQueue';
@@ -135,15 +132,19 @@ export function genCSSMotion(
     const supportMotion = isSupportTransition(props);
 
     // Ref to the react node, it may be a HTMLElement
-    const nodeRef = useRef();
+    const nodeRef = useRef<any>();
     // Ref to the dom wrapper in case ref can not pass to HTMLElement
     const wrapperNodeRef = useRef();
 
     function getDomElement() {
       try {
-        return findDOMNode<HTMLElement>(
-          nodeRef.current || wrapperNodeRef.current,
-        );
+        // Here we're avoiding call for findDOMNode since it's deprecated
+        // in strict mode. We're calling it only when node ref is not
+        // an instance of DOM HTMLElement. Otherwise use
+        // findDOMNode as a final resort
+        return nodeRef.current instanceof HTMLElement
+          ? nodeRef.current
+          : findDOMNode<HTMLElement>(wrapperNodeRef.current);
       } catch (e) {
         // Only happen when `motionDeadline` trigger but element removed.
         return null;
@@ -157,7 +158,7 @@ export function genCSSMotion(
       props,
     );
 
-    // Record whether content has rended
+    // Record whether content has rendered
     // Will return null for un-rendered even when `removeOnLeave={false}`
     const renderedRef = React.useRef(mergedVisible);
     if (mergedVisible) {
@@ -165,13 +166,9 @@ export function genCSSMotion(
     }
 
     // ====================== Refs ======================
-    const originRef = useRef(ref);
-    originRef.current = ref;
-
     const setNodeRef = React.useCallback((node: any) => {
       nodeRef.current = node;
-
-      fillRef(originRef.current, node);
+      fillRef(ref, node);
     }, []);
 
     // ===================== Render =====================
@@ -213,10 +210,8 @@ export function genCSSMotion(
         {
           ...mergedProps,
           className: classNames(getTransitionName(motionName, status), {
-            [getTransitionName(
-              motionName,
-              `${status}-${statusSuffix}`,
-            )]: statusSuffix,
+            [getTransitionName(motionName, `${status}-${statusSuffix}`)]:
+              statusSuffix,
             [motionName as string]: typeof motionName === 'string',
           }),
           style: statusStyle,
