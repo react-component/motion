@@ -38,11 +38,11 @@ https://react-component.github.io/motion/
 ```tsx
 import CSSMotion from 'rc-motion';
 
-export default ({ visible }) => {
+export default ({ visible }) => (
   <CSSMotion visible={visible} motionName="my-motion">
     {({ className, style }) => <div className={className} style={style} />}
-  </CSSMotion>;
-};
+  </CSSMotion>
+);
 ```
 
 ## API
