@@ -1,15 +1,17 @@
 import * as React from 'react';
-import {
+import type {
   StepStatus,
+  MotionStatus} from '../interface';
+import {
   STEP_PREPARE,
   STEP_ACTIVE,
   STEP_START,
   STEP_ACTIVATED,
-  STEP_NONE,
-  MotionStatus,
+  STEP_NONE
 } from '../interface';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useNextFrame from './useNextFrame';
+import useState from './useState';
 
 const STEP_QUEUE: StepStatus[] = [
   STEP_PREPARE,
@@ -33,7 +35,7 @@ export default (
     step: StepStatus,
   ) => Promise<void> | void | typeof SkipStep | typeof DoStep,
 ): [() => void, StepStatus] => {
-  const [step, setStep] = React.useState<StepStatus>(STEP_NONE);
+  const [step, setStep] = useState<StepStatus>(STEP_NONE);
 
   const [nextFrame, cancelNextFrame] = useNextFrame();
 
@@ -53,7 +55,7 @@ export default (
         setStep(nextStep);
       } else {
         // Do as frame for step update
-        nextFrame((info) => {
+        nextFrame(info => {
           function doNext() {
             // Skip since current queue is ood
             if (info.isCanceled()) return;
