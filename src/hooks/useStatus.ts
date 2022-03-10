@@ -1,21 +1,23 @@
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
+import useState from 'rc-util/lib/hooks/useState';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
-  MotionStatus,
   STATUS_LEAVE,
   STATUS_ENTER,
-  MotionEventHandler,
   STEP_PREPARE,
   STEP_START,
   STEP_ACTIVE,
+} from '../interface';
+import type {
+  MotionStatus,
+  MotionEventHandler,
   MotionEvent,
   MotionPrepareEventHandler,
   StepStatus,
 } from '../interface';
-import useState from './useState';
-import { CSSMotionProps } from '../CSSMotion';
+import type { CSSMotionProps } from '../CSSMotion';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';
 import useDomMotionEvents from './useDomMotionEvents';
@@ -52,7 +54,6 @@ export default function useStatus(
 
   const mountedRef = useRef(false);
   const deadlineRef = useRef(null);
-  const destroyedRef = useRef(false);
 
   // =========================== Dom Node ===========================
   const cacheElementRef = useRef<HTMLElement>(null);
@@ -85,9 +86,9 @@ export default function useStatus(
     }
 
     // Only update status when `canEnd` and not destroyed
-    if (canEnd !== false && !destroyedRef.current) {
-      setStatus(STATUS_NONE);
-      setStyle(null);
+    if (canEnd !== false) {
+      setStatus(STATUS_NONE, true);
+      setStyle(null, true);
     }
   }
 
@@ -126,7 +127,7 @@ export default function useStatus(
     }
   }, [status]);
 
-  const [startStep, step] = useStepQueue(status, (newStep) => {
+  const [startStep, step] = useStepQueue(status, newStep => {
     // Only prepare step can be skip
     if (newStep === STEP_PREPARE) {
       const onPrepare = eventHandlers[STEP_PREPARE];
@@ -219,7 +220,6 @@ export default function useStatus(
   useEffect(
     () => () => {
       clearTimeout(deadlineRef.current);
-      destroyedRef.current = true;
     },
     [],
   );
