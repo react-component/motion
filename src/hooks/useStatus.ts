@@ -85,10 +85,10 @@ export default function useStatus(
       canEnd = onLeaveEnd?.(element, event);
     }
 
-    // Only update status when `canEnd` and not destroyed
+    // Only update status when `canEnd`
     if (canEnd !== false) {
-      setStatus(STATUS_NONE, true);
-      setStyle(null, true);
+      setStatus(STATUS_NONE);
+      setStyle(null);
     }
   }
 
@@ -169,7 +169,13 @@ export default function useStatus(
     setAsyncVisible(visible);
 
     const isMounted = mountedRef.current;
-    mountedRef.current = true;
+
+    // In React 18 and StrictMode, React intentionally double-invokes effects (mount -> unmount -> mount) for newly mounted components.
+    // ref: https://github.com/reactwg/react-18/discussions/19
+    // This is a workaround to prevent 'nextStatus' from being judged as 'Leave' in the initial render.
+    setTimeout(() => {
+      mountedRef.current = true;
+    }, 0);
 
     if (!supportMotion) {
       return;

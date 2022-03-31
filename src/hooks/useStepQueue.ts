@@ -38,7 +38,7 @@ export default (
   const [nextFrame, cancelNextFrame] = useNextFrame();
 
   function startQueue() {
-    setStep(STEP_PREPARE, true);
+    setStep(STEP_PREPARE);
   }
 
   useIsomorphicLayoutEffect(() => {
@@ -50,7 +50,7 @@ export default (
 
       if (result === SkipStep) {
         // Skip when no needed
-        setStep(nextStep, true);
+        setStep(nextStep);
       } else {
         // Do as frame for step update
         nextFrame(info => {
@@ -58,7 +58,7 @@ export default (
             // Skip since current queue is ood
             if (info.isCanceled()) return;
 
-            setStep(nextStep, true);
+            setStep(nextStep);
           }
 
           if (result === true) {

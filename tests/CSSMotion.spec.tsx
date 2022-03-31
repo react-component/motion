@@ -108,6 +108,10 @@ describe('CSSMotion', () => {
         const nextVisible = visible[1];
         const wrapper = mount(<Demo />);
 
+        act(() => {
+          jest.runOnlyPendingTimers();
+        });
+
         function doStartTest() {
           wrapper.update();
           const boxNode = wrapper.find('.motion-box');
@@ -340,6 +344,9 @@ describe('CSSMotion', () => {
 
       it(name, () => {
         const wrapper = mount(<Demo />);
+        act(() => {
+          jest.runOnlyPendingTimers();
+        });
         wrapper.update();
         const nextVisible = visible[1];
 
@@ -377,6 +384,10 @@ describe('CSSMotion', () => {
         )}
       </CSSMotion>,
     );
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
 
     wrapper.setProps({
       motionName: 'animation',
