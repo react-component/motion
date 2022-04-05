@@ -76,17 +76,19 @@ export default function useStatus(
       return;
     }
 
+    const currentActive = activeRef.current;
+
     let canEnd: boolean | void;
-    if (status === STATUS_APPEAR && activeRef.current) {
+    if (status === STATUS_APPEAR && currentActive) {
       canEnd = onAppearEnd?.(element, event);
-    } else if (status === STATUS_ENTER && activeRef.current) {
+    } else if (status === STATUS_ENTER && currentActive) {
       canEnd = onEnterEnd?.(element, event);
-    } else if (status === STATUS_LEAVE && activeRef.current) {
+    } else if (status === STATUS_LEAVE && currentActive) {
       canEnd = onLeaveEnd?.(element, event);
     }
 
     // Only update status when `canEnd` and not destroyed
-    if (canEnd !== false) {
+    if (status !== STATUS_NONE && currentActive && canEnd !== false) {
       setStatus(STATUS_NONE, true);
       setStyle(null, true);
     }
