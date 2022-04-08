@@ -56,12 +56,8 @@ export default function useStatus(
   const deadlineRef = useRef(null);
 
   // =========================== Dom Node ===========================
-  const cacheElementRef = useRef<HTMLElement>(null);
-
   function getDomElement() {
-    const element = getElement();
-
-    return element || cacheElementRef.current;
+    return getElement();
   }
 
   // ========================== Motion End ==========================
