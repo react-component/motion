@@ -221,6 +221,7 @@ export default function useStatus(
 
   useEffect(
     () => () => {
+      mountedRef.current = false;
       clearTimeout(deadlineRef.current);
     },
     [],
