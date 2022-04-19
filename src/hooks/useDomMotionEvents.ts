@@ -42,11 +42,12 @@ export default (
   }
 
   // Clean up when removed
-  React.useEffect(() => {
-    return () => {
+  React.useEffect(
+    () => () => {
       removeMotionEvents(cacheElementRef.current);
-    };
-  }, []);
+    },
+    [],
+  );
 
   return [patchMotionEvents, removeMotionEvents];
 };
