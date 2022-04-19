@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 
 import { animationEndName, transitionEndName } from '../util/motion';
-import { MotionEvent } from '../interface';
+import type { MotionEvent } from '../interface';
 
 export default (
   callback: (event: MotionEvent) => void,
