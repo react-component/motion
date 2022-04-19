@@ -3,9 +3,9 @@
   react/prefer-stateless-function, react/no-multi-comp
 */
 import React from 'react';
-// import { act } from 'react-dom/test-utils';
+import { act } from 'react-dom/test-utils';
 import classNames from 'classnames';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 // import type { CSSMotionProps } from '../src/CSSMotion';
 import { genCSSMotion } from '../src/CSSMotion';
 // import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
@@ -41,6 +41,18 @@ describe('StrictMode', () => {
       </React.StrictMode>,
     );
 
+    const node = container.querySelector('.motion-box');
+    expect(node).toHaveClass('transition-appear', 'transition-appear-start');
+
+    // Active
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(node).not.toHaveClass('transition-appear-start');
+    expect(node).toHaveClass('transition-appear-active');
+
+    // Trigger End
+    fireEvent.transitionEnd(node);
     console.log('>>>', container.innerHTML);
   });
 });

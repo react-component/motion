@@ -659,9 +659,10 @@ describe('CSSMotion', () => {
     });
 
     it('calls findDOMNode when no refs are passed', () => {
+      const Div = () => <div />;
       render(
         <CSSMotion motionName="transition" visible>
-          {() => <div />}
+          {() => <Div />}
         </CSSMotion>,
       );
 
@@ -688,9 +689,11 @@ describe('CSSMotion', () => {
 
     it('calls findDOMNode when refs are forwarded but not assigned', () => {
       const domRef = React.createRef();
+      const Div = () => <div />;
+
       render(
         <CSSMotion motionName="transition" visible ref={domRef}>
-          {() => <div />}
+          {() => <Div />}
         </CSSMotion>,
       );
 

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { fillRef } from 'rc-util/lib/ref';
+import { fillRef, supportRef } from 'rc-util/lib/ref';
 import classNames from 'classnames';
 import { getTransitionName, supportTransition } from './util/motion';
 import type {
@@ -166,10 +166,13 @@ export function genCSSMotion(
     }
 
     // ====================== Refs ======================
-    const setNodeRef = React.useCallback((node: any) => {
-      nodeRef.current = node;
-      fillRef(ref, node);
-    }, []);
+    const setNodeRef = React.useCallback(
+      (node: any) => {
+        nodeRef.current = node;
+        fillRef(ref, node);
+      },
+      [ref],
+    );
 
     // ===================== Render =====================
     let motionChildren: React.ReactNode;
@@ -218,6 +221,17 @@ export function genCSSMotion(
         },
         setNodeRef,
       );
+    }
+
+    // Auto inject ref if child node not have `ref` props
+    if (React.isValidElement(motionChildren) && supportRef(motionChildren)) {
+      const { ref: originNodeRef } = motionChildren as any;
+
+      if (!originNodeRef) {
+        motionChildren = React.cloneElement(motionChildren, {
+          ref: setNodeRef,
+        });
+      }
     }
 
     return <DomWrapper ref={wrapperNodeRef}>{motionChildren}</DomWrapper>;
