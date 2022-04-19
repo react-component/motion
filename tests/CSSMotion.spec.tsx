@@ -5,7 +5,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import classNames from 'classnames';
-import { mount } from './wrapper';
 import { render, fireEvent } from '@testing-library/react';
 import type { CSSMotionProps } from '../src/CSSMotion';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
@@ -22,6 +21,7 @@ describe('CSSMotion', () => {
   });
 
   afterEach(() => {
+    jest.clearAllTimers();
     jest.useRealTimers();
   });
 
@@ -102,13 +102,11 @@ describe('CSSMotion', () => {
 
         it(name, () => {
           const nextVisible = visibleQueue[1];
-          // const wrapper = mount(<Demo />);
           const { container, rerender } = render(
             <Demo visible={visibleQueue[0]} />,
           );
 
           function doStartTest() {
-            // wrapper.update();
             const boxNode = container.querySelector('.motion-box');
             expect(boxNode).toHaveClass('transition');
             expect(boxNode).toHaveClass(`transition-${name}`);
@@ -161,566 +159,562 @@ describe('CSSMotion', () => {
       },
     );
 
-    //   it('stop transition if config motion to false', () => {
-    //     const wrapper = mount(
-    //       <CSSMotion motionName="transition" visible>
-    //         {({ style, className }) => (
-    //           <div
-    //             style={style}
-    //             className={classNames('motion-box', className)}
-    //           />
-    //         )}
-    //       </CSSMotion>,
-    //     );
-    //     wrapper.update();
-    //     let boxNode = wrapper.find('.motion-box');
-    //     expect(boxNode.hasClass('transition')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-appear')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
+    it('stop transition if config motion to false', () => {
+      const genMotion = (props?: CSSMotionProps) => (
+        <CSSMotion motionName="transition" visible {...props}>
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
 
-    //     act(() => {
-    //       wrapper.setProps({ motionAppear: false });
-    //       jest.runAllTimers();
-    //       wrapper.update();
-    //     });
+      const { container, rerender } = render(genMotion());
+      let boxNode = container.querySelector('.motion-box');
+      expect(boxNode).toHaveClass('transition');
+      expect(boxNode).toHaveClass('transition-appear');
+      expect(boxNode).not.toHaveClass('transition-appear-active');
 
-    //     boxNode = wrapper.find('.motion-box');
-    //     expect(boxNode.hasClass('transition')).toBeFalsy();
-    //     expect(boxNode.hasClass('transition-appear')).toBeFalsy();
-    //     expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
-    //   });
+      rerender(genMotion({ motionAppear: false }));
+      act(() => {
+        jest.runAllTimers();
+      });
 
-    //   it('quick switch should have correct status', async () => {
-    //     const wrapper = mount(
-    //       <CSSMotion motionName="transition">
-    //         {({ style, className }) => (
-    //           <div
-    //             style={style}
-    //             className={classNames('motion-box', className)}
-    //           />
-    //         )}
-    //       </CSSMotion>,
-    //     );
+      boxNode = container.querySelector('.motion-box');
+      expect(boxNode).not.toHaveClass('transition');
+      expect(boxNode).not.toHaveClass('transition-appear');
+      expect(boxNode).not.toHaveClass('transition-appear-active');
+    });
 
-    //     wrapper.setProps({ visible: true });
-    //     act(() => {
-    //       jest.runAllTimers();
-    //     });
-    //     wrapper.setProps({ visible: false });
-    //     act(() => {
-    //       jest.runAllTimers();
-    //       wrapper.update();
-    //     });
+    it('quick switch should have correct status', async () => {
+      const genMotion = (props?: CSSMotionProps) => (
+        <CSSMotion motionName="transition" {...props}>
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
 
-    //     let boxNode = wrapper.find('.motion-box');
-    //     expect(boxNode.hasClass('transition')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-leave')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-leave-active')).toBeTruthy();
+      const { container, rerender, unmount } = render(genMotion());
 
-    //     wrapper.setProps({ visible: true });
-    //     await act(() => {
-    //       return Promise.resolve().then(() => {
-    //         wrapper.setProps({ visible: false });
-    //       });
-    //     });
-    //     act(() => {
-    //       jest.runAllTimers();
-    //       wrapper.update();
-    //     });
+      rerender(genMotion({ visible: true }));
+      act(() => {
+        jest.runAllTimers();
+      });
 
-    //     boxNode = wrapper.find('.motion-box');
-    //     expect(boxNode.hasClass('transition')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-leave')).toBeTruthy();
-    //     expect(boxNode.hasClass('transition-leave-active')).toBeTruthy();
+      rerender(genMotion({ visible: false }));
+      act(() => {
+        jest.runAllTimers();
+      });
 
-    //     wrapper.unmount();
-    //   });
+      let boxNode = container.querySelector('.motion-box');
+      expect(boxNode).toHaveClass('transition');
+      expect(boxNode).toHaveClass('transition-leave');
+      expect(boxNode).toHaveClass('transition-leave-active');
 
-    //   describe('deadline should work', () => {
-    //     function test(name: string, Component: React.ComponentType<any>) {
-    //       it(name, () => {
-    //         const onAppearEnd = jest.fn();
+      rerender(genMotion({ visible: true }));
+      await Promise.resolve();
+      rerender(genMotion({ visible: false }));
 
-    //         mount(
-    //           <CSSMotion
-    //             motionName="transition"
-    //             motionDeadline={1000}
-    //             onAppearEnd={onAppearEnd}
-    //             visible
-    //           >
-    //             {({ style, className }, ref) => (
-    //               <Component
-    //                 ref={ref}
-    //                 style={style}
-    //                 className={classNames('motion-box', className)}
-    //               />
-    //             )}
-    //           </CSSMotion>,
-    //         );
+      act(() => {
+        jest.runAllTimers();
+      });
 
-    //         expect(onAppearEnd).not.toHaveBeenCalled();
-    //         act(() => {
-    //           jest.runAllTimers();
-    //         });
-    //         expect(onAppearEnd).toHaveBeenCalled();
-    //       });
-    //     }
+      boxNode = container.querySelector('.motion-box');
+      expect(boxNode).toHaveClass('transition');
+      expect(boxNode).toHaveClass('transition-leave');
+      expect(boxNode).toHaveClass('transition-leave-active');
 
-    //     test(
-    //       'without ref',
-    //       React.forwardRef(props => <div {...props} />),
-    //     );
+      unmount();
+    });
 
-    //     test(
-    //       'FC with ref',
-    //       React.forwardRef((props, ref) => <div {...props} ref={ref} />),
-    //     );
+    describe('deadline should work', () => {
+      function test(name: string, Component: React.ComponentType<any>) {
+        it(name, () => {
+          const onAppearEnd = jest.fn();
+          render(
+            <CSSMotion
+              motionName="transition"
+              motionDeadline={1000}
+              onAppearEnd={onAppearEnd}
+              visible
+            >
+              {({ style, className }, ref) => (
+                <Component
+                  ref={ref}
+                  style={style}
+                  className={classNames('motion-box', className)}
+                />
+              )}
+            </CSSMotion>,
+          );
 
-    //     test(
-    //       'FC but not dom ref',
-    //       React.forwardRef((props, ref) => {
-    //         React.useImperativeHandle(ref, () => ({}));
-    //         return <div {...props} />;
-    //       }),
-    //     );
-    //   });
+          // Motion Active
+          act(() => {
+            jest.advanceTimersByTime(800);
+          });
 
-    //   it('not crash when no children', () => {
-    //     const wrapper = mount(<CSSMotion motionName="transition" visible />);
-    //     expect(wrapper.render()).toMatchSnapshot();
-    //   });
+          expect(onAppearEnd).not.toHaveBeenCalled();
+          act(() => {
+            jest.runAllTimers();
+          });
+          expect(onAppearEnd).toHaveBeenCalled();
+        });
+      }
+
+      test(
+        'without ref',
+        React.forwardRef(props => <div {...props} />),
+      );
+
+      test(
+        'FC with ref',
+        React.forwardRef((props, ref) => <div {...props} ref={ref} />),
+      );
+
+      test(
+        'FC but not dom ref',
+        React.forwardRef((props, ref) => {
+          React.useImperativeHandle(ref, () => ({}));
+          return <div {...props} />;
+        }),
+      );
+    });
+
+    it('not crash when no children', () => {
+      const { asFragment } = render(
+        <CSSMotion motionName="transition" visible />,
+      );
+      expect(asFragment().firstChild).toMatchSnapshot();
+    });
   });
 
-  // describe('animation', () => {
-  //   const actionList = [
-  //     {
-  //       name: 'appear',
-  //       props: { motionAppear: true },
-  //       visible: [true],
-  //     },
-  //     {
-  //       name: 'enter',
-  //       props: { motionEnter: true },
-  //       visible: [false, true],
-  //     },
-  //     {
-  //       name: 'leave',
-  //       props: { motionLeave: true },
-  //       visible: [true, false],
-  //     },
-  //   ];
+  describe('animation', () => {
+    const actionList = [
+      {
+        name: 'appear',
+        props: { motionAppear: true },
+        visibleQueue: [true],
+      },
+      {
+        name: 'enter',
+        props: { motionEnter: true },
+        visibleQueue: [false, true],
+      },
+      {
+        name: 'leave',
+        props: { motionLeave: true },
+        visibleQueue: [true, false],
+      },
+    ];
 
-  //   actionList.forEach(({ name, visible, props }) => {
-  //     class Demo extends React.Component {
-  //       state = {
-  //         visible: visible[0],
-  //       };
+    actionList.forEach(({ name, visibleQueue, props }) => {
+      const Demo = ({ visible }: { visible: boolean }) => (
+        <CSSMotion
+          motionName="animation"
+          motionAppear={false}
+          motionEnter={false}
+          motionLeave={false}
+          visible={visible}
+          {...props}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
 
-  //       render() {
-  //         return (
-  //           <CSSMotion
-  //             motionName="animation"
-  //             motionAppear={false}
-  //             motionEnter={false}
-  //             motionLeave={false}
-  //             visible={this.state.visible}
-  //             {...props}
-  //           >
-  //             {({ style, className }) => (
-  //               <div
-  //                 style={style}
-  //                 className={classNames('motion-box', className)}
-  //               />
-  //             )}
-  //           </CSSMotion>
-  //         );
-  //       }
-  //     }
+      it(name, () => {
+        const { container, rerender } = render(
+          <Demo visible={visibleQueue[0]} />,
+        );
+        const nextVisible = visibleQueue[1];
 
-  //     it(name, () => {
-  //       const wrapper = mount(<Demo />);
-  //       wrapper.update();
-  //       const nextVisible = visible[1];
+        function doStartTest() {
+          // Motion active
+          act(() => {
+            jest.runAllTimers();
+          });
 
-  //       function doStartTest() {
-  //         // Motion active
-  //         act(() => {
-  //           jest.runAllTimers();
-  //           wrapper.update();
-  //         });
+          const activeBoxNode = container.querySelector('.motion-box');
+          expect(activeBoxNode).toHaveClass('animation');
+          expect(activeBoxNode).toHaveClass(`animation-${name}`);
+          expect(activeBoxNode).toHaveClass(`animation-${name}-active`);
+        }
 
-  //         const activeBoxNode = wrapper.find('.motion-box');
-  //         expect(activeBoxNode.hasClass('animation')).toBeTruthy();
-  //         expect(activeBoxNode.hasClass(`animation-${name}`)).toBeTruthy();
-  //         expect(
-  //           activeBoxNode.hasClass(`animation-${name}-active`),
-  //         ).toBeTruthy();
-  //       }
+        // Delay for the visible finished
+        if (nextVisible !== undefined) {
+          rerender(<Demo visible={nextVisible} />);
+          doStartTest();
+        } else {
+          doStartTest();
+        }
+      });
+    });
+  });
 
-  //       // Delay for the visible finished
-  //       if (nextVisible !== undefined) {
-  //         wrapper.setState({ visible: nextVisible });
-  //         doStartTest();
-  //       } else {
-  //         doStartTest();
-  //       }
-  //     });
-  //   });
-  // });
+  it('not block motion when motion set delay', () => {
+    const genMotion = (props?: CSSMotionProps) => (
+      <CSSMotion visible {...props}>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>
+    );
 
-  // it('not block motion when motion set delay', () => {
-  //   const wrapper = mount(
-  //     <CSSMotion visible>
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </CSSMotion>,
-  //   );
+    const { container, rerender } = render(genMotion());
 
-  //   wrapper.setProps({
-  //     motionName: 'animation',
-  //     motionLeave: true,
-  //     visible: false,
-  //   });
+    rerender(
+      genMotion({
+        motionName: 'animation',
+        motionLeave: true,
+        visible: false,
+      }),
+    );
 
-  //   act(() => {
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  //   const activeBoxNode = wrapper.find('.motion-box');
-  //   expect(activeBoxNode.hasClass(`animation-leave-active`)).toBeTruthy();
-  // });
+    const activeBoxNode = container.querySelector('.motion-box');
+    expect(activeBoxNode).toHaveClass(`animation-leave-active`);
+  });
 
-  // describe('immediately', () => {
-  //   it('motionLeaveImmediately', async () => {
-  //     const wrapper = mount(
-  //       <CSSMotion
-  //         motionName="transition"
-  //         motionLeaveImmediately
-  //         visible={false}
-  //       >
-  //         {({ style, className }) => (
-  //           <div
-  //             style={style}
-  //             className={classNames('motion-box', className)}
-  //           />
-  //         )}
-  //       </CSSMotion>,
-  //     );
-  //     wrapper.update();
+  describe('immediately', () => {
+    it('motionLeaveImmediately', async () => {
+      const { container } = render(
+        <CSSMotion
+          motionName="transition"
+          motionLeaveImmediately
+          visible={false}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
 
-  //     const boxNode = wrapper.find('.motion-box');
-  //     expect(boxNode.hasClass('transition')).toBeTruthy();
-  //     expect(boxNode.hasClass('transition-leave')).toBeTruthy();
-  //     expect(boxNode.hasClass('transition-leave-active')).toBeFalsy();
+      const boxNode = container.querySelector('.motion-box');
+      expect(boxNode).toHaveClass('transition');
+      expect(boxNode).toHaveClass('transition-leave');
+      expect(boxNode).not.toHaveClass('transition-leave-active');
 
-  //     // Motion active
-  //     await act(async () => {
-  //       jest.runAllTimers();
-  //       await Promise.resolve();
-  //       wrapper.update();
-  //     });
+      // Motion active
+      await act(async () => {
+        jest.runAllTimers();
+        await Promise.resolve();
+      });
 
-  //     const activeBoxNode = wrapper.find('.motion-box');
-  //     expect(activeBoxNode.hasClass('transition')).toBeTruthy();
-  //     expect(activeBoxNode.hasClass('transition-leave')).toBeTruthy();
-  //     expect(activeBoxNode.hasClass('transition-leave-active')).toBeTruthy();
-  //   });
-  // });
+      const activeBoxNode = container.querySelector('.motion-box');
+      expect(activeBoxNode).toHaveClass('transition');
+      expect(activeBoxNode).toHaveClass('transition-leave');
+      expect(activeBoxNode).toHaveClass('transition-leave-active');
+    });
+  });
 
-  // it('no transition', () => {
-  //   const NoCSSTransition = genCSSMotion({
-  //     transitionSupport: false,
-  //     forwardRef: false,
-  //   });
+  it('no transition', () => {
+    const NoCSSTransition = genCSSMotion({
+      transitionSupport: false,
+      forwardRef: false,
+    });
 
-  //   const wrapper = mount(
-  //     <NoCSSTransition motionName="transition">
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </NoCSSTransition>,
-  //   );
+    const { container } = render(
+      <NoCSSTransition motionName="transition">
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </NoCSSTransition>,
+    );
 
-  //   const boxNode = wrapper.find('.motion-box');
-  //   expect(boxNode.hasClass('transition')).toBeFalsy();
-  //   expect(boxNode.hasClass('transition-appear')).toBeFalsy();
-  //   expect(boxNode.hasClass('transition-appear-active')).toBeFalsy();
-  // });
+    const boxNode = container.querySelector('.motion-box');
+    expect(boxNode).not.toHaveClass('transition');
+    expect(boxNode).not.toHaveClass('transition-appear');
+    expect(boxNode).not.toHaveClass('transition-appear-active');
+  });
 
-  // it('forwardRef', () => {
-  //   const domRef = React.createRef();
-  //   mount(
-  //     <RefCSSMotion motionName="transition" ref={domRef}>
-  //       {({ style, className }, ref) => (
-  //         <div
-  //           ref={ref}
-  //           style={style}
-  //           className={classNames('motion-box', className)}
-  //         />
-  //       )}
-  //     </RefCSSMotion>,
-  //   );
+  it('forwardRef', () => {
+    const domRef = React.createRef();
+    render(
+      <RefCSSMotion motionName="transition" ref={domRef}>
+        {({ style, className }, ref) => (
+          <div
+            ref={ref}
+            style={style}
+            className={classNames('motion-box', className)}
+          />
+        )}
+      </RefCSSMotion>,
+    );
 
-  //   expect(domRef.current instanceof HTMLElement).toBeTruthy();
-  // });
+    expect(domRef.current instanceof HTMLElement).toBeTruthy();
+  });
 
-  // it("onMotionEnd shouldn't be fired by inner element", () => {
-  //   const onLeaveEnd = jest.fn();
-  //   const wrapper = mount(
-  //     <CSSMotion
-  //       visible
-  //       motionName="bamboo"
-  //       onLeaveEnd={onLeaveEnd}
-  //       removeOnLeave={false}
-  //     >
-  //       {(_, ref) => (
-  //         <div className="outer-block" ref={ref}>
-  //           <div className="inner-block" />
-  //         </div>
-  //       )}
-  //     </CSSMotion>,
-  //   );
+  it("onMotionEnd shouldn't be fired by inner element", () => {
+    const onLeaveEnd = jest.fn();
 
-  //   function resetLeave() {
-  //     act(() => {
-  //       wrapper.setProps({ visible: true });
-  //       jest.runAllTimers();
-  //       wrapper.update();
+    const genMotion = (props?: CSSMotionProps) => (
+      <CSSMotion
+        visible
+        motionName="bamboo"
+        onLeaveEnd={onLeaveEnd}
+        removeOnLeave={false}
+        {...props}
+      >
+        {(_, ref) => (
+          <div className="outer-block" ref={ref}>
+            <div className="inner-block" />
+          </div>
+        )}
+      </CSSMotion>
+    );
+    const { container, rerender } = render(genMotion());
 
-  //       wrapper.setProps({ visible: false });
-  //       jest.runAllTimers();
-  //       wrapper.update();
-  //     });
-  //   }
+    function resetLeave() {
+      rerender(genMotion({ visible: true }));
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  //   resetLeave();
-  //   wrapper.triggerMotionEvent();
-  //   expect(onLeaveEnd).toHaveBeenCalledTimes(1);
+      rerender(genMotion({ visible: false }));
+      act(() => {
+        jest.runAllTimers();
+      });
+    }
 
-  //   resetLeave();
-  //   wrapper.triggerMotionEvent(wrapper.find('.outer-block'));
-  //   expect(onLeaveEnd).toHaveBeenCalledTimes(2);
+    // Outer
+    resetLeave();
+    fireEvent.transitionEnd(container.querySelector('.outer-block'));
+    expect(onLeaveEnd).toHaveBeenCalledTimes(1);
 
-  //   resetLeave();
-  //   wrapper.triggerMotionEvent(wrapper.find('.inner-block'));
-  //   expect(onLeaveEnd).toHaveBeenCalledTimes(2);
-  // });
+    // Outer
+    resetLeave();
+    fireEvent.transitionEnd(container.querySelector('.outer-block'));
+    expect(onLeaveEnd).toHaveBeenCalledTimes(2);
 
-  // it('switch dom should work', () => {
-  //   const Demo = ({
-  //     Component,
-  //     ...props
-  //   }: Partial<CSSMotionProps> & { Component: any }) => {
-  //     return (
-  //       <CSSMotion {...props} motionName="bamboo">
-  //         {({ style, className }) => (
-  //           <Component
-  //             style={style}
-  //             className={classNames('motion-box', className)}
-  //           />
-  //         )}
-  //       </CSSMotion>
-  //     );
-  //   };
+    // Inner
+    resetLeave();
+    fireEvent.transitionEnd(container.querySelector('.inner-block'));
+    expect(onLeaveEnd).toHaveBeenCalledTimes(2);
+  });
 
-  //   const onLeaveEnd = jest.fn();
-  //   const wrapper = mount(
-  //     <Demo
-  //       visible
-  //       onLeaveEnd={onLeaveEnd}
-  //       motionDeadline={233}
-  //       Component="div"
-  //     />,
-  //   );
+  it('switch dom should work', () => {
+    const onLeaveEnd = jest.fn();
 
-  //   act(() => {
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
+    const genMotion = (Component: any, visible: boolean) => (
+      <CSSMotion
+        visible={visible}
+        onLeaveEnd={onLeaveEnd}
+        motionDeadline={233}
+        motionName="bamboo"
+      >
+        {({ style, className }) => (
+          <Component
+            style={style}
+            className={classNames('motion-box', className)}
+          />
+        )}
+      </CSSMotion>
+    );
 
-  //   wrapper.setProps({ Component: 'p', visible: false });
-  //   act(() => {
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
+    const { rerender } = render(genMotion('div', true));
 
-  //   expect(onLeaveEnd).toHaveBeenCalled();
-  // });
+    // Active
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  // it('prepare should block motion start', async () => {
-  //   let lockResolve: Function;
-  //   const onAppearPrepare = jest.fn(
-  //     () =>
-  //       new Promise(resolve => {
-  //         lockResolve = resolve;
-  //       }),
-  //   );
+    // Hide
+    rerender(genMotion('p', false));
 
-  //   const wrapper = mount(
-  //     <CSSMotion visible motionName="bamboo" onAppearPrepare={onAppearPrepare}>
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </CSSMotion>,
-  //   );
+    // Active
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  //   act(() => {
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
+    // Deadline
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  //   // Locked
-  //   expect(
-  //     wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
-  //   ).toBeTruthy();
+    expect(onLeaveEnd).toHaveBeenCalled();
+  });
 
-  //   // Release
-  //   await act(async () => {
-  //     lockResolve();
-  //     await Promise.resolve();
+  it('prepare should block motion start', async () => {
+    let lockResolve: Function;
+    const onAppearPrepare = jest.fn(
+      () =>
+        new Promise(resolve => {
+          lockResolve = resolve;
+        }),
+    );
 
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
+    const { container } = render(
+      <CSSMotion visible motionName="bamboo" onAppearPrepare={onAppearPrepare}>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
 
-  //   expect(
-  //     wrapper.find('.motion-box').hasClass('bamboo-appear-prepare'),
-  //   ).toBeFalsy();
-  // });
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  // it('forceRender', () => {
-  //   const wrapper = mount(
-  //     <CSSMotion forceRender motionName="bamboo" visible={false}>
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </CSSMotion>,
-  //   );
+    // Locked
+    expect(container.querySelector('.motion-box')).toHaveClass(
+      'bamboo-appear-prepare',
+    );
 
-  //   expect(wrapper.find('.motion-box').props().style).toEqual({
-  //     display: 'none',
-  //   });
+    // Release
+    await act(async () => {
+      lockResolve();
+      await Promise.resolve();
+    });
 
-  //   // Reset should hide
-  //   wrapper.setProps({ forceRender: false });
-  //   expect(wrapper.find('.motion-box')).toHaveLength(0);
-  // });
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  // it('render null on first when removeOnLeave is false', () => {
-  //   const wrapper = mount(
-  //     <CSSMotion
-  //       motionName="bamboo"
-  //       removeOnLeave={false}
-  //       leavedClassName="removed"
-  //       visible={false}
-  //     >
-  //       {({ style, className }) => (
-  //         <div style={style} className={classNames('motion-box', className)} />
-  //       )}
-  //     </CSSMotion>,
-  //   );
+    expect(container.querySelector('.motion-box')).not.toHaveClass(
+      'bamboo-appear-prepare',
+    );
+  });
 
-  //   expect(wrapper.find('.motion-box')).toHaveLength(0);
+  it('forceRender', () => {
+    const genMotion = (props?: CSSMotionProps) => (
+      <CSSMotion forceRender motionName="bamboo" visible={false} {...props}>
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>
+    );
 
-  //   // Visible
-  //   wrapper.setProps({ visible: true });
-  //   act(() => {
-  //     jest.runAllTimers();
-  //     wrapper.update();
-  //   });
-  //   expect(wrapper.find('.motion-box')).toHaveLength(1);
+    const { container, rerender } = render(genMotion());
 
-  //   // Hide again
-  //   wrapper.setProps({ visible: false });
-  //   act(() => {
-  //     jest.runAllTimers();
+    expect(container.querySelector('.motion-box')).toHaveStyle({
+      display: 'none',
+    });
 
-  //     const transitionEndEvent = new Event('transitionend');
-  //     (
-  //       wrapper.find('.motion-box').instance() as any as HTMLElement
-  //     ).dispatchEvent(transitionEndEvent);
+    // Reset should hide
+    rerender(genMotion({ forceRender: false }));
+    expect(container.querySelector('.motion-box')).toBeFalsy();
+  });
 
-  //     jest.runAllTimers();
+  it('render null on first when removeOnLeave is false', () => {
+    const genMotion = (props?: CSSMotionProps) => (
+      <CSSMotion
+        motionName="bamboo"
+        removeOnLeave={false}
+        leavedClassName="removed"
+        visible={false}
+        {...props}
+      >
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>
+    );
 
-  //     wrapper.update();
-  //   });
-  //   expect(wrapper.find('.motion-box')).toHaveLength(1);
-  //   expect(wrapper.find('.motion-box').hasClass('removed')).toBeTruthy();
-  // });
+    const { container, rerender } = render(genMotion());
 
-  // describe('strict mode', () => {
-  //   beforeEach(() => {
-  //     jest.spyOn(ReactDOM, 'findDOMNode');
-  //   });
+    expect(container.querySelector('.motion-box')).toBeFalsy();
 
-  //   afterEach(() => {
-  //     jest.resetAllMocks();
-  //   });
+    // Visible
+    rerender(genMotion({ visible: true }));
+    act(() => {
+      jest.runAllTimers();
+    });
+    expect(container.querySelector('.motion-box')).toBeTruthy();
 
-  //   it('calls findDOMNode when no refs are passed', () => {
-  //     const wrapper = mount(
-  //       <CSSMotion motionName="transition" visible>
-  //         {() => <div />}
-  //       </CSSMotion>,
-  //     );
+    // Hide again
+    rerender(genMotion({ visible: false }));
+    act(() => {
+      jest.runAllTimers();
+    });
 
-  //     act(() => {
-  //       jest.runAllTimers();
-  //       wrapper.update();
-  //     });
+    fireEvent.transitionEnd(container.querySelector('.motion-box'));
 
-  //     expect(ReactDOM.findDOMNode).toHaveBeenCalled();
-  //   });
+    expect(container.querySelector('.motion-box')).toBeTruthy();
+    expect(container.querySelector('.motion-box')).toHaveClass('removed');
+  });
 
-  //   it('does not call findDOMNode when ref is passed internally', () => {
-  //     const wrapper = mount(
-  //       <CSSMotion motionName="transition" visible>
-  //         {(props, ref) => <div ref={ref} />}
-  //       </CSSMotion>,
-  //     );
+  describe('strict mode', () => {
+    beforeEach(() => {
+      jest.spyOn(ReactDOM, 'findDOMNode');
+    });
 
-  //     act(() => {
-  //       jest.runAllTimers();
-  //       wrapper.update();
-  //     });
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
 
-  //     expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
-  //   });
+    it('calls findDOMNode when no refs are passed', () => {
+      render(
+        <CSSMotion motionName="transition" visible>
+          {() => <div />}
+        </CSSMotion>,
+      );
 
-  //   it('calls findDOMNode when refs are forwarded but not assigned', () => {
-  //     const domRef = React.createRef();
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  //     const wrapper = mount(
-  //       <CSSMotion motionName="transition" visible ref={domRef}>
-  //         {() => <div />}
-  //       </CSSMotion>,
-  //     );
+      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+    });
 
-  //     act(() => {
-  //       jest.runAllTimers();
-  //       wrapper.update();
-  //     });
+    it('does not call findDOMNode when ref is passed internally', () => {
+      render(
+        <CSSMotion motionName="transition" visible>
+          {(props, ref) => <div ref={ref} />}
+        </CSSMotion>,
+      );
 
-  //     expect(ReactDOM.findDOMNode).toHaveBeenCalled();
-  //   });
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  //   it('does not call findDOMNode when refs are forwarded and assigned', () => {
-  //     const domRef = React.createRef();
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
 
-  //     const wrapper = mount(
-  //       <CSSMotion motionName="transition" visible ref={domRef}>
-  //         {(props, ref) => <div ref={ref} />}
-  //       </CSSMotion>,
-  //     );
+    it('calls findDOMNode when refs are forwarded but not assigned', () => {
+      const domRef = React.createRef();
+      render(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {() => <div />}
+        </CSSMotion>,
+      );
 
-  //     act(() => {
-  //       jest.runAllTimers();
-  //       wrapper.update();
-  //     });
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  //     expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
-  //   });
-  // });
+      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+    });
+
+    it('does not call findDOMNode when refs are forwarded and assigned', () => {
+      const domRef = React.createRef();
+
+      render(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {(props, ref) => <div ref={ref} />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
+  });
 });
