@@ -1,0 +1,46 @@
+/* eslint-disable
+  react/no-render-return-value, max-classes-per-file,
+  react/prefer-stateless-function, react/no-multi-comp
+*/
+import React from 'react';
+// import { act } from 'react-dom/test-utils';
+import classNames from 'classnames';
+import { render } from '@testing-library/react';
+// import type { CSSMotionProps } from '../src/CSSMotion';
+import { genCSSMotion } from '../src/CSSMotion';
+// import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
+// import ReactDOM from 'react-dom';
+
+describe('StrictMode', () => {
+  const CSSMotion = genCSSMotion({
+    transitionSupport: true,
+  });
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
+    jest.useRealTimers();
+  });
+
+  it('motion should end', () => {
+    const { container } = render(
+      <React.StrictMode>
+        <CSSMotion motionName="transition" motionAppear visible>
+          {({ style, className }) => {
+            return (
+              <div
+                style={style}
+                className={classNames('motion-box', className)}
+              />
+            );
+          }}
+        </CSSMotion>
+      </React.StrictMode>,
+    );
+
+    console.log('>>>', container.innerHTML);
+  });
+});
