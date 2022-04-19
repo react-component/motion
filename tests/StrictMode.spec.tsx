@@ -26,9 +26,11 @@ describe('StrictMode', () => {
   });
 
   it('motion should end', () => {
+    const ref = React.createRef();
+
     const { container } = render(
       <React.StrictMode>
-        <CSSMotion motionName="transition" motionAppear visible>
+        <CSSMotion motionName="transition" ref={ref} motionAppear visible>
           {({ style, className }) => {
             return (
               <div
@@ -53,6 +55,8 @@ describe('StrictMode', () => {
 
     // Trigger End
     fireEvent.transitionEnd(node);
-    console.log('>>>', container.innerHTML);
+    expect(node).not.toHaveClass('transition-appear');
+
+    expect(ref.current).toBe(node);
   });
 });
