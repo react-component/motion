@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
 import useState from 'rc-util/lib/hooks/useState';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import {
   STATUS_APPEAR,
   STATUS_NONE,
@@ -21,6 +20,7 @@ import type {
 import type { CSSMotionProps } from '../CSSMotion';
 import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';
 import useDomMotionEvents from './useDomMotionEvents';
+import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
 
 export default function useStatus(
   supportMotion: boolean,
@@ -163,7 +163,7 @@ export default function useStatus(
 
   // ============================ Status ============================
   // Update with new status
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setAsyncVisible(visible);
 
     const isMounted = mountedRef.current;
