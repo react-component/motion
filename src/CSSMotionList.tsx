@@ -44,6 +44,8 @@ export interface CSSMotionListProps
 
   /** This will always trigger after final visible changed. Even if no motion configured. */
   onVisibleChanged?: (visible: boolean, info: { key: React.Key }) => void;
+  /** All motion leaves in the screen */
+  onAllRemoved?: () => void;
 }
 
 export interface CSSMotionListState {
@@ -95,16 +97,23 @@ export function genCSSMotionList(
       };
     }
 
+    // ZombieJ: Return the count of rest keys. It's safe to refactor if need more info.
     removeKey = (removeKey: React.Key) => {
-      this.setState(({ keyEntities }) => ({
-        keyEntities: keyEntities.map(entity => {
-          if (entity.key !== removeKey) return entity;
-          return {
-            ...entity,
-            status: STATUS_REMOVED,
-          };
-        }),
-      }));
+      const { keyEntities } = this.state;
+      const nextKeyEntities = keyEntities.map(entity => {
+        if (entity.key !== removeKey) return entity;
+        return {
+          ...entity,
+          status: STATUS_REMOVED,
+        };
+      });
+
+      this.setState({
+        keyEntities: nextKeyEntities,
+      });
+
+      return nextKeyEntities.filter(({ status }) => status !== STATUS_REMOVED)
+        .length;
     };
 
     render() {
@@ -113,6 +122,7 @@ export function genCSSMotionList(
         component,
         children,
         onVisibleChanged,
+        onAllRemoved,
         ...restProps
       } = this.props;
 
@@ -139,7 +149,11 @@ export function genCSSMotionList(
                   onVisibleChanged?.(changedVisible, { key: eventProps.key });
 
                   if (!changedVisible) {
-                    this.removeKey(eventProps.key);
+                    const restKeysCount = this.removeKey(eventProps.key);
+
+                    if (restKeysCount === 0 && onAllRemoved) {
+                      onAllRemoved();
+                    }
                   }
                 }}
               >
