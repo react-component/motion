@@ -106,6 +106,7 @@ describe('CSSMotionList', () => {
 
   it('onVisibleChanged', () => {
     const onVisibleChanged = jest.fn();
+    const onAllRemoved = jest.fn();
     const CSSMotionList = genCSSMotionList(false);
 
     const Demo = ({ keys }) => (
@@ -113,6 +114,7 @@ describe('CSSMotionList', () => {
         motionName="transition"
         keys={keys}
         onVisibleChanged={onVisibleChanged}
+        onAllRemoved={onAllRemoved}
       >
         {({ key, style, className }) => (
           <div
@@ -127,6 +129,7 @@ describe('CSSMotionList', () => {
     );
 
     const { rerender } = render(<Demo keys={['a']} />);
+    expect(onAllRemoved).not.toHaveBeenCalled();
 
     act(() => {
       jest.runAllTimers();
@@ -134,6 +137,7 @@ describe('CSSMotionList', () => {
 
     expect(onVisibleChanged).toHaveBeenCalledWith(true, { key: 'a' });
     onVisibleChanged.mockReset();
+    expect(onAllRemoved).not.toHaveBeenCalled();
 
     // Remove
     rerender(<Demo keys={[]} />);
@@ -142,5 +146,6 @@ describe('CSSMotionList', () => {
     });
 
     expect(onVisibleChanged).toHaveBeenCalledWith(false, { key: 'a' });
+    expect(onAllRemoved).toHaveBeenCalled();
   });
 });
