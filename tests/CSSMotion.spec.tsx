@@ -773,5 +773,40 @@ describe('CSSMotion', () => {
 
       unmount();
     });
+
+    it('fast visible to !visible', () => {
+      const onVisibleChanged = jest.fn();
+
+      const Demo = ({ visible }: { visible: boolean }) => (
+        <CSSMotion
+          motionName="transition"
+          motionAppear
+          motionEnter
+          motionLeave
+          visible={visible}
+          onVisibleChanged={onVisibleChanged}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
+
+      const { unmount, rerender, container } = render(<Demo visible />);
+      rerender(<Demo visible={false} />);
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.animationEnd(container.querySelector('.motion-box'));
+
+      expect(onVisibleChanged).toHaveBeenCalledTimes(1);
+      expect(onVisibleChanged).toHaveBeenCalledWith(false);
+
+      unmount();
+    });
   });
 });
