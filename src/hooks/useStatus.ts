@@ -224,9 +224,14 @@ export default function useStatus(
   );
 
   // Trigger `onVisibleChanged`
+  const firstMountChangeRef = React.useRef(false);
   useEffect(() => {
     if (asyncVisible !== undefined && status === STATUS_NONE) {
-      onVisibleChanged?.(asyncVisible);
+      // Skip first render is invisible since it's nothing changed
+      if (firstMountChangeRef.current || asyncVisible) {
+        onVisibleChanged?.(asyncVisible);
+      }
+      firstMountChangeRef.current = true;
     }
   }, [asyncVisible, status]);
 

@@ -720,4 +720,58 @@ describe('CSSMotion', () => {
       expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
   });
+
+  describe('onVisibleChanged', () => {
+    it('visible', () => {
+      const onVisibleChanged = jest.fn();
+
+      const { unmount } = render(
+        <CSSMotion
+          motionName="transition"
+          motionAppear={false}
+          motionEnter={false}
+          motionLeave={false}
+          visible
+          onVisibleChanged={onVisibleChanged}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+
+      expect(onVisibleChanged).toHaveBeenCalled();
+
+      unmount();
+    });
+
+    it('!visible', () => {
+      const onVisibleChanged = jest.fn();
+
+      const { unmount } = render(
+        <CSSMotion
+          motionName="transition"
+          motionAppear={false}
+          motionEnter={false}
+          motionLeave={false}
+          visible={false}
+          onVisibleChanged={onVisibleChanged}
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>,
+      );
+
+      expect(onVisibleChanged).not.toHaveBeenCalled();
+
+      unmount();
+    });
+  });
 });
