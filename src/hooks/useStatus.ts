@@ -226,6 +226,11 @@ export default function useStatus(
   // Trigger `onVisibleChanged`
   const firstMountChangeRef = React.useRef(false);
   useEffect(() => {
+    // [visible & motion not end] => [!visible & motion end] still need trigger onVisibleChanged
+    if (asyncVisible) {
+      firstMountChangeRef.current = true;
+    }
+
     if (asyncVisible !== undefined && status === STATUS_NONE) {
       // Skip first render is invisible since it's nothing changed
       if (firstMountChangeRef.current || asyncVisible) {
