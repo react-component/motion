@@ -33,7 +33,7 @@ class Demo extends React.Component<{}, DemoState> {
       }
     }
 
-    keyList = keyList.map((key) => {
+    keyList = keyList.map(key => {
       if (key === 3) {
         return { key, background: 'orange' };
       }
@@ -115,4 +115,8 @@ class Demo extends React.Component<{}, DemoState> {
   }
 }
 
-export default Demo;
+export default () => (
+  <React.StrictMode>
+    <Demo />
+  </React.StrictMode>
+);
