@@ -56,7 +56,12 @@ class Demo extends React.Component<{}, DemoState> {
         <div>
           <label>
             node count
-            <input type="number" value={count} onChange={this.onCountChange} />
+            <input
+              type="number"
+              min={0}
+              value={count}
+              onChange={this.onCountChange}
+            />
           </label>
           <button type="button" onClick={this.onFlushMotion}>
             Flush Motion
