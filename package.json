@@ -31,7 +31,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development father doc dev --storybook",
     "build": "father doc build --storybook",
-    "compile": "father build && lessc assets/index.less assets/index.css",
+    "compile": "father build",
     "gh-pages": "npm run build && father doc deploy",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "postpublish": "npm run gh-pages",
@@ -56,7 +56,7 @@
     "@umijs/fabric": "^2.0.8",
     "cross-env": "^7.0.2",
     "eslint": "^7.0.0",
-    "father": "^2.13.4",
+    "father": "^4.1.2",
     "jest": "^26.4.2",
     "less": "^3.10.3",
     "np": "^6.2.4",
