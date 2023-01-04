@@ -12,12 +12,10 @@
   ],
   "main": "./lib/index",
   "module": "./es/index",
+  "typings": "es/index.d.ts",
   "files": [
-    "assets/*.css",
-    "assets/*.less",
     "es",
-    "lib",
-    "dist"
+    "lib"
   ],
   "homepage": "https://react-component.github.io/motion",
   "repository": {
@@ -58,7 +56,6 @@
     "eslint": "^7.0.0",
     "father": "^4.1.2",
     "jest": "^26.4.2",
-    "less": "^3.10.3",
     "np": "^6.2.4",
     "prettier": "^2.1.1",
     "react": "^18.0.0",
