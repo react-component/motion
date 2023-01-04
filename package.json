@@ -34,7 +34,7 @@
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "postpublish": "npm run gh-pages",
     "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
-    "test": "father test",
+    "test": "rc-test",
     "coverage": "father test --coverage",
     "now-build": "npm run build"
   },
@@ -56,12 +56,11 @@
     "cross-env": "^7.0.2",
     "eslint": "^7.0.0",
     "father": "^4.1.2",
-    "jest": "^26.4.2",
     "np": "^6.2.4",
     "prettier": "^2.1.1",
+    "rc-test": "^7.0.14",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "regenerator-runtime": "^0.13.7",
     "typescript": "^4.0.3"
   },
   "peerDependencies": {

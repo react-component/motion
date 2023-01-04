@@ -1,5 +1,5 @@
-require('regenerator-runtime/runtime');
-
 window.requestAnimationFrame = func => {
-  window.setTimeout(func, 16);
+  const id = window.setTimeout(func, 16);
+  return id;
 };
+window.cancelAnimationFrame = id => window.clearTimeout(id);
