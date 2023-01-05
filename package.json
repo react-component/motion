@@ -28,15 +28,15 @@
   "license": "MIT",
   "scripts": {
     "start": "dumi dev",
-    "build": "father doc build --storybook",
+    "docs:build": "dumi build",
+    "docs:deploy": "gh-pages -d .doc",
     "compile": "father build",
-    "gh-pages": "npm run build && father doc deploy",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
-    "postpublish": "npm run gh-pages",
-    "lint": "eslint src/ --ext .ts,.tsx,.jsx,.js,.md",
+    "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
+    "postpublish": "npm run docs:deploy",
+    "lint": "eslint src/ --ext .tsx,.ts",
     "test": "rc-test",
-    "coverage": "father test --coverage",
-    "now-build": "npm run build"
+    "now-build": "npm run docs:build"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.1",
