@@ -9,10 +9,10 @@
 
 .demo-block {
   display: block;
-  height: 300px;
   width: 300px;
-  background: red;
+  height: 300px;
   overflow: hidden;
+  background: red;
 }
 
 .transition {
@@ -30,8 +30,8 @@
   }
 
   &.transition-leave-active {
-    opacity: 0;
     background: green;
+    opacity: 0;
   }
 }
 
@@ -42,8 +42,8 @@
   &.animation-appear,
   &.animation-enter {
     animation-name: enter;
-    animation-fill-mode: both;
     animation-play-state: paused;
+    animation-fill-mode: both;
   }
 
   &.animation-appear.animation-appear-active,
@@ -54,8 +54,8 @@
 
   &.animation-leave {
     animation-name: leave;
-    animation-fill-mode: both;
     animation-play-state: paused;
+    animation-fill-mode: both;
 
     &.animation-leave-active {
       animation-name: leave;

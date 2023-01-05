@@ -10,6 +10,15 @@
     "antd",
     "ant-design"
   ],
+  "homepage": "https://react-component.github.io/motion",
+  "bugs": {
+    "url": "http://github.com/react-component/motion/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:react-component/motion.git"
+  },
+  "license": "MIT",
   "main": "./lib/index",
   "module": "./es/index",
   "typings": "es/index.d.ts",
@@ -17,26 +26,17 @@
     "es",
     "lib"
   ],
-  "homepage": "https://react-component.github.io/motion",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:react-component/motion.git"
-  },
-  "bugs": {
-    "url": "http://github.com/react-component/motion/issues"
-  },
-  "license": "MIT",
   "scripts": {
-    "start": "dumi dev",
+    "compile": "father build",
     "docs:build": "dumi build",
     "docs:deploy": "gh-pages -d .doc",
-    "compile": "father build",
+    "lint": "eslint src/ --ext .tsx,.ts",
+    "now-build": "npm run docs:build",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "postpublish": "npm run docs:deploy",
-    "lint": "eslint src/ --ext .tsx,.ts",
-    "test": "rc-test",
-    "now-build": "npm run docs:build"
+    "start": "dumi dev",
+    "test": "rc-test"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.1",

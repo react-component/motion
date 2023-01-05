@@ -4,11 +4,9 @@ import type { CSSMotionProps } from './CSSMotion';
 import type { CSSMotionListProps } from './CSSMotionList';
 import type { MotionEventHandler, MotionEndEventHandler } from './interface';
 
-export {
-  CSSMotionList,
-}
+export { CSSMotionList };
 
-export type{
+export type {
   CSSMotionProps,
   CSSMotionListProps,
   MotionEventHandler,
