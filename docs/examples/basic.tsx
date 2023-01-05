@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import CSSMotion from '../src';
-import './CSSMotion.less';
+import CSSMotion from '../../src';
+import './basic.less';
 
 interface DemoState {
   show: boolean;
@@ -30,7 +30,7 @@ const Div = React.forwardRef<HTMLDivElement, any>((props, ref) => {
   return <div {...props} ref={ref} />;
 });
 
-class Demo extends React.Component<{}, DemoState> {
+class App extends React.Component<{}, DemoState> {
   state: DemoState = {
     show: true,
     forceRender: false,
@@ -222,4 +222,4 @@ class Demo extends React.Component<{}, DemoState> {
   }
 }
 
-export default Demo;
+export default App;
