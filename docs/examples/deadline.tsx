@@ -1,13 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
-import CSSMotion from '../src';
-import './CSSMotion.less';
+import CSSMotion from 'rc-motion';
+import './basic.less';
 
 interface DemoState {
   show: boolean;
 }
 
-class Demo extends React.Component<{}, DemoState> {
+class App extends React.Component<{}, DemoState> {
   state = {
     show: true,
   };
@@ -64,4 +64,4 @@ class Demo extends React.Component<{}, DemoState> {
   }
 }
 
-export default Demo;
+export default App;

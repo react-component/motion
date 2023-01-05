@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
-import { CSSMotionList } from '../src';
-import './CSSMotionList.less';
+import { CSSMotionList } from 'rc-motion';
+import './list.less';
 
 interface DemoState {
   count: number;
@@ -9,7 +9,7 @@ interface DemoState {
   keyList: React.Key[];
 }
 
-class Demo extends React.Component<{}, DemoState> {
+class App extends React.Component<{}, DemoState> {
   state: DemoState = {
     count: 1,
     checkedMap: {},
@@ -104,7 +104,7 @@ class Demo extends React.Component<{}, DemoState> {
           {({ key, background, className, style }) => {
             return (
               <div
-                className={classNames('demo-block', className)}
+                className={classNames('list-demo-block', className)}
                 style={{
                   ...style,
                   background,
@@ -122,6 +122,6 @@ class Demo extends React.Component<{}, DemoState> {
 
 export default () => (
   <React.StrictMode>
-    <Demo />
+    <App />
   </React.StrictMode>
 );

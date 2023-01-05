@@ -1,6 +1,6 @@
 import React from 'react';
-import CSSMotion from '../src';
-import './TransitionInsideDebug.less';
+import CSSMotion from 'rc-motion';
+import './transition-inside-debug.less';
 
 export default function TransitionInsideDebug() {
   const [visible, setVisible] = React.useState(true);

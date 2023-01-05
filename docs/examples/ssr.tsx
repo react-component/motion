@@ -2,9 +2,9 @@ import React from 'react';
 import { hydrate } from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
 import classNames from 'classnames';
-import { genCSSMotion } from '../src/CSSMotion';
-import CSSMotion from '../src';
-import './CSSMotion.less';
+import { genCSSMotion } from 'rc-motion/es/CSSMotion';
+import CSSMotion from 'rc-motion';
+import './basic.less';
 
 const ServerCSSMotion = genCSSMotion(false);
 
@@ -35,7 +35,7 @@ const MotionAppear = ({ supportMotion }: MotionAppearProps) => {
   );
 };
 
-const Demo = () => {
+const App = () => {
   const ssr = ReactDOMServer.renderToString(
     <MotionAppear supportMotion={false} />,
   );
@@ -59,4 +59,4 @@ const Demo = () => {
   );
 };
 
-export default Demo;
+export default App;

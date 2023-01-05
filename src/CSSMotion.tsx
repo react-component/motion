@@ -228,7 +228,7 @@ export function genCSSMotion(
       const { ref: originNodeRef } = motionChildren as any;
 
       if (!originNodeRef) {
-        motionChildren = React.cloneElement(motionChildren, {
+        motionChildren = React.cloneElement<any>(motionChildren, {
           ref: setNodeRef,
         });
       }

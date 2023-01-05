@@ -13,12 +13,12 @@ export interface KeyObject {
   status?: DiffStatus;
 }
 
-export function wrapKeyToObject(key: React.Key) {
+export function wrapKeyToObject(key: React.Key | KeyObject) {
   let keyObj: KeyObject;
   if (key && typeof key === 'object' && 'key' in key) {
     keyObj = key;
   } else {
-    keyObj = { key };
+    keyObj = { key: key as React.Key };
   }
   return {
     ...keyObj,

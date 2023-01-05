@@ -29,3 +29,8 @@ yarn.lock
 package-lock.json
 coverage/
 .doc
+
+# dumi
+.dumi/tmp
+.dumi/tmp-production
+.dumi/tmp-test
