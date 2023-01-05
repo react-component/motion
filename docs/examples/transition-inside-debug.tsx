@@ -1,5 +1,5 @@
 import React from 'react';
-import CSSMotion from '../../src';
+import CSSMotion from 'rc-motion';
 import './transition-inside-debug.less';
 
 export default function TransitionInsideDebug() {

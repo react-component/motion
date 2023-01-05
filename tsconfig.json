@@ -10,7 +10,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["src/.umi/*"],
-      "rc-motion": ["src/index.tsx"]
+      "rc-motion": ["src/index.tsx"],
+      "rc-motion/es/*": ["src/*"]
     }
   }
 }
