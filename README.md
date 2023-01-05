@@ -35,7 +35,7 @@ https://react-component.github.io/motion/
 
 ## Example
 
-```tsx
+```js
 import CSSMotion from 'rc-motion';
 
 export default ({ visible }) => (

@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "cross-env NODE_ENV=development father doc dev --storybook",
+    "start": "dumi dev",
     "build": "father doc build --storybook",
     "compile": "father build",
     "gh-pages": "npm run build && father doc deploy",
@@ -54,6 +54,7 @@
     "@types/react-dom": "^16.9.0",
     "@umijs/fabric": "^2.0.8",
     "cross-env": "^7.0.2",
+    "dumi": "^2.0.18",
     "eslint": "^7.0.0",
     "father": "^4.1.2",
     "np": "^6.2.4",
