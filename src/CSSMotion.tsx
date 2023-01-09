@@ -185,12 +185,12 @@ export function genCSSMotion(
       // Stable children
       if (mergedVisible) {
         motionChildren = children({ ...mergedProps }, setNodeRef);
-      } else if (!removeOnLeave && renderedRef.current) {
+      } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
         motionChildren = children(
           { ...mergedProps, className: leavedClassName },
           setNodeRef,
         );
-      } else if (forceRender) {
+      } else if ( forceRender || (!removeOnLeave && !leavedClassName)) {
         motionChildren = children(
           { ...mergedProps, style: { display: 'none' } },
           setNodeRef,

@@ -159,6 +159,59 @@ describe('CSSMotion', () => {
       },
     );
 
+    it('leaveClassName should add to dom', () => {
+      const genMotion = (props) => {
+        const {visible,leavedClassName} = props
+        return (
+            <CSSMotion
+                motionName="transition"
+                visible={visible}
+                removeOnLeave={false}
+                leavedClassName={leavedClassName}
+            >
+              {({ style, className }) => {
+                return (
+                    <div
+                        style={style}
+                        className={classNames('motion-box', className)}
+                    />
+                );
+              }}
+            </CSSMotion>
+        );
+      };
+      const { container, rerender } = render(genMotion({visible:false}));
+
+      rerender(genMotion({ visible: true }));
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(container.querySelector('.motion-box')).toBeTruthy();
+      rerender(genMotion({ visible: false,leavedClassName:'removed'}));
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.transitionEnd(container.querySelector('.motion-box'));
+
+      expect(container.querySelector('.motion-box')).toHaveClass('removed');
+
+      rerender(genMotion({ visible: true }));
+      act(() => {
+        jest.runAllTimers();
+      });
+      rerender(genMotion({ visible: false }));
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.transitionEnd(container.querySelector('.motion-box'));
+      expect(container.querySelector('.motion-box')?.classList.contains('removed')).toBeFalsy();
+
+    });
+
     it('stop transition if config motion to false', () => {
       const genMotion = (props?: CSSMotionProps) => (
         <CSSMotion motionName="transition" visible {...props}>
