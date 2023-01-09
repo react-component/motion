@@ -190,7 +190,7 @@ export function genCSSMotion(
           { ...mergedProps, className: leavedClassName },
           setNodeRef,
         );
-      } else if (forceRender) {
+      } else if ( forceRender || (!removeOnLeave && !leavedClassName)) {
         motionChildren = children(
           { ...mergedProps, style: { display: 'none' } },
           setNodeRef,
