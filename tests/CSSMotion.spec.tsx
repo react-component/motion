@@ -322,7 +322,10 @@ describe('CSSMotion', () => {
 
       test(
         'without ref',
-        React.forwardRef(props => <div {...props} />),
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        React.forwardRef((props, ref) => {
+          return <div {...props} />;
+        }),
       );
 
       test(
