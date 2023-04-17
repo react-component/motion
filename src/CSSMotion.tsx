@@ -15,6 +15,7 @@ import { STATUS_NONE, STEP_PREPARE, STEP_START } from './interface';
 import useStatus from './hooks/useStatus';
 import DomWrapper from './DomWrapper';
 import { isActive } from './hooks/useStepQueue';
+import { Context } from './context';
 
 export type CSSMotionConfig =
   | boolean
@@ -112,8 +113,8 @@ export function genCSSMotion(
     ({ transitionSupport } = config);
   }
 
-  function isSupportTransition(props: CSSMotionProps) {
-    return !!(props.motionName && transitionSupport);
+  function isSupportTransition(props: CSSMotionProps, contextMotion?: boolean) {
+    return !!(props.motionName && transitionSupport && contextMotion !== false);
   }
 
   const CSSMotion = React.forwardRef<any, CSSMotionProps>((props, ref) => {
@@ -129,7 +130,9 @@ export function genCSSMotion(
       eventProps,
     } = props;
 
-    const supportMotion = isSupportTransition(props);
+    const { motion: contextMotion } = React.useContext(Context);
+
+    const supportMotion = isSupportTransition(props, contextMotion);
 
     // Ref to the react node, it may be a HTMLElement
     const nodeRef = useRef<any>();
@@ -181,7 +184,10 @@ export function genCSSMotion(
     if (!children) {
       // No children
       motionChildren = null;
-    } else if (status === STATUS_NONE || !isSupportTransition(props)) {
+    } else if (
+      status === STATUS_NONE ||
+      !isSupportTransition(props, contextMotion)
+    ) {
       // Stable children
       if (mergedVisible) {
         motionChildren = children({ ...mergedProps }, setNodeRef);
@@ -190,7 +196,7 @@ export function genCSSMotion(
           { ...mergedProps, className: leavedClassName },
           setNodeRef,
         );
-      } else if ( forceRender || (!removeOnLeave && !leavedClassName)) {
+      } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
         motionChildren = children(
           { ...mergedProps, style: { display: 'none' } },
           setNodeRef,
