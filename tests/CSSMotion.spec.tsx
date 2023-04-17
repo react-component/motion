@@ -508,7 +508,7 @@ describe('CSSMotion', () => {
 
     // hide immediately since motion is disabled
     rerender(<Demo motion={false} visible={false} />);
-    expect(container.querySelector('.motion-box')).toBeFalsy();
+    expect(container.querySelector('.hidden')).toBeTruthy();
   });
 
   it('no transition', () => {
