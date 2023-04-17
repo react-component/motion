@@ -6,7 +6,8 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import classNames from 'classnames';
 import { render, fireEvent } from '@testing-library/react';
-import type { CSSMotionProps } from '../src/CSSMotion';
+import type { CSSMotionProps } from '../src';
+import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
 import ReactDOM from 'react-dom';
 
@@ -160,27 +161,27 @@ describe('CSSMotion', () => {
     );
 
     it('leaveClassName should add to dom', () => {
-      const genMotion = (props) => {
-        const {visible,leavedClassName} = props
+      const genMotion = props => {
+        const { visible, leavedClassName } = props;
         return (
-            <CSSMotion
-                motionName="transition"
-                visible={visible}
-                removeOnLeave={false}
-                leavedClassName={leavedClassName}
-            >
-              {({ style, className }) => {
-                return (
-                    <div
-                        style={style}
-                        className={classNames('motion-box', className)}
-                    />
-                );
-              }}
-            </CSSMotion>
+          <CSSMotion
+            motionName="transition"
+            visible={visible}
+            removeOnLeave={false}
+            leavedClassName={leavedClassName}
+          >
+            {({ style, className }) => {
+              return (
+                <div
+                  style={style}
+                  className={classNames('motion-box', className)}
+                />
+              );
+            }}
+          </CSSMotion>
         );
       };
-      const { container, rerender } = render(genMotion({visible:false}));
+      const { container, rerender } = render(genMotion({ visible: false }));
 
       rerender(genMotion({ visible: true }));
 
@@ -189,7 +190,7 @@ describe('CSSMotion', () => {
       });
 
       expect(container.querySelector('.motion-box')).toBeTruthy();
-      rerender(genMotion({ visible: false,leavedClassName:'removed'}));
+      rerender(genMotion({ visible: false, leavedClassName: 'removed' }));
       act(() => {
         jest.runAllTimers();
       });
@@ -208,8 +209,9 @@ describe('CSSMotion', () => {
       });
 
       fireEvent.transitionEnd(container.querySelector('.motion-box'));
-      expect(container.querySelector('.motion-box')?.classList.contains('removed')).toBeFalsy();
-
+      expect(
+        container.querySelector('.motion-box')?.classList.contains('removed'),
+      ).toBeFalsy();
     });
 
     it('stop transition if config motion to false', () => {
@@ -474,6 +476,39 @@ describe('CSSMotion', () => {
       expect(activeBoxNode).toHaveClass('transition-leave');
       expect(activeBoxNode).toHaveClass('transition-leave-active');
     });
+  });
+
+  it('MotionProvider to disable motion', () => {
+    const Demo = ({
+      motion,
+      visible,
+    }: {
+      motion?: boolean;
+      visible?: boolean;
+    }) => (
+      <Provider motion={motion}>
+        <CSSMotion
+          motionName="test"
+          visible={visible}
+          removeOnLeave={false}
+          leavedClassName="hidden"
+        >
+          {({ style, className }) => (
+            <div
+              style={style}
+              className={classNames('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      </Provider>
+    );
+
+    const { container, rerender } = render(<Demo motion={false} visible />);
+    expect(container.querySelector('.motion-box')).toBeTruthy();
+
+    // hide immediately since motion is disabled
+    rerender(<Demo motion={false} visible={false} />);
+    expect(container.querySelector('.motion-box')).toBeFalsy();
   });
 
   it('no transition', () => {
