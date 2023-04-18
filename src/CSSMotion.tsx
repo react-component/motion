@@ -1,21 +1,21 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
-import * as React from 'react';
-import { useRef } from 'react';
+import classNames from 'classnames';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef, supportRef } from 'rc-util/lib/ref';
-import classNames from 'classnames';
-import { getTransitionName, supportTransition } from './util/motion';
+import * as React from 'react';
+import { useRef } from 'react';
+import { Context } from './context';
+import DomWrapper from './DomWrapper';
+import useStatus from './hooks/useStatus';
+import { isActive } from './hooks/useStepQueue';
 import type {
-  MotionStatus,
-  MotionEventHandler,
   MotionEndEventHandler,
+  MotionEventHandler,
   MotionPrepareEventHandler,
+  MotionStatus,
 } from './interface';
 import { STATUS_NONE, STEP_PREPARE, STEP_START } from './interface';
-import useStatus from './hooks/useStatus';
-import DomWrapper from './DomWrapper';
-import { isActive } from './hooks/useStepQueue';
-import { Context } from './context';
+import { getTransitionName, supportTransition } from './util/motion';
 
 export type CSSMotionConfig =
   | boolean
@@ -58,8 +58,11 @@ export interface CSSMotionProps {
   eventProps?: object;
 
   // Prepare groups
+  /** Prepare phase is used for measure element info. It will always trigger even motion is off */
   onAppearPrepare?: MotionPrepareEventHandler;
+  /** Prepare phase is used for measure element info. It will always trigger even motion is off */
   onEnterPrepare?: MotionPrepareEventHandler;
+  /** Prepare phase is used for measure element info. It will always trigger even motion is off */
   onLeavePrepare?: MotionPrepareEventHandler;
 
   // Normal motion groups
