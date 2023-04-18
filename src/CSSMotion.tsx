@@ -215,12 +215,16 @@ export function genCSSMotion(
         statusSuffix = 'start';
       }
 
+      const motionCls = getTransitionName(
+        motionName,
+        `${status}-${statusSuffix}`,
+      );
+
       motionChildren = children(
         {
           ...mergedProps,
           className: classNames(getTransitionName(motionName, status), {
-            [getTransitionName(motionName, `${status}-${statusSuffix}`)]:
-              statusSuffix,
+            [motionCls]: motionCls && statusSuffix,
             [motionName as string]: typeof motionName === 'string',
           }),
           style: statusStyle,

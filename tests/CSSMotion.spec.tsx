@@ -481,6 +481,29 @@ describe('CSSMotion', () => {
     });
   });
 
+  it('no motion name but appear', () => {
+    const { container } = render(
+      <CSSMotion
+        visible
+        motionAppear
+        onAppearPrepare={() => new Promise(() => {})}
+      >
+        {({ style, className }) => (
+          <div style={style} className={classNames('motion-box', className)} />
+        )}
+      </CSSMotion>,
+    );
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    // Not any other className
+    expect(container.querySelector('.motion-box').className).toEqual(
+      'motion-box',
+    );
+  });
+
   it('MotionProvider to disable motion', () => {
     const onAppearPrepare = jest.fn();
     const onAppearStart = jest.fn();
