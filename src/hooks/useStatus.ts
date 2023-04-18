@@ -213,6 +213,8 @@ export default function useStatus(
     if (nextStatus && (supportMotion || nextEventHandlers[STEP_PREPARE])) {
       setStatus(nextStatus);
       startStep();
+    } else {
+      setStatus(STATUS_NONE);
     }
   }, [visible]);
 
