@@ -214,6 +214,7 @@ export default function useStatus(
       setStatus(nextStatus);
       startStep();
     } else {
+      // Set back in case no motion but prev status has prepare step
       setStatus(STATUS_NONE);
     }
   }, [visible]);
