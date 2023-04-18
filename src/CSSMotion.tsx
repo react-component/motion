@@ -184,8 +184,6 @@ export function genCSSMotion(
     let motionChildren: React.ReactNode;
     const mergedProps = { ...eventProps, visible };
 
-    console.log('Status:', status);
-
     if (!children) {
       // No children
       motionChildren = null;

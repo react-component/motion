@@ -8,7 +8,11 @@ export default () => {
   const [motion, setMotion] = React.useState(false);
 
   const onPrepare = (node: HTMLElement) => {
-    console.log('prepare', node);
+    console.log('🔥 prepare', node);
+
+    return new Promise(resolve => {
+      setTimeout(resolve, 500);
+    });
   };
 
   return (
@@ -25,16 +29,23 @@ export default () => {
         motionAppear
         onAppearPrepare={onPrepare}
         onEnterPrepare={onPrepare}
+        onLeavePrepare={onPrepare}
         onVisibleChanged={visible => {
           console.log('Visible Changed:', visible);
         }}
       >
         {({ style, className }, ref) => (
-          <div
-            ref={ref}
-            className={classNames('demo-block', className)}
-            style={style}
-          />
+          <>
+            <div
+              ref={ref}
+              className={classNames('demo-block', className)}
+              style={style}
+            />
+            <ul>
+              <li>ClassName: {JSON.stringify(className)}</li>
+              <li>Style: {JSON.stringify(style)}</li>
+            </ul>
+          </>
         )}
       </CSSMotion>
     </Provider>
