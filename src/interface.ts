@@ -14,13 +14,20 @@ export const STEP_PREPARE = 'prepare' as const;
 export const STEP_START = 'start' as const;
 export const STEP_ACTIVE = 'active' as const;
 export const STEP_ACTIVATED = 'end' as const;
+/**
+ * Used for disabled motion case.
+ * Prepare stage will still work but start & active will be skipped.
+ */
+export const STEP_PREPARED = 'prepared' as const;
 
 export type StepStatus =
   | typeof STEP_NONE
   | typeof STEP_PREPARE
   | typeof STEP_START
   | typeof STEP_ACTIVE
-  | typeof STEP_ACTIVATED;
+  | typeof STEP_ACTIVATED
+  // Skip motion only
+  | typeof STEP_PREPARED;
 
 export type MotionEvent = (TransitionEvent | AnimationEvent) & {
   deadline?: boolean;

@@ -1,26 +1,27 @@
-import * as React from 'react';
-import { useRef, useEffect } from 'react';
 import useState from 'rc-util/lib/hooks/useState';
-import {
-  STATUS_APPEAR,
-  STATUS_NONE,
-  STATUS_LEAVE,
-  STATUS_ENTER,
-  STEP_PREPARE,
-  STEP_START,
-  STEP_ACTIVE,
-} from '../interface';
+import * as React from 'react';
+import { useEffect, useRef } from 'react';
+import type { CSSMotionProps } from '../CSSMotion';
 import type {
-  MotionStatus,
-  MotionEventHandler,
   MotionEvent,
+  MotionEventHandler,
   MotionPrepareEventHandler,
+  MotionStatus,
   StepStatus,
 } from '../interface';
-import type { CSSMotionProps } from '../CSSMotion';
-import useStepQueue, { DoStep, SkipStep, isActive } from './useStepQueue';
+import {
+  STATUS_APPEAR,
+  STATUS_ENTER,
+  STATUS_LEAVE,
+  STATUS_NONE,
+  STEP_ACTIVE,
+  STEP_PREPARE,
+  STEP_PREPARED,
+  STEP_START,
+} from '../interface';
 import useDomMotionEvents from './useDomMotionEvents';
 import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect';
+import useStepQueue, { DoStep, isActive, SkipStep } from './useStepQueue';
 
 export default function useStatus(
   supportMotion: boolean,
@@ -63,6 +64,14 @@ export default function useStatus(
   // ========================== Motion End ==========================
   const activeRef = useRef(false);
 
+  /**
+   * Clean up status & style
+   */
+  function updateMotionEndStatus() {
+    setStatus(STATUS_NONE, true);
+    setStyle(null, true);
+  }
+
   function onInternalMotionEnd(event: MotionEvent) {
     const element = getDomElement();
     if (event && !event.deadline && event.target !== element) {
@@ -85,8 +94,7 @@ export default function useStatus(
 
     // Only update status when `canEnd` and not destroyed
     if (status !== STATUS_NONE && currentActive && canEnd !== false) {
-      setStatus(STATUS_NONE, true);
-      setStyle(null, true);
+      updateMotionEndStatus();
     }
   }
 
@@ -125,7 +133,7 @@ export default function useStatus(
     }
   }, [status]);
 
-  const [startStep, step] = useStepQueue(status, newStep => {
+  const [startStep, step] = useStepQueue(status, !supportMotion, newStep => {
     // Only prepare step can be skip
     if (newStep === STEP_PREPARE) {
       const onPrepare = eventHandlers[STEP_PREPARE];
@@ -155,6 +163,10 @@ export default function useStatus(
       }
     }
 
+    if (step === STEP_PREPARED) {
+      updateMotionEndStatus();
+    }
+
     return DoStep;
   });
 
@@ -169,9 +181,9 @@ export default function useStatus(
     const isMounted = mountedRef.current;
     mountedRef.current = true;
 
-    if (!supportMotion) {
-      return;
-    }
+    // if (!supportMotion) {
+    //   return;
+    // }
 
     let nextStatus: MotionStatus;
 
