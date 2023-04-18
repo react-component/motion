@@ -2,14 +2,14 @@
   react/no-render-return-value, max-classes-per-file,
   react/prefer-stateless-function, react/no-multi-comp
 */
-import React from 'react';
-import { act } from 'react-dom/test-utils';
+import { fireEvent, render } from '@testing-library/react';
 import classNames from 'classnames';
-import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { act } from 'react-dom/test-utils';
 import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
-import ReactDOM from 'react-dom';
 
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
@@ -482,6 +482,9 @@ describe('CSSMotion', () => {
   });
 
   it('MotionProvider to disable motion', () => {
+    const onAppearPrepare = jest.fn();
+    const onAppearStart = jest.fn();
+
     const Demo = ({
       motion,
       visible,
@@ -495,6 +498,9 @@ describe('CSSMotion', () => {
           visible={visible}
           removeOnLeave={false}
           leavedClassName="hidden"
+          motionAppear
+          onAppearPrepare={onAppearPrepare}
+          onAppearStart={onAppearStart}
         >
           {({ style, className }) => (
             <div
@@ -508,6 +514,13 @@ describe('CSSMotion', () => {
 
     const { container, rerender } = render(<Demo motion={false} visible />);
     expect(container.querySelector('.motion-box')).toBeTruthy();
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    expect(onAppearPrepare).toHaveBeenCalled();
+    expect(onAppearStart).not.toHaveBeenCalled();
 
     // hide immediately since motion is disabled
     rerender(<Demo motion={false} visible={false} />);
