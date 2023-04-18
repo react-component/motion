@@ -101,12 +101,8 @@ export default function useStatus(
   const [patchMotionEvents] = useDomMotionEvents(onInternalMotionEnd);
 
   // ============================= Step =============================
-  const eventHandlers = React.useMemo<{
-    [STEP_PREPARE]?: MotionPrepareEventHandler;
-    [STEP_START]?: MotionEventHandler;
-    [STEP_ACTIVE]?: MotionEventHandler;
-  }>(() => {
-    switch (status) {
+  const getEventHandlers = (targetStatus: MotionStatus) => {
+    switch (targetStatus) {
       case STATUS_APPEAR:
         return {
           [STEP_PREPARE]: onAppearPrepare,
@@ -131,7 +127,13 @@ export default function useStatus(
       default:
         return {};
     }
-  }, [status]);
+  };
+
+  const eventHandlers = React.useMemo<{
+    [STEP_PREPARE]?: MotionPrepareEventHandler;
+    [STEP_START]?: MotionEventHandler;
+    [STEP_ACTIVE]?: MotionEventHandler;
+  }>(() => getEventHandlers(status), [status]);
 
   const [startStep, step] = useStepQueue(status, !supportMotion, newStep => {
     // Only prepare step can be skip
@@ -205,8 +207,10 @@ export default function useStatus(
       nextStatus = STATUS_LEAVE;
     }
 
+    const nextEventHandlers = getEventHandlers(nextStatus);
+
     // Update to next status
-    if (nextStatus) {
+    if (nextStatus && (supportMotion || nextEventHandlers[STEP_PREPARE])) {
       setStatus(nextStatus);
       startStep();
     }
