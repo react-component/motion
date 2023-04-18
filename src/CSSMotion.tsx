@@ -184,13 +184,12 @@ export function genCSSMotion(
     let motionChildren: React.ReactNode;
     const mergedProps = { ...eventProps, visible };
 
+    console.log('Status:', status);
+
     if (!children) {
       // No children
       motionChildren = null;
-    } else if (
-      status === STATUS_NONE ||
-      !isSupportTransition(props, contextMotion)
-    ) {
+    } else if (status === STATUS_NONE) {
       // Stable children
       if (mergedVisible) {
         motionChildren = children({ ...mergedProps }, setNodeRef);

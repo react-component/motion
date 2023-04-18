@@ -5,7 +5,7 @@ import './basic.less';
 
 export default () => {
   const [show, setShow] = React.useState(true);
-  const [motion, setMotion] = React.useState(true);
+  const [motion, setMotion] = React.useState(false);
 
   const onPrepare = (node: HTMLElement) => {
     console.log('prepare', node);
