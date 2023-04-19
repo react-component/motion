@@ -1,17 +1,19 @@
 /* eslint react/prop-types: 0 */
+import omit from 'rc-util/lib/omit';
 import * as React from 'react';
-import OriginCSSMotion from './CSSMotion';
 import type { CSSMotionProps } from './CSSMotion';
-import { supportTransition } from './util/motion';
+import OriginCSSMotion from './CSSMotion';
+import type { KeyObject } from './util/diff';
 import {
+  diffKeys,
+  parseKeys,
   STATUS_ADD,
   STATUS_KEEP,
   STATUS_REMOVE,
   STATUS_REMOVED,
-  diffKeys,
-  parseKeys,
 } from './util/diff';
-import type { KeyObject } from './util/diff';
+import { supportTransition } from './util/motion';
+import pick from './util/pick';
 
 const MOTION_PROP_NAMES = [
   'eventProps',
@@ -127,16 +129,11 @@ export function genCSSMotionList(
       } = this.props;
 
       const Component = component || React.Fragment;
-
-      const motionProps: CSSMotionProps = {};
-      MOTION_PROP_NAMES.forEach(prop => {
-        motionProps[prop] = restProps[prop];
-        delete restProps[prop];
-      });
-      delete restProps.keys;
+      const motionProps = pick(restProps, MOTION_PROP_NAMES as any);
+      const componentProps = omit(restProps, MOTION_PROP_NAMES as any);
 
       return (
-        <Component {...restProps}>
+        <Component {...componentProps}>
           {keyEntities.map(({ status, ...eventProps }) => {
             const visible = status === STATUS_ADD || status === STATUS_KEEP;
             return (
