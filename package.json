@@ -36,7 +36,8 @@
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "postpublish": "npm run docs:deploy",
     "start": "dumi dev",
-    "test": "rc-test"
+    "test": "rc-test",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.1",
@@ -57,6 +58,8 @@
     "dumi": "^2.0.18",
     "eslint": "^7.0.0",
     "father": "^4.1.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
     "np": "^6.2.4",
     "prettier": "^2.1.1",
     "rc-test": "^7.0.14",
@@ -73,5 +76,11 @@
   },
   "tnpm": {
     "mode": "npm"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts,md,json}": [
+      "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
+      "git add"
+    ]
   }
 }

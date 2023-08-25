@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 module.exports = {
   extends: [require.resolve('@umijs/fabric/dist/eslint')],
   rules: {
