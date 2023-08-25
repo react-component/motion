@@ -1,12 +1,12 @@
 /* eslint-disable react/no-render-return-value, react/prefer-stateless-function,
 react/no-multi-comp, @typescript-eslint/no-implied-eval */
-import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import classNames from 'classnames';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, fireEvent } from '@testing-library/react';
-import { genCSSMotionList } from '../src/CSSMotionList';
-import type { CSSMotionListProps } from '../src/CSSMotionList';
 import { genCSSMotion } from '../src/CSSMotion';
+import type { CSSMotionListProps } from '../src/CSSMotionList';
+import { genCSSMotionList } from '../src/CSSMotionList';
 
 describe('CSSMotionList', () => {
   beforeEach(() => {

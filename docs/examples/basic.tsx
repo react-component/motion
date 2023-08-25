@@ -1,6 +1,6 @@
-import React from 'react';
 import classNames from 'classnames';
 import CSSMotion from 'rc-motion';
+import React from 'react';
 import './basic.less';
 
 interface DemoState {

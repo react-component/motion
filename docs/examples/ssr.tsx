@@ -1,9 +1,9 @@
+import classNames from 'classnames';
+import CSSMotion from 'rc-motion';
+import { genCSSMotion } from 'rc-motion/es/CSSMotion';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
-import classNames from 'classnames';
-import { genCSSMotion } from 'rc-motion/es/CSSMotion';
-import CSSMotion from 'rc-motion';
 import './basic.less';
 
 const ServerCSSMotion = genCSSMotion(false);

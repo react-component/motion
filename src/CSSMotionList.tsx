@@ -1,17 +1,17 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
-import OriginCSSMotion from './CSSMotion';
 import type { CSSMotionProps } from './CSSMotion';
-import { supportTransition } from './util/motion';
+import OriginCSSMotion from './CSSMotion';
+import type { KeyObject } from './util/diff';
 import {
+  diffKeys,
+  parseKeys,
   STATUS_ADD,
   STATUS_KEEP,
   STATUS_REMOVE,
   STATUS_REMOVED,
-  diffKeys,
-  parseKeys,
 } from './util/diff';
-import type { KeyObject } from './util/diff';
+import { supportTransition } from './util/motion';
 
 const MOTION_PROP_NAMES = [
   'eventProps',

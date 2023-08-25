@@ -1,6 +1,6 @@
-import React from 'react';
 import classNames from 'classnames';
 import { CSSMotionList } from 'rc-motion';
+import React from 'react';
 import './list.less';
 
 interface DemoState {

@@ -2,10 +2,10 @@
   react/no-render-return-value, max-classes-per-file,
   react/prefer-stateless-function, react/no-multi-comp
 */
+import { fireEvent, render } from '@testing-library/react';
+import classNames from 'classnames';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import classNames from 'classnames';
-import { render, fireEvent } from '@testing-library/react';
 // import type { CSSMotionProps } from '../src/CSSMotion';
 import { genCSSMotion } from '../src/CSSMotion';
 // import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
