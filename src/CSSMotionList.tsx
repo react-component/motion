@@ -25,6 +25,7 @@ const MOTION_PROP_NAMES = [
   'motionDeadline',
   'removeOnLeave',
   'leavedClassName',
+  'onAppearPrepare',
   'onAppearStart',
   'onAppearActive',
   'onAppearEnd',
