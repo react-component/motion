@@ -148,4 +148,30 @@ describe('CSSMotionList', () => {
     expect(onVisibleChanged).toHaveBeenCalledWith(false, { key: 'a' });
     expect(onAllRemoved).toHaveBeenCalled();
   });
+
+  it('should support index', () => {
+    const CSSMotionList = genCSSMotionList(false);
+
+    const Demo = ({ keys }) => (
+      <CSSMotionList motionName="transition" keys={keys}>
+        {({ key, style, className, index }) => (
+          <div
+            key={key}
+            style={style}
+            className={classNames('motion-box', className)}
+          >
+            {index}
+          </div>
+        )}
+      </CSSMotionList>
+    );
+
+    const { container } = render(<Demo keys={['a', 'b', 'c']} />);
+    expect(container.querySelectorAll('.motion-box')[0].textContent).toEqual(
+      '0',
+    );
+    expect(container.querySelectorAll('.motion-box')[1].textContent).toEqual(
+      '1',
+    );
+  });
 });

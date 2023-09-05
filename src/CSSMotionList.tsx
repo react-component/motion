@@ -38,7 +38,7 @@ const MOTION_PROP_NAMES = [
 ];
 
 export interface CSSMotionListProps
-  extends Omit<CSSMotionProps, 'onVisibleChanged'>,
+  extends Omit<CSSMotionProps, 'onVisibleChanged' | 'children'>,
     Omit<React.HTMLAttributes<any>, 'children'> {
   keys: (React.Key | { key: React.Key; [name: string]: any })[];
   component?: string | React.ComponentType | false;
@@ -47,6 +47,16 @@ export interface CSSMotionListProps
   onVisibleChanged?: (visible: boolean, info: { key: React.Key }) => void;
   /** All motion leaves in the screen */
   onAllRemoved?: () => void;
+  children?: (
+    props: {
+      visible?: boolean;
+      className?: string;
+      style?: React.CSSProperties;
+      index?: number;
+      [key: string]: any;
+    },
+    ref: (node: any) => void,
+  ) => React.ReactElement;
 }
 
 export interface CSSMotionListState {
@@ -138,7 +148,7 @@ export function genCSSMotionList(
 
       return (
         <Component {...restProps}>
-          {keyEntities.map(({ status, ...eventProps }) => {
+          {keyEntities.map(({ status, ...eventProps }, index) => {
             const visible = status === STATUS_ADD || status === STATUS_KEEP;
             return (
               <CSSMotion
@@ -158,7 +168,7 @@ export function genCSSMotionList(
                   }
                 }}
               >
-                {children}
+                {(props, ref) => children({ ...props, index }, ref)}
               </CSSMotion>
             );
           })}
