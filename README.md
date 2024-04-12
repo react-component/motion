@@ -1,21 +1,31 @@
 # rc-motion
 
-[![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][github-actions-image]][github-actions-url] [![Codecov][codecov-image]][codecov-url] [![Dependencies][david-image]](david-url) [![DevDependencies][david-dev-image]][david-dev-url] [![bundle size][bundlephobia-image]][bundlephobia-url]
+<!-- prettier-ignore -->
+[![NPM version][npm-image]][npm-url]
+[![npm download][download-image]][download-url]
+[![build status][github-actions-image]][github-actions-url]
+[![Codecov][codecov-image]][codecov-url]
+[![bundle size][bundlephobia-image]][bundlephobia-url]
+[![dumi][dumi-image]][dumi-url]
 
 [npm-image]: http://img.shields.io/npm/v/rc-motion.svg?style=flat-square
 [npm-url]: http://npmjs.org/package/rc-motion
+[travis-image]: https://img.shields.io/travis/react-component/motion/master?style=flat-square
+[travis-url]: https://travis-ci.com/react-component/motion
 [github-actions-image]: https://github.com/react-component/motion/workflows/CI/badge.svg
 [github-actions-url]: https://github.com/react-component/motion/actions
 [codecov-image]: https://img.shields.io/codecov/c/github/react-component/motion/master.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/react-component/motion/branch/master
+[codecov-url]: https://app.codecov.io/gh/react-component/motion
 [david-url]: https://david-dm.org/react-component/motion
 [david-image]: https://david-dm.org/react-component/motion/status.svg?style=flat-square
 [david-dev-url]: https://david-dm.org/react-component/motion?type=dev
 [david-dev-image]: https://david-dm.org/react-component/motion/dev-status.svg?style=flat-square
 [download-image]: https://img.shields.io/npm/dm/rc-motion.svg?style=flat-square
 [download-url]: https://npmjs.org/package/rc-motion
-[bundlephobia-url]: https://bundlephobia.com/result?p=rc-motion
+[bundlephobia-url]: https://bundlephobia.com/package/rc-motion
 [bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-motion
+[dumi-url]: https://github.com/umijs/dumi
+[dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
 
 React lifecycle controlled motion library.
 
