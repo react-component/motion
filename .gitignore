@@ -34,3 +34,4 @@ coverage/
 .dumi/tmp
 .dumi/tmp-production
 .dumi/tmp-test
+.node
