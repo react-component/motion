@@ -5,18 +5,9 @@ import type { MotionEvent } from '../interface';
 import { animationEndName, transitionEndName } from '../util/motion';
 
 export default (
-  callback: (event: MotionEvent) => void,
+  onInternalMotionEnd: (event: MotionEvent) => void,
 ): [(element: HTMLElement) => void, (element: HTMLElement) => void] => {
   const cacheElementRef = useRef<HTMLElement>();
-
-  // Cache callback
-  const callbackRef = useRef(callback);
-  callbackRef.current = callback;
-
-  // Internal motion event handler
-  const onInternalMotionEnd = React.useCallback((event: MotionEvent) => {
-    callbackRef.current(event);
-  }, []);
 
   // Remove events
   function removeMotionEvents(element: HTMLElement) {

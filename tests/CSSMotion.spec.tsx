@@ -376,7 +376,6 @@ describe('CSSMotion', () => {
         act(() => {
           jest.advanceTimersByTime(500);
         });
-        console.log(container.innerHTML);
 
         // Motion end
         fireEvent.transitionEnd(
