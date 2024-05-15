@@ -73,6 +73,7 @@ export default function useStatus(
   }
 
   function onInternalMotionEnd(event: MotionEvent) {
+    console.log('Motion End!');
     const element = getDomElement();
     if (event && !event.deadline && event.target !== element) {
       // event exists
@@ -156,8 +157,10 @@ export default function useStatus(
       patchMotionEvents(getDomElement());
 
       if (motionDeadline > 0) {
+        console.log('!!!');
         clearTimeout(deadlineRef.current);
         deadlineRef.current = setTimeout(() => {
+          console.log('???');
           onInternalMotionEnd({
             deadline: true,
           } as MotionEvent);
