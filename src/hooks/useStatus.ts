@@ -90,8 +90,6 @@ export default function useStatus(
 
     const currentActive = activeRef.current;
 
-    console.log('Motion End!', status, currentActive);
-
     let canEnd: boolean | void;
     if (status === STATUS_APPEAR && currentActive) {
       canEnd = onAppearEnd?.(element, event);
@@ -160,8 +158,7 @@ export default function useStatus(
       setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
     }
 
-    if (step === STEP_ACTIVE) {
-      console.log('Patch Events:', step, status);
+    if (step === STEP_ACTIVE && status !== STATUS_NONE) {
       // Patch events when motion needed
       patchMotionEvents(getDomElement());
 
