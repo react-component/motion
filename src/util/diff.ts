@@ -8,8 +8,10 @@ export type DiffStatus =
   | typeof STATUS_REMOVE
   | typeof STATUS_REMOVED;
 
+type RawKeyType = string | number;
+
 export interface KeyObject {
-  key: React.Key;
+  key: RawKeyType;
   status?: DiffStatus;
 }
 
@@ -18,7 +20,7 @@ export function wrapKeyToObject(key: React.Key | KeyObject) {
   if (key && typeof key === 'object' && 'key' in key) {
     keyObj = key;
   } else {
-    keyObj = { key: key as React.Key };
+    keyObj = { key: key as RawKeyType };
   }
   return {
     ...keyObj,
@@ -90,7 +92,7 @@ export function diffKeys(
    * Merge same key when it remove and add again:
    *    [1 - add, 2 - keep, 1 - remove] -> [1 - keep, 2 - keep]
    */
-  const keys = {};
+  const keys: Record<RawKeyType, number> = {};
   list.forEach(({ key }) => {
     keys[key] = (keys[key] || 0) + 1;
   });

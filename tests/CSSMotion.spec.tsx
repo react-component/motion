@@ -2,11 +2,10 @@
   react/no-render-return-value, max-classes-per-file,
   react/prefer-stateless-function, react/no-multi-comp
 */
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import classNames from 'classnames';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { act } from 'react-dom/test-utils';
 import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
@@ -342,6 +341,60 @@ describe('CSSMotion', () => {
           return <div {...props} />;
         }),
       );
+
+      it('not warning on StrictMode', () => {
+        const onLeaveEnd = jest.fn();
+        const errorSpy = jest.spyOn(console, 'error');
+
+        const renderDemo = (visible: boolean) => (
+          <React.StrictMode>
+            <CSSMotion
+              motionName="transition"
+              motionDeadline={1000}
+              onLeaveEnd={onLeaveEnd}
+              visible={visible}
+              motionAppear={false}
+              motionLeave={true}
+            >
+              {({ style, className }) => (
+                <div
+                  style={style}
+                  className={classNames('motion-box', className)}
+                />
+              )}
+            </CSSMotion>
+          </React.StrictMode>
+        );
+
+        const { rerender, container } = render(renderDemo(true));
+        act(() => {
+          jest.advanceTimersByTime(100000);
+        });
+
+        // Leave
+        rerender(renderDemo(false));
+        act(() => {
+          jest.advanceTimersByTime(500);
+        });
+
+        // Motion end
+        fireEvent.transitionEnd(
+          container.querySelector('.transition-leave-active'),
+        );
+        act(() => {
+          jest.advanceTimersByTime(100);
+        });
+
+        // Another timeout
+        act(() => {
+          jest.advanceTimersByTime(1000);
+        });
+
+        expect(onLeaveEnd).toHaveBeenCalledTimes(1);
+        expect(errorSpy).not.toHaveBeenCalled();
+
+        errorSpy.mockRestore();
+      });
     });
 
     it('not crash when no children', () => {

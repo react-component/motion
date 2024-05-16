@@ -1,3 +1,4 @@
+import { useEvent } from 'rc-util';
 import useState from 'rc-util/lib/hooks/useState';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
@@ -72,7 +73,13 @@ export default function useStatus(
     setStyle(null, true);
   }
 
-  function onInternalMotionEnd(event: MotionEvent) {
+  const onInternalMotionEnd = useEvent((event: MotionEvent) => {
+    // Do nothing since not in any transition status.
+    // This may happen when `motionDeadline` trigger.
+    if (status === STATUS_NONE) {
+      return;
+    }
+
     const element = getDomElement();
     if (event && !event.deadline && event.target !== element) {
       // event exists
@@ -93,10 +100,10 @@ export default function useStatus(
     }
 
     // Only update status when `canEnd` and not destroyed
-    if (status !== STATUS_NONE && currentActive && canEnd !== false) {
+    if (currentActive && canEnd !== false) {
       updateMotionEndStatus();
     }
-  }
+  });
 
   const [patchMotionEvents] = useDomMotionEvents(onInternalMotionEnd);
 
@@ -151,7 +158,7 @@ export default function useStatus(
       setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
     }
 
-    if (step === STEP_ACTIVE) {
+    if (step === STEP_ACTIVE && status !== STATUS_NONE) {
       // Patch events when motion needed
       patchMotionEvents(getDomElement());
 
