@@ -1,5 +1,6 @@
 import { useEvent } from 'rc-util';
 import useState from 'rc-util/lib/hooks/useState';
+import useSyncState from 'rc-util/lib/hooks/useSyncState';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import type { CSSMotionProps } from '../CSSMotion';
@@ -51,8 +52,10 @@ export default function useStatus(
 ): [MotionStatus, StepStatus, React.CSSProperties, boolean] {
   // Used for outer render usage to avoid `visible: false & status: none` to render nothing
   const [asyncVisible, setAsyncVisible] = useState<boolean>();
-  const [status, setStatus] = useState<MotionStatus>(STATUS_NONE);
+  const [getStatus, setStatus] = useSyncState<MotionStatus>(STATUS_NONE);
   const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
+
+  const currentStatus = getStatus();
 
   const mountedRef = useRef(false);
   const deadlineRef = useRef(null);
@@ -69,11 +72,12 @@ export default function useStatus(
    * Clean up status & style
    */
   function updateMotionEndStatus() {
-    setStatus(STATUS_NONE, true);
+    setStatus(STATUS_NONE);
     setStyle(null, true);
   }
 
   const onInternalMotionEnd = useEvent((event: MotionEvent) => {
+    const status = getStatus();
     // Do nothing since not in any transition status.
     // This may happen when `motionDeadline` trigger.
     if (status === STATUS_NONE) {
@@ -140,44 +144,48 @@ export default function useStatus(
     [STEP_PREPARE]?: MotionPrepareEventHandler;
     [STEP_START]?: MotionEventHandler;
     [STEP_ACTIVE]?: MotionEventHandler;
-  }>(() => getEventHandlers(status), [status]);
+  }>(() => getEventHandlers(currentStatus), [currentStatus]);
 
-  const [startStep, step] = useStepQueue(status, !supportMotion, newStep => {
-    // Only prepare step can be skip
-    if (newStep === STEP_PREPARE) {
-      const onPrepare = eventHandlers[STEP_PREPARE];
-      if (!onPrepare) {
-        return SkipStep;
+  const [startStep, step] = useStepQueue(
+    currentStatus,
+    !supportMotion,
+    newStep => {
+      // Only prepare step can be skip
+      if (newStep === STEP_PREPARE) {
+        const onPrepare = eventHandlers[STEP_PREPARE];
+        if (!onPrepare) {
+          return SkipStep;
+        }
+
+        return onPrepare(getDomElement());
       }
 
-      return onPrepare(getDomElement());
-    }
-
-    // Rest step is sync update
-    if (step in eventHandlers) {
-      setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
-    }
-
-    if (step === STEP_ACTIVE && status !== STATUS_NONE) {
-      // Patch events when motion needed
-      patchMotionEvents(getDomElement());
-
-      if (motionDeadline > 0) {
-        clearTimeout(deadlineRef.current);
-        deadlineRef.current = setTimeout(() => {
-          onInternalMotionEnd({
-            deadline: true,
-          } as MotionEvent);
-        }, motionDeadline);
+      // Rest step is sync update
+      if (step in eventHandlers) {
+        setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
       }
-    }
 
-    if (step === STEP_PREPARED) {
-      updateMotionEndStatus();
-    }
+      if (step === STEP_ACTIVE && currentStatus !== STATUS_NONE) {
+        // Patch events when motion needed
+        patchMotionEvents(getDomElement());
 
-    return DoStep;
-  });
+        if (motionDeadline > 0) {
+          clearTimeout(deadlineRef.current);
+          deadlineRef.current = setTimeout(() => {
+            onInternalMotionEnd({
+              deadline: true,
+            } as MotionEvent);
+          }, motionDeadline);
+        }
+      }
+
+      if (step === STEP_PREPARED) {
+        updateMotionEndStatus();
+      }
+
+      return DoStep;
+    },
+  );
 
   const active = isActive(step);
   activeRef.current = active;
@@ -231,11 +239,11 @@ export default function useStatus(
   useEffect(() => {
     if (
       // Cancel appear
-      (status === STATUS_APPEAR && !motionAppear) ||
+      (currentStatus === STATUS_APPEAR && !motionAppear) ||
       // Cancel enter
-      (status === STATUS_ENTER && !motionEnter) ||
+      (currentStatus === STATUS_ENTER && !motionEnter) ||
       // Cancel leave
-      (status === STATUS_LEAVE && !motionLeave)
+      (currentStatus === STATUS_LEAVE && !motionLeave)
     ) {
       setStatus(STATUS_NONE);
     }
@@ -257,14 +265,14 @@ export default function useStatus(
       firstMountChangeRef.current = true;
     }
 
-    if (asyncVisible !== undefined && status === STATUS_NONE) {
+    if (asyncVisible !== undefined && currentStatus === STATUS_NONE) {
       // Skip first render is invisible since it's nothing changed
       if (firstMountChangeRef.current || asyncVisible) {
         onVisibleChanged?.(asyncVisible);
       }
       firstMountChangeRef.current = true;
     }
-  }, [asyncVisible, status]);
+  }, [asyncVisible, currentStatus]);
 
   // ============================ Styles ============================
   let mergedStyle = style;
@@ -275,5 +283,5 @@ export default function useStatus(
     };
   }
 
-  return [status, step, mergedStyle, asyncVisible ?? visible];
+  return [currentStatus, step, mergedStyle, asyncVisible ?? visible];
 }
