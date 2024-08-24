@@ -35,3 +35,5 @@ coverage/
 .dumi/tmp-production
 .dumi/tmp-test
 .node
+
+bun.lockb
