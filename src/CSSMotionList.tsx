@@ -92,19 +92,10 @@ export function genCSSMotionList(
       const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
       return {
-        keyEntities: mixedKeyEntities.filter(entity => {
-          const prevEntity = keyEntities.find(({ key }) => entity.key === key);
-
+        keyEntities: mixedKeyEntities.filter(
           // Remove if already mark as removed
-          if (
-            prevEntity &&
-            prevEntity.status === STATUS_REMOVED &&
-            entity.status === STATUS_REMOVE
-          ) {
-            return false;
-          }
-          return true;
-        }),
+          entity => entity.status !== STATUS_REMOVE, 
+        ),
       };
     }
 
