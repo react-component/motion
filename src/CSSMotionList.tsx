@@ -1,6 +1,5 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
-
 import type { CSSMotionProps } from './CSSMotion';
 import OriginCSSMotion from './CSSMotion';
 import type { KeyObject } from './util/diff';
