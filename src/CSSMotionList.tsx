@@ -1,5 +1,6 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
+
 import type { CSSMotionProps } from './CSSMotion';
 import OriginCSSMotion from './CSSMotion';
 import type { KeyObject } from './util/diff';
@@ -92,30 +93,49 @@ export function genCSSMotionList(
       const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
       return {
-        keyEntities: mixedKeyEntities.filter(
+        keyEntities: mixedKeyEntities.filter(entity => {
+          const prevEntity = keyEntities.find(({ key }) => entity.key === key);
+
           // Remove if already mark as removed
-          entity => entity.status !== STATUS_REMOVE, 
-        ),
+          if (
+            prevEntity &&
+            prevEntity.status === STATUS_REMOVED &&
+            entity.status === STATUS_REMOVE
+          ) {
+            return false;
+          }
+          return true;
+        }),
       };
     }
 
     // ZombieJ: Return the count of rest keys. It's safe to refactor if need more info.
     removeKey = (removeKey: React.Key) => {
-      const { keyEntities } = this.state;
-      const nextKeyEntities = keyEntities.map(entity => {
-        if (entity.key !== removeKey) return entity;
-        return {
-          ...entity,
-          status: STATUS_REMOVED,
-        };
-      });
+      this.setState(
+        prevState => {
+          const nextKeyEntities = prevState.keyEntities.map(entity => {
+            if (entity.key !== removeKey) return entity;
+            return {
+              ...entity,
+              status: STATUS_REMOVED,
+            };
+          });
 
-      this.setState({
-        keyEntities: nextKeyEntities,
-      });
+          return {
+            keyEntities: nextKeyEntities,
+          };
+        },
+        () => {
+          const { keyEntities } = this.state;
+          const restKeysCount = keyEntities.filter(
+            ({ status }) => status !== STATUS_REMOVED,
+          ).length;
 
-      return nextKeyEntities.filter(({ status }) => status !== STATUS_REMOVED)
-        .length;
+          if (restKeysCount === 0 && this.props.onAllRemoved) {
+            this.props.onAllRemoved();
+          }
+        },
+      );
     };
 
     render() {
@@ -151,11 +171,7 @@ export function genCSSMotionList(
                   onVisibleChanged?.(changedVisible, { key: eventProps.key });
 
                   if (!changedVisible) {
-                    const restKeysCount = this.removeKey(eventProps.key);
-
-                    if (restKeysCount === 0 && onAllRemoved) {
-                      onAllRemoved();
-                    }
+                    this.removeKey(eventProps.key);
                   }
                 }}
               >
