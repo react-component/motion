@@ -110,21 +110,31 @@ export function genCSSMotionList(
 
     // ZombieJ: Return the count of rest keys. It's safe to refactor if need more info.
     removeKey = (removeKey: React.Key) => {
-      const { keyEntities } = this.state;
-      const nextKeyEntities = keyEntities.map(entity => {
-        if (entity.key !== removeKey) return entity;
-        return {
-          ...entity,
-          status: STATUS_REMOVED,
-        };
-      });
+      this.setState(
+        prevState => {
+          const nextKeyEntities = prevState.keyEntities.map(entity => {
+            if (entity.key !== removeKey) return entity;
+            return {
+              ...entity,
+              status: STATUS_REMOVED,
+            };
+          });
 
-      this.setState({
-        keyEntities: nextKeyEntities,
-      });
+          return {
+            keyEntities: nextKeyEntities,
+          };
+        },
+        () => {
+          const { keyEntities } = this.state;
+          const restKeysCount = keyEntities.filter(
+            ({ status }) => status !== STATUS_REMOVED,
+          ).length;
 
-      return nextKeyEntities.filter(({ status }) => status !== STATUS_REMOVED)
-        .length;
+          if (restKeysCount === 0 && this.props.onAllRemoved) {
+            this.props.onAllRemoved();
+          }
+        },
+      );
     };
 
     render() {
@@ -160,11 +170,7 @@ export function genCSSMotionList(
                   onVisibleChanged?.(changedVisible, { key: eventProps.key });
 
                   if (!changedVisible) {
-                    const restKeysCount = this.removeKey(eventProps.key);
-
-                    if (restKeysCount === 0 && onAllRemoved) {
-                      onAllRemoved();
-                    }
+                    this.removeKey(eventProps.key);
                   }
                 }}
               >
