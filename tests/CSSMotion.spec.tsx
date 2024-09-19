@@ -331,7 +331,7 @@ describe('CSSMotion', () => {
 
       test(
         'FC with ref',
-        React.forwardRef((props, ref) => <div {...props} ref={ref} />),
+        React.forwardRef((props, ref: any) => <div {...props} ref={ref} />),
       );
 
       test(
