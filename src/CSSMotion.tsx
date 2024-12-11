@@ -1,7 +1,7 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import classNames from 'classnames';
 import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { fillRef, supportRef } from 'rc-util/lib/ref';
+import { fillRef, getNodeRef, supportRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import { useRef } from 'react';
 import { Context } from './context';
@@ -233,12 +233,15 @@ export function genCSSMotion(config: CSSMotionConfig) {
 
     // Auto inject ref if child node not have `ref` props
     if (React.isValidElement(motionChildren) && supportRef(motionChildren)) {
-      const { ref: originNodeRef } = motionChildren as any;
+      const originNodeRef = getNodeRef(motionChildren);
 
       if (!originNodeRef) {
-        motionChildren = React.cloneElement<any>(motionChildren, {
-          ref: setNodeRef,
-        });
+        motionChildren = React.cloneElement(
+          motionChildren as React.ReactElement,
+          {
+            ref: setNodeRef,
+          },
+        );
       }
     }
 
