@@ -191,8 +191,17 @@ export default function useStatus(
   activeRef.current = active;
 
   // ============================ Status ============================
+  const visibleRef = useRef<boolean | null>(null);
+
   // Update with new status
   useIsomorphicLayoutEffect(() => {
+    // When use Suspense, the `visible` will repeat trigger,
+    // But not real change of the `visible`, we need to skip it.
+    // https://github.com/ant-design/ant-design/issues/44379
+    if (mountedRef.current && visibleRef.current === visible) {
+      return;
+    }
+
     setAsyncVisible(visible);
 
     const isMounted = mountedRef.current;
@@ -232,6 +241,8 @@ export default function useStatus(
       // Set back in case no motion but prev status has prepare step
       setStatus(STATUS_NONE);
     }
+
+    visibleRef.current = visible;
   }, [visible]);
 
   // ============================ Effect ============================
