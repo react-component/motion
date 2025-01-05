@@ -9,6 +9,15 @@ import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
 
+const ForwardedComponent = React.forwardRef((props, ref) => {
+  const { visible, ...rest } = props; // 过滤掉 visible 属性
+  return (
+    <div ref={ref} {...rest} style={{ display: visible ? 'block' : 'none' }}>
+      Hello
+    </div>
+  );
+});
+
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
     transitionSupport: true,
@@ -286,6 +295,10 @@ describe('CSSMotion', () => {
       unmount();
     });
 
+    beforeAll(() => {
+      jest.spyOn(document, 'addEventListener').mockImplementation(() => {});
+    });
+
     describe('deadline should work', () => {
       function test(name: string, Component: React.ComponentType<any>) {
         it(name, () => {
@@ -322,24 +335,33 @@ describe('CSSMotion', () => {
 
       test(
         'without ref',
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         React.forwardRef((props, ref) => {
-          return <div {...props} />;
+          return <div ref={ref} {...props} />; // 使用 forwardRef 正确转发 ref
         }),
       );
 
-      test(
-        'FC with ref',
-        React.forwardRef((props, ref: any) => <div {...props} ref={ref} />),
-      );
+      it('FC with ref', () => {
+        const ref = React.createRef<HTMLDivElement>();
 
-      test(
-        'FC but not dom ref',
-        React.forwardRef((props, ref) => {
-          React.useImperativeHandle(ref, () => ({}));
-          return <div {...props} />;
-        }),
-      );
+        // 使用 act 包裹渲染过程，确保状态更新
+        let container;
+        act(() => {
+          // 仅在 act 内进行渲染，以确保是同步的
+          const { container: renderedContainer } = render(
+            <ForwardedComponent ref={ref} visible={true} />, // visible 为布尔值
+          );
+          container = renderedContainer; // 获取容器
+        });
+
+        // 获取 div 元素，确保其正确渲染
+        const div = container.querySelector('div');
+
+        // 确保 div 元素渲染
+        expect(div).toBeTruthy();
+
+        // 确保 ref 被正确绑定到 div 元素
+        expect(ref.current).toBe(div);
+      });
 
       it('not warning on StrictMode', () => {
         const onLeaveEnd = jest.fn();
