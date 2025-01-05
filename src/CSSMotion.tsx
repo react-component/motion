@@ -1,6 +1,5 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import classNames from 'classnames';
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
 import { fillRef, getNodeRef, supportRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -141,18 +140,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
     const wrapperNodeRef = useRef();
 
     function getDomElement() {
-      try {
-        // Here we're avoiding call for findDOMNode since it's deprecated
-        // in strict mode. We're calling it only when node ref is not
-        // an instance of DOM HTMLElement. Otherwise use
-        // findDOMNode as a final resort
-        return nodeRef.current instanceof HTMLElement
-          ? nodeRef.current
-          : findDOMNode<HTMLElement>(wrapperNodeRef.current);
-      } catch (e) {
-        // Only happen when `motionDeadline` trigger but element removed.
-        return null;
-      }
+      return nodeRef.current instanceof HTMLElement
+        ? nodeRef.current
+        : wrapperNodeRef.current;
     }
 
     const [status, statusStep, statusStyle, mergedVisible] = useStatus(

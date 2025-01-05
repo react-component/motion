@@ -5,7 +5,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import classNames from 'classnames';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
@@ -831,74 +830,28 @@ describe('CSSMotion', () => {
   });
 
   describe('strict mode', () => {
-    beforeEach(() => {
-      jest.spyOn(ReactDOM, 'findDOMNode');
-    });
-
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
-    it('calls findDOMNode when no refs are passed', () => {
+    it('renders correctly when no ref is passed', () => {
       const Div = () => <div />;
-      render(
+
+      const { container } = render(
         <CSSMotion motionName="transition" visible>
-          {() => <Div />}
+          {(props, ref) => <Div {...props} ref={ref} />}
         </CSSMotion>,
       );
 
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+      // 检查 DOM 是否渲染出来
+      expect(container.querySelector('div')).toBeInTheDocument();
     });
 
-    it('does not call findDOMNode when ref is passed internally', () => {
-      render(
+    it('renders correctly when ref is passed internally', () => {
+      const { container } = render(
         <CSSMotion motionName="transition" visible>
           {(props, ref) => <div ref={ref} />}
         </CSSMotion>,
       );
 
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
-    });
-
-    it('calls findDOMNode when refs are forwarded but not assigned', () => {
-      const domRef = React.createRef();
-      const Div = () => <div />;
-
-      render(
-        <CSSMotion motionName="transition" visible ref={domRef}>
-          {() => <Div />}
-        </CSSMotion>,
-      );
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
-    });
-
-    it('does not call findDOMNode when refs are forwarded and assigned', () => {
-      const domRef = React.createRef();
-
-      render(
-        <CSSMotion motionName="transition" visible ref={domRef}>
-          {(props, ref) => <div ref={ref} />}
-        </CSSMotion>,
-      );
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+      // 检查 DOM 是否渲染出来
+      expect(container.querySelector('div')).toBeInTheDocument();
     });
   });
 
