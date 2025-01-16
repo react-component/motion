@@ -1,5 +1,5 @@
-import canUseDOM from 'rc-util/lib/Dom/canUseDom';
-import { MotionName } from '../CSSMotion';
+import canUseDOM from '@rc-component/util/lib/Dom/canUseDom';
+import type { MotionName } from '../CSSMotion';
 
 // ================= Transition =================
 // Event wrapper. Copy from react source code

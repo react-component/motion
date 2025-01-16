@@ -1,10 +1,10 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
+import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import { getNodeRef, supportRef } from '@rc-component/util/lib/ref';
 import classNames from 'classnames';
-import { fillRef, getNodeRef, supportRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import { useRef } from 'react';
 import { Context } from './context';
-import DomWrapper from './DomWrapper';
 import useStatus from './hooks/useStatus';
 import { isActive } from './hooks/useStepQueue';
 import type {
@@ -90,7 +90,7 @@ export interface CSSMotionProps {
       style?: React.CSSProperties;
       [key: string]: any;
     },
-    ref: (node: any) => void,
+    ref: React.Ref<any>,
   ) => React.ReactElement;
 }
 
@@ -136,13 +136,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
 
     // Ref to the react node, it may be a HTMLElement
     const nodeRef = useRef<any>();
-    // Ref to the dom wrapper in case ref can not pass to HTMLElement
-    const wrapperNodeRef = useRef();
 
     function getDomElement() {
-      return nodeRef.current instanceof HTMLElement
-        ? nodeRef.current
-        : wrapperNodeRef.current;
+      return getDOM(nodeRef.current) as HTMLElement;
     }
 
     const [status, statusStep, statusStyle, mergedVisible] = useStatus(
@@ -160,13 +156,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
     }
 
     // ====================== Refs ======================
-    const setNodeRef = React.useCallback(
-      (node: any) => {
-        nodeRef.current = node;
-        fillRef(ref, node);
-      },
-      [ref],
-    );
+    React.useImperativeHandle(ref, () => getDomElement());
 
     // ===================== Render =====================
     let motionChildren: React.ReactNode;
@@ -178,16 +168,16 @@ export function genCSSMotion(config: CSSMotionConfig) {
     } else if (status === STATUS_NONE) {
       // Stable children
       if (mergedVisible) {
-        motionChildren = children({ ...mergedProps }, setNodeRef);
+        motionChildren = children({ ...mergedProps }, nodeRef);
       } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
         motionChildren = children(
           { ...mergedProps, className: leavedClassName },
-          setNodeRef,
+          nodeRef,
         );
       } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
         motionChildren = children(
           { ...mergedProps, style: { display: 'none' } },
-          setNodeRef,
+          nodeRef,
         );
       } else {
         motionChildren = null;
@@ -217,7 +207,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
           }),
           style: statusStyle,
         },
-        setNodeRef,
+        nodeRef,
       );
     }
 
@@ -229,13 +219,13 @@ export function genCSSMotion(config: CSSMotionConfig) {
         motionChildren = React.cloneElement(
           motionChildren as React.ReactElement,
           {
-            ref: setNodeRef,
+            ref: nodeRef,
           },
         );
       }
     }
 
-    return <DomWrapper ref={wrapperNodeRef}>{motionChildren}</DomWrapper>;
+    return motionChildren;
   });
 
   CSSMotion.displayName = 'CSSMotion';

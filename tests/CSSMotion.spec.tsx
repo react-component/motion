@@ -5,18 +5,10 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import classNames from 'classnames';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
 import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
-
-const ForwardedComponent = React.forwardRef((props, ref) => {
-  const { visible, ...rest } = props; // 过滤掉 visible 属性
-  return (
-    <div ref={ref} {...rest} style={{ display: visible ? 'block' : 'none' }}>
-      Hello
-    </div>
-  );
-});
 
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
@@ -295,11 +287,10 @@ describe('CSSMotion', () => {
       unmount();
     });
 
-    beforeAll(() => {
-      jest.spyOn(document, 'addEventListener').mockImplementation(() => {});
-    });
-
     describe('deadline should work', () => {
+      // NOTE: only test for not crash here
+      // Since React 19 not support `findDOMNode` anymore
+      // the func call will not get real DOM node
       function test(name: string, Component: React.ComponentType<any>) {
         it(name, () => {
           const onAppearEnd = jest.fn();
@@ -335,33 +326,24 @@ describe('CSSMotion', () => {
 
       test(
         'without ref',
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         React.forwardRef((props, ref) => {
-          return <div ref={ref} {...props} />; // 使用 forwardRef 正确转发 ref
+          return <div {...props} />;
         }),
       );
 
-      it('FC with ref', () => {
-        const ref = React.createRef<HTMLDivElement>();
+      test(
+        'FC with ref',
+        React.forwardRef((props, ref: any) => <div {...props} ref={ref} />),
+      );
 
-        // 使用 act 包裹渲染过程，确保状态更新
-        let container;
-        act(() => {
-          // 仅在 act 内进行渲染，以确保是同步的
-          const { container: renderedContainer } = render(
-            <ForwardedComponent ref={ref} visible={true} />, // visible 为布尔值
-          );
-          container = renderedContainer; // 获取容器
-        });
-
-        // 获取 div 元素，确保其正确渲染
-        const div = container.querySelector('div');
-
-        // 确保 div 元素渲染
-        expect(div).toBeTruthy();
-
-        // 确保 ref 被正确绑定到 div 元素
-        expect(ref.current).toBe(div);
-      });
+      test(
+        'FC but not dom ref',
+        React.forwardRef((props, ref) => {
+          React.useImperativeHandle(ref, () => ({}));
+          return <div {...props} />;
+        }),
+      );
 
       it('not warning on StrictMode', () => {
         const onLeaveEnd = jest.fn();
@@ -852,28 +834,88 @@ describe('CSSMotion', () => {
   });
 
   describe('strict mode', () => {
-    it('renders correctly when no ref is passed', () => {
-      const Div = () => <div />;
+    beforeEach(() => {
+      jest.spyOn(ReactDOM, 'findDOMNode');
+    });
 
-      const { container } = render(
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it('calls findDOMNode when no refs are passed', () => {
+      const Div = () => <div />;
+      render(
         <CSSMotion motionName="transition" visible>
-          {(props, ref) => <Div {...props} ref={ref} />}
+          {() => <Div />}
         </CSSMotion>,
       );
 
-      // 检查 DOM 是否渲染出来
-      expect(container.querySelector('div')).toBeInTheDocument();
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
     });
 
-    it('renders correctly when ref is passed internally', () => {
-      const { container } = render(
+    it('does not call findDOMNode when ref is passed internally', () => {
+      render(
         <CSSMotion motionName="transition" visible>
           {(props, ref) => <div ref={ref} />}
         </CSSMotion>,
       );
 
-      // 检查 DOM 是否渲染出来
-      expect(container.querySelector('div')).toBeInTheDocument();
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
+
+    it('support nativeElement of ref', () => {
+      const domRef = React.createRef();
+      const Div = React.forwardRef<
+        {
+          nativeElement: HTMLDivElement;
+        },
+        object
+      >((props, ref) => {
+        const divRef = React.useRef<HTMLDivElement>(null);
+
+        React.useImperativeHandle(ref, () => ({
+          nativeElement: divRef.current!,
+        }));
+
+        return <div {...props} ref={divRef} className="bamboo" />;
+      });
+
+      const { container } = render(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {() => <Div />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(domRef.current).toBe(container.querySelector('.bamboo'));
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
+
+    it('does not call findDOMNode when refs are forwarded and assigned', () => {
+      const domRef = React.createRef();
+
+      render(
+        <CSSMotion motionName="transition" visible ref={domRef}>
+          {(props, ref) => <div ref={ref} />}
+        </CSSMotion>,
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
   });
 
