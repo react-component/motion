@@ -842,10 +842,11 @@ describe('CSSMotion', () => {
       jest.resetAllMocks();
     });
 
-    it('calls findDOMNode when no refs are passed', () => {
+    it('not crash when no refs are passed', () => {
       const Div = () => <div />;
+      const cssMotionRef = React.createRef();
       render(
-        <CSSMotion motionName="transition" visible>
+        <CSSMotion motionName="transition" visible ref={cssMotionRef}>
           {() => <Div />}
         </CSSMotion>,
       );
@@ -854,7 +855,8 @@ describe('CSSMotion', () => {
         jest.runAllTimers();
       });
 
-      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+      expect(cssMotionRef.current).toBeFalsy();
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
     it('does not call findDOMNode when ref is passed internally', () => {
