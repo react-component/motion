@@ -225,7 +225,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
     }
 
-    return motionChildren;
+    return motionChildren as React.ReactElement;
   });
 
   CSSMotion.displayName = 'CSSMotion';

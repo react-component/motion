@@ -31,6 +31,7 @@
     "docs:build": "dumi build",
     "docs:deploy": "gh-pages -d .doc",
     "lint": "eslint src/ --ext .tsx,.ts",
+    "lint:tsc": "tsc --noEmit",
     "now-build": "npm run docs:build",
     "prepare": "husky install",
     "prepublishOnly": "npm run compile && np --yolo --no-publish",
