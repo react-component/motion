@@ -1,6 +1,6 @@
 {
   "name": "@rc-component/motion",
-  "version": "1.0.0-1",
+  "version": "1.0.0",
   "description": "React lifecycle controlled motion library",
   "keywords": [
     "react",
