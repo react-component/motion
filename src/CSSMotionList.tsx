@@ -55,7 +55,7 @@ export interface CSSMotionListProps
       index?: number;
       [key: string]: any;
     },
-    ref: (node: any) => void,
+    ref: React.Ref<any>,
   ) => React.ReactElement;
 }
 

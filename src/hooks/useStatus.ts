@@ -1,6 +1,6 @@
-import { useEvent } from 'rc-util';
-import useState from 'rc-util/lib/hooks/useState';
-import useSyncState from 'rc-util/lib/hooks/useSyncState';
+import { useEvent } from '@rc-component/util';
+import useState from '@rc-component/util/lib/hooks/useState';
+import useSyncState from '@rc-component/util/lib/hooks/useSyncState';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import type { CSSMotionProps } from '../CSSMotion';

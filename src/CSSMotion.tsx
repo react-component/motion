@@ -1,11 +1,10 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
+import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
+import { getNodeRef, supportRef } from '@rc-component/util/lib/ref';
 import classNames from 'classnames';
-import findDOMNode from 'rc-util/lib/Dom/findDOMNode';
-import { fillRef, getNodeRef, supportRef } from 'rc-util/lib/ref';
 import * as React from 'react';
 import { useRef } from 'react';
 import { Context } from './context';
-import DomWrapper from './DomWrapper';
 import useStatus from './hooks/useStatus';
 import { isActive } from './hooks/useStepQueue';
 import type {
@@ -91,7 +90,7 @@ export interface CSSMotionProps {
       style?: React.CSSProperties;
       [key: string]: any;
     },
-    ref: (node: any) => void,
+    ref: React.Ref<any>,
   ) => React.ReactElement;
 }
 
@@ -137,22 +136,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
 
     // Ref to the react node, it may be a HTMLElement
     const nodeRef = useRef<any>();
-    // Ref to the dom wrapper in case ref can not pass to HTMLElement
-    const wrapperNodeRef = useRef();
 
     function getDomElement() {
-      try {
-        // Here we're avoiding call for findDOMNode since it's deprecated
-        // in strict mode. We're calling it only when node ref is not
-        // an instance of DOM HTMLElement. Otherwise use
-        // findDOMNode as a final resort
-        return nodeRef.current instanceof HTMLElement
-          ? nodeRef.current
-          : findDOMNode<HTMLElement>(wrapperNodeRef.current);
-      } catch (e) {
-        // Only happen when `motionDeadline` trigger but element removed.
-        return null;
-      }
+      return getDOM(nodeRef.current) as HTMLElement;
     }
 
     const [status, statusStep, statusStyle, mergedVisible] = useStatus(
@@ -170,13 +156,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
     }
 
     // ====================== Refs ======================
-    const setNodeRef = React.useCallback(
-      (node: any) => {
-        nodeRef.current = node;
-        fillRef(ref, node);
-      },
-      [ref],
-    );
+    React.useImperativeHandle(ref, () => getDomElement());
 
     // ===================== Render =====================
     let motionChildren: React.ReactNode;
@@ -188,16 +168,16 @@ export function genCSSMotion(config: CSSMotionConfig) {
     } else if (status === STATUS_NONE) {
       // Stable children
       if (mergedVisible) {
-        motionChildren = children({ ...mergedProps }, setNodeRef);
+        motionChildren = children({ ...mergedProps }, nodeRef);
       } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
         motionChildren = children(
           { ...mergedProps, className: leavedClassName },
-          setNodeRef,
+          nodeRef,
         );
       } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
         motionChildren = children(
           { ...mergedProps, style: { display: 'none' } },
-          setNodeRef,
+          nodeRef,
         );
       } else {
         motionChildren = null;
@@ -227,7 +207,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
           }),
           style: statusStyle,
         },
-        setNodeRef,
+        nodeRef,
       );
     }
 
@@ -239,13 +219,13 @@ export function genCSSMotion(config: CSSMotionConfig) {
         motionChildren = React.cloneElement(
           motionChildren as React.ReactElement,
           {
-            ref: setNodeRef,
+            ref: nodeRef,
           },
         );
       }
     }
 
-    return <DomWrapper ref={wrapperNodeRef}>{motionChildren}</DomWrapper>;
+    return motionChildren as React.ReactElement;
   });
 
   CSSMotion.displayName = 'CSSMotion';

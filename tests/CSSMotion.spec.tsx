@@ -288,6 +288,9 @@ describe('CSSMotion', () => {
     });
 
     describe('deadline should work', () => {
+      // NOTE: only test for not crash here
+      // Since React 19 not support `findDOMNode` anymore
+      // the func call will not get real DOM node
       function test(name: string, Component: React.ComponentType<any>) {
         it(name, () => {
           const onAppearEnd = jest.fn();
@@ -839,10 +842,11 @@ describe('CSSMotion', () => {
       jest.resetAllMocks();
     });
 
-    it('calls findDOMNode when no refs are passed', () => {
+    it('not crash when no refs are passed', () => {
       const Div = () => <div />;
+      const cssMotionRef = React.createRef();
       render(
-        <CSSMotion motionName="transition" visible>
+        <CSSMotion motionName="transition" visible ref={cssMotionRef}>
           {() => <Div />}
         </CSSMotion>,
       );
@@ -851,7 +855,8 @@ describe('CSSMotion', () => {
         jest.runAllTimers();
       });
 
-      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+      expect(cssMotionRef.current).toBeFalsy();
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
     it('does not call findDOMNode when ref is passed internally', () => {
@@ -868,11 +873,24 @@ describe('CSSMotion', () => {
       expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
-    it('calls findDOMNode when refs are forwarded but not assigned', () => {
+    it('support nativeElement of ref', () => {
       const domRef = React.createRef();
-      const Div = () => <div />;
+      const Div = React.forwardRef<
+        {
+          nativeElement: HTMLDivElement;
+        },
+        object
+      >((props, ref) => {
+        const divRef = React.useRef<HTMLDivElement>(null);
 
-      render(
+        React.useImperativeHandle(ref, () => ({
+          nativeElement: divRef.current!,
+        }));
+
+        return <div {...props} ref={divRef} className="bamboo" />;
+      });
+
+      const { container } = render(
         <CSSMotion motionName="transition" visible ref={domRef}>
           {() => <Div />}
         </CSSMotion>,
@@ -882,7 +900,8 @@ describe('CSSMotion', () => {
         jest.runAllTimers();
       });
 
-      expect(ReactDOM.findDOMNode).toHaveBeenCalled();
+      expect(domRef.current).toBe(container.querySelector('.bamboo'));
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
     it('does not call findDOMNode when refs are forwarded and assigned', () => {
