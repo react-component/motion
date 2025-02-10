@@ -8,7 +8,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import type { CSSMotionProps } from '../src';
 import { Provider } from '../src';
-import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
+import RefCSSMotion, {
+  genCSSMotion,
+  type CSSMotionRef,
+} from '../src/CSSMotion';
 
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
@@ -628,7 +631,7 @@ describe('CSSMotion', () => {
   });
 
   it('forwardRef', () => {
-    const domRef = React.createRef();
+    const domRef = React.createRef<CSSMotionRef>();
     render(
       <RefCSSMotion motionName="transition" ref={domRef}>
         {({ style, className }, ref) => (
@@ -641,7 +644,7 @@ describe('CSSMotion', () => {
       </RefCSSMotion>,
     );
 
-    expect(domRef.current instanceof HTMLElement).toBeTruthy();
+    expect(domRef.current.nativeElement instanceof HTMLElement).toBeTruthy();
   });
 
   it("onMotionEnd shouldn't be fired by inner element", () => {
@@ -844,7 +847,7 @@ describe('CSSMotion', () => {
 
     it('not crash when no refs are passed', () => {
       const Div = () => <div />;
-      const cssMotionRef = React.createRef();
+      const cssMotionRef = React.createRef<CSSMotionRef>();
       render(
         <CSSMotion motionName="transition" visible ref={cssMotionRef}>
           {() => <Div />}
@@ -855,7 +858,7 @@ describe('CSSMotion', () => {
         jest.runAllTimers();
       });
 
-      expect(cssMotionRef.current).toBeFalsy();
+      expect(cssMotionRef.current.nativeElement).toBeFalsy();
       expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
@@ -874,7 +877,7 @@ describe('CSSMotion', () => {
     });
 
     it('support nativeElement of ref', () => {
-      const domRef = React.createRef();
+      const domRef = React.createRef<CSSMotionRef>();
       const Div = React.forwardRef<
         {
           nativeElement: HTMLDivElement;
@@ -900,12 +903,14 @@ describe('CSSMotion', () => {
         jest.runAllTimers();
       });
 
-      expect(domRef.current).toBe(container.querySelector('.bamboo'));
+      expect(domRef.current.nativeElement).toBe(
+        container.querySelector('.bamboo'),
+      );
       expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
 
     it('does not call findDOMNode when refs are forwarded and assigned', () => {
-      const domRef = React.createRef();
+      const domRef = React.createRef<CSSMotionRef>();
 
       render(
         <CSSMotion motionName="transition" visible ref={domRef}>

@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 // import type { CSSMotionProps } from '../src/CSSMotion';
-import { genCSSMotion } from '../src/CSSMotion';
+import { genCSSMotion, type CSSMotionRef } from '../src/CSSMotion';
 // import RefCSSMotion, { genCSSMotion } from '../src/CSSMotion';
 // import ReactDOM from 'react-dom';
 
@@ -26,7 +26,7 @@ describe('StrictMode', () => {
   });
 
   it('motion should end', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<CSSMotionRef>();
 
     const { container } = render(
       <React.StrictMode>
@@ -50,6 +50,7 @@ describe('StrictMode', () => {
     act(() => {
       jest.runAllTimers();
     });
+    expect(ref.current.inMotion()).toBeTruthy();
     expect(node).not.toHaveClass('transition-appear-start');
     expect(node).toHaveClass('transition-appear-active');
 
@@ -57,6 +58,7 @@ describe('StrictMode', () => {
     fireEvent.transitionEnd(node);
     expect(node).not.toHaveClass('transition-appear');
 
-    expect(ref.current).toBe(node);
+    expect(ref.current.inMotion()).toBeFalsy();
+    expect(ref.current.nativeElement).toBe(node);
   });
 });
