@@ -147,12 +147,13 @@ export function genCSSMotion(config: CSSMotionConfig) {
         return getDOM(nodeRef.current) as HTMLElement;
       }
 
-      const [status, statusStep, statusStyle, mergedVisible] = useStatus(
+      const [getStatus, statusStep, statusStyle, mergedVisible] = useStatus(
         supportMotion,
         visible,
         getDomElement,
         props,
       );
+      const status = getStatus();
 
       // Record whether content has rendered
       // Will return null for un-rendered even when `removeOnLeave={false}`
@@ -162,10 +163,26 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // ====================== Refs ======================
-      React.useImperativeHandle(ref, () => ({
-        nativeElement: getDomElement(),
-        inMotion: () => status !== STATUS_NONE,
-      }));
+      const [refObj] = React.useState<CSSMotionRef>(() => {
+        const obj = {} as CSSMotionRef;
+        Object.defineProperties(obj, {
+          nativeElement: {
+            enumerable: true,
+            get: getDomElement,
+          },
+          inMotion: {
+            enumerable: true,
+            get: () => {
+              return () => getStatus() !== STATUS_NONE;
+            },
+          },
+        });
+        return obj;
+      });
+
+      // We lock `deps` here since function return object
+      // will repeat trigger ref from `refConfig` -> `null` -> `refConfig`
+      React.useImperativeHandle(ref, () => refObj, []);
 
       // ===================== Render =====================
       let motionChildren: React.ReactNode;
