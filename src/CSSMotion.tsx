@@ -163,7 +163,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // ====================== Refs ======================
-      const [refObj] = React.useState<CSSMotionRef>(() => {
+      const refObj = React.useMemo<CSSMotionRef>(() => {
         const obj = {} as CSSMotionRef;
         Object.defineProperties(obj, {
           nativeElement: {
@@ -178,7 +178,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
           },
         });
         return obj;
-      });
+      }, []);
 
       // We lock `deps` here since function return object
       // will repeat trigger ref from `refConfig` -> `null` -> `refConfig`
