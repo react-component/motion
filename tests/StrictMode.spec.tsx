@@ -43,6 +43,8 @@ describe('StrictMode', () => {
       </React.StrictMode>,
     );
 
+    expect(ref.current.enableMotion).toBeTruthy();
+
     const node = container.querySelector('.motion-box');
     expect(node).toHaveClass('transition-appear', 'transition-appear-start');
 
