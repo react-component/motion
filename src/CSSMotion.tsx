@@ -18,8 +18,8 @@ import { getTransitionName, supportTransition } from './util/motion';
 
 export interface CSSMotionRef {
   nativeElement: HTMLElement;
-  inMotion: boolean;
-  enableMotion: boolean;
+  inMotion: () => boolean;
+  enableMotion: () => boolean;
 }
 
 export type CSSMotionConfig =
@@ -173,11 +173,11 @@ export function genCSSMotion(config: CSSMotionConfig) {
           },
           inMotion: {
             enumerable: true,
-            get: () => getStatus() !== STATUS_NONE,
+            get: () => () => getStatus() !== STATUS_NONE,
           },
           enableMotion: {
             enumerable: true,
-            get: () => supportMotion,
+            get: () => () => supportMotion,
           },
         });
         return obj;

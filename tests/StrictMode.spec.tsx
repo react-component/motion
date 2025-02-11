@@ -43,7 +43,7 @@ describe('StrictMode', () => {
       </React.StrictMode>,
     );
 
-    expect(ref.current.enableMotion).toBeTruthy();
+    expect(ref.current.enableMotion()).toBeTruthy();
 
     const node = container.querySelector('.motion-box');
     expect(node).toHaveClass('transition-appear', 'transition-appear-start');
@@ -52,7 +52,7 @@ describe('StrictMode', () => {
     act(() => {
       jest.runAllTimers();
     });
-    expect(ref.current.inMotion).toBeTruthy();
+    expect(ref.current.inMotion()).toBeTruthy();
     expect(node).not.toHaveClass('transition-appear-start');
     expect(node).toHaveClass('transition-appear-active');
 
@@ -60,7 +60,7 @@ describe('StrictMode', () => {
     fireEvent.transitionEnd(node);
     expect(node).not.toHaveClass('transition-appear');
 
-    expect(ref.current.inMotion).toBeFalsy();
+    expect(ref.current.inMotion()).toBeFalsy();
     expect(ref.current.nativeElement).toBe(node);
   });
 });
