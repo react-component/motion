@@ -87,7 +87,6 @@ describe('CSSMotionList', () => {
     it('with motion support', () => {
       const CSSMotion = genCSSMotion({
         transitionSupport: true,
-        forwardRef: false,
       });
       const CSSMotionList = genCSSMotionList(true, CSSMotion);
       testMotion(CSSMotionList, container => {

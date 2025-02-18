@@ -16,7 +16,6 @@ import RefCSSMotion, {
 describe('CSSMotion', () => {
   const CSSMotion = genCSSMotion({
     transitionSupport: true,
-    forwardRef: false,
   });
 
   beforeEach(() => {
@@ -613,7 +612,6 @@ describe('CSSMotion', () => {
   it('no transition', () => {
     const NoCSSTransition = genCSSMotion({
       transitionSupport: false,
-      forwardRef: false,
     });
 
     const { container } = render(

@@ -26,8 +26,6 @@ export type CSSMotionConfig =
   | boolean
   | {
       transitionSupport?: boolean;
-      /** @deprecated, no need this anymore since `rc-motion` only support latest react */
-      forwardRef?: boolean;
     };
 
 export type MotionName =
