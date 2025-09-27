@@ -3,7 +3,7 @@
   react/prefer-stateless-function, react/no-multi-comp
 */
 import { fireEvent, render } from '@testing-library/react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { genCSSMotion, type CSSMotionRef } from '../src/CSSMotion';
@@ -30,10 +30,7 @@ describe('StrictMode', () => {
         <CSSMotion motionName="transition" ref={ref} motionAppear visible>
           {({ style, className }) => {
             return (
-              <div
-                style={style}
-                className={classNames('motion-box', className)}
-              />
+              <div style={style} className={clsx('motion-box', className)} />
             );
           }}
         </CSSMotion>

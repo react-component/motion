@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -52,7 +52,7 @@ class App extends React.Component<{}, DemoState> {
               {({ style, className }, ref) => (
                 <div
                   ref={ref}
-                  className={classNames('demo-block', className)}
+                  className={clsx('demo-block', className)}
                   style={style}
                 />
               )}

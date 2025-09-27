@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import { CSSMotionList } from 'rc-motion';
 import React from 'react';
 import './list.less';
@@ -104,11 +104,8 @@ class App extends React.Component<{}, DemoState> {
           {({ key, background, className, style }) => {
             return (
               <div
-                className={classNames('list-demo-block', className)}
-                style={{
-                  ...style,
-                  background,
-                }}
+                className={clsx('list-demo-block', className)}
+                style={{ ...style, background }}
               >
                 <span>{key}</span>
               </div>

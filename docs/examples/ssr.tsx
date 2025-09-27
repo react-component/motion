@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import { genCSSMotion } from 'rc-motion/es/CSSMotion';
 import React from 'react';
@@ -27,7 +27,7 @@ const MotionAppear = ({ supportMotion }: MotionAppearProps) => {
       {({ style, className }, ref) => (
         <div
           ref={ref}
-          className={classNames('demo-block', className)}
+          className={clsx('demo-block', className)}
           style={style}
         />
       )}

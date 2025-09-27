@@ -1,7 +1,7 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import { getNodeRef, supportRef } from '@rc-component/util/lib/ref';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import * as React from 'react';
 import { useRef } from 'react';
 import { Context } from './context';
@@ -228,7 +228,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
         motionChildren = children(
           {
             ...mergedProps,
-            className: classNames(getTransitionName(motionName, status), {
+            className: clsx(getTransitionName(motionName, status), {
               [motionCls]: motionCls && statusSuffix,
               [motionName as string]: typeof motionName === 'string',
             }),

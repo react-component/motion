@@ -3,7 +3,7 @@
   react/prefer-stateless-function, react/no-multi-comp
 */
 import { act, fireEvent, render } from '@testing-library/react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import type { CSSMotionProps } from '../src';
@@ -94,7 +94,7 @@ describe('CSSMotion', () => {
                 return (
                   <div
                     style={style}
-                    className={classNames('motion-box', className)}
+                    className={clsx('motion-box', className)}
                   />
                 );
               }}
@@ -173,10 +173,7 @@ describe('CSSMotion', () => {
           >
             {({ style, className }) => {
               return (
-                <div
-                  style={style}
-                  className={classNames('motion-box', className)}
-                />
+                <div style={style} className={clsx('motion-box', className)} />
               );
             }}
           </CSSMotion>
@@ -219,10 +216,7 @@ describe('CSSMotion', () => {
       const genMotion = (props?: CSSMotionProps) => (
         <CSSMotion motionName="transition" visible {...props}>
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>
       );
@@ -248,10 +242,7 @@ describe('CSSMotion', () => {
       const genMotion = (props?: CSSMotionProps) => (
         <CSSMotion motionName="transition" {...props}>
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>
       );
@@ -307,7 +298,7 @@ describe('CSSMotion', () => {
                 <Component
                   ref={ref}
                   style={style}
-                  className={classNames('motion-box', className)}
+                  className={clsx('motion-box', className)}
                 />
               )}
             </CSSMotion>,
@@ -362,10 +353,7 @@ describe('CSSMotion', () => {
               motionLeave={true}
             >
               {({ style, className }) => (
-                <div
-                  style={style}
-                  className={classNames('motion-box', className)}
-                />
+                <div style={style} className={clsx('motion-box', className)} />
               )}
             </CSSMotion>
           </React.StrictMode>
@@ -440,10 +428,7 @@ describe('CSSMotion', () => {
           {...props}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>
       );
@@ -481,7 +466,7 @@ describe('CSSMotion', () => {
     const genMotion = (props?: CSSMotionProps) => (
       <CSSMotion visible {...props}>
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>
     );
@@ -513,10 +498,7 @@ describe('CSSMotion', () => {
           visible={false}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>,
       );
@@ -547,7 +529,7 @@ describe('CSSMotion', () => {
         onAppearPrepare={() => new Promise(() => {})}
       >
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>,
     );
@@ -584,10 +566,7 @@ describe('CSSMotion', () => {
           onAppearStart={onAppearStart}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>
       </Provider>
@@ -617,7 +596,7 @@ describe('CSSMotion', () => {
     const { container } = render(
       <NoCSSTransition motionName="transition">
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </NoCSSTransition>,
     );
@@ -636,7 +615,7 @@ describe('CSSMotion', () => {
           <div
             ref={ref}
             style={style}
-            className={classNames('motion-box', className)}
+            className={clsx('motion-box', className)}
           />
         )}
       </RefCSSMotion>,
@@ -704,10 +683,7 @@ describe('CSSMotion', () => {
         motionName="bamboo"
       >
         {({ style, className }) => (
-          <Component
-            style={style}
-            className={classNames('motion-box', className)}
-          />
+          <Component style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>
     );
@@ -747,7 +723,7 @@ describe('CSSMotion', () => {
     const { container } = render(
       <CSSMotion visible motionName="bamboo" onAppearPrepare={onAppearPrepare}>
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>,
     );
@@ -780,7 +756,7 @@ describe('CSSMotion', () => {
     const genMotion = (props?: CSSMotionProps) => (
       <CSSMotion forceRender motionName="bamboo" visible={false} {...props}>
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>
     );
@@ -806,7 +782,7 @@ describe('CSSMotion', () => {
         {...props}
       >
         {({ style, className }) => (
-          <div style={style} className={classNames('motion-box', className)} />
+          <div style={style} className={clsx('motion-box', className)} />
         )}
       </CSSMotion>
     );
@@ -938,10 +914,7 @@ describe('CSSMotion', () => {
           onVisibleChanged={onVisibleChanged}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>,
       );
@@ -964,10 +937,7 @@ describe('CSSMotion', () => {
           onVisibleChanged={onVisibleChanged}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>,
       );
@@ -990,10 +960,7 @@ describe('CSSMotion', () => {
           onVisibleChanged={onVisibleChanged}
         >
           {({ style, className }) => (
-            <div
-              style={style}
-              className={classNames('motion-box', className)}
-            />
+            <div style={style} className={clsx('motion-box', className)} />
           )}
         </CSSMotion>
       );
