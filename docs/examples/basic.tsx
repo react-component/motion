@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -164,7 +164,7 @@ class App extends React.Component<{}, DemoState> {
               {({ style, className }, ref) => (
                 <Div
                   ref={ref}
-                  className={classNames('demo-block', className)}
+                  className={clsx('demo-block', className)}
                   style={style}
                 />
               )}
@@ -182,10 +182,7 @@ class App extends React.Component<{}, DemoState> {
               onLeaveActive={this.styleGreen}
             >
               {({ style, className }) => (
-                <div
-                  className={classNames('demo-block', className)}
-                  style={style}
-                />
+                <div className={clsx('demo-block', className)} style={style} />
               )}
             </CSSMotion>
           </div>
@@ -209,7 +206,7 @@ class App extends React.Component<{}, DemoState> {
               >
                 {({ style, className }) => (
                   <div
-                    className={classNames('demo-block', className)}
+                    className={clsx('demo-block', className)}
                     style={style}
                   />
                 )}

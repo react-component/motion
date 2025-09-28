@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import CSSMotion, { Provider } from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -38,7 +38,7 @@ export default () => {
           <>
             <div
               ref={ref}
-              className={classNames('demo-block', className)}
+              className={clsx('demo-block', className)}
               style={style}
             />
             <ul>

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-render-return-value, react/prefer-stateless-function,
 react/no-multi-comp, @typescript-eslint/no-implied-eval */
 import { fireEvent, render } from '@testing-library/react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { genCSSMotion } from '../src/CSSMotion';
@@ -37,7 +37,7 @@ describe('CSSMotionList', () => {
             <div
               key={key}
               style={style}
-              className={classNames('motion-box', className)}
+              className={clsx('motion-box', className)}
             >
               {key}
             </div>
@@ -119,7 +119,7 @@ describe('CSSMotionList', () => {
           <div
             key={key}
             style={style}
-            className={classNames('motion-box', className)}
+            className={clsx('motion-box', className)}
           >
             {key}
           </div>
@@ -157,7 +157,7 @@ describe('CSSMotionList', () => {
           <div
             key={key}
             style={style}
-            className={classNames('motion-box', className)}
+            className={clsx('motion-box', className)}
           >
             {index}
           </div>
