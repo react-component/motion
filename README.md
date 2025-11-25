@@ -1,4 +1,4 @@
-# rc-motion
+# @rc-component/motion
 
 <!-- prettier-ignore -->
 [![NPM version][npm-image]][npm-url]
@@ -8,22 +8,22 @@
 [![bundle size][bundlephobia-image]][bundlephobia-url]
 [![dumi][dumi-image]][dumi-url]
 
-[npm-image]: http://img.shields.io/npm/v/rc-motion.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/rc-motion
+[npm-image]: http://img.shields.io/npm/v/@rc-component/motion.svg?style=flat-square
+[npm-url]: http://npmjs.org/package/@rc-component/motion
 [travis-image]: https://img.shields.io/travis/react-component/motion/master?style=flat-square
 [travis-url]: https://travis-ci.com/react-component/motion
-[github-actions-image]: https://github.com/react-component/motion/workflows/CI/badge.svg
-[github-actions-url]: https://github.com/react-component/motion/actions
+[github-actions-image]: https://github.com/react-component/motion/actions/workflows/main.yml/badge.svg
+[github-actions-url]: https://github.com/react-component/motion/actions/workflows/main.yml
 [codecov-image]: https://img.shields.io/codecov/c/github/react-component/motion/master.svg?style=flat-square
 [codecov-url]: https://app.codecov.io/gh/react-component/motion
 [david-url]: https://david-dm.org/react-component/motion
 [david-image]: https://david-dm.org/react-component/motion/status.svg?style=flat-square
 [david-dev-url]: https://david-dm.org/react-component/motion?type=dev
 [david-dev-image]: https://david-dm.org/react-component/motion/dev-status.svg?style=flat-square
-[download-image]: https://img.shields.io/npm/dm/rc-motion.svg?style=flat-square
-[download-url]: https://npmjs.org/package/rc-motion
-[bundlephobia-url]: https://bundlephobia.com/package/rc-motion
-[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/rc-motion
+[download-image]: https://img.shields.io/npm/dm/@rc-component/motion.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@rc-component/motion
+[bundlephobia-url]: https://bundlephobia.com/package/@rc-component/motion
+[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/@rc-component/motion
 [dumi-url]: https://github.com/umijs/dumi
 [dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
 
@@ -35,12 +35,12 @@ https://react-component.github.io/motion/
 
 ## Install
 
-[![rc-motion](https://nodei.co/npm/rc-motion.png)](https://npmjs.org/package/rc-motion)
+[![@rc-component/motion](https://nodei.co/npm/@rc-component/motion.png)](https://npmjs.org/package/@rc-component/motion)
 
 ## Example
 
 ```js
-import CSSMotion from 'rc-motion';
+import CSSMotion from '@rc-component/motion';
 
 export default ({ visible }) => (
   <CSSMotion visible={visible} motionName="my-motion">
@@ -92,4 +92,4 @@ npm start
 
 ## License
 
-rc-motion is released under the MIT license.
+@rc-component/motion is released under the MIT license.
