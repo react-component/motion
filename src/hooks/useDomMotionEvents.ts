@@ -36,6 +36,7 @@ export default (
   React.useEffect(
     () => () => {
       removeMotionEvents(cacheElementRef.current);
+      cacheElementRef.current = null;
     },
     [],
   );
