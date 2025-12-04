@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_rc_component_motion=self.webpackChunk_rc_component_motion||[]).push([[904],{33147:function(a,e,n){var s;n.r(e),n.d(e,{demos:function(){return I}});var o=n(15009),i=n.n(o),v=n(99289),_=n.n(v),r=n(67294),f=n(81935),l=n(93967),M=n.n(l),u=n(33770),c=n(53144),I={"docs-demo-basic-demo-basic":{component:r.memo(r.lazy(function(){return n.e(433).then(n.bind(n,6536))})),asset:{type:"BLOCK",id:"docs-demo-basic-demo-basic",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99306).Z},classnames:{type:"NPM",value:"2.5.1"},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":c,classnames:l,"rc-motion":u,react:s||(s=n.t(r,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":c},renderOpts:{compile:function(){var E=_()(i()().mark(function h(){var m,d=arguments;return i()().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,n.e(335).then(n.bind(n,37335));case 2:return t.abrupt("return",(m=t.sent).default.apply(m,d));case 3:case"end":return t.stop()}},h)}));function p(){return E.apply(this,arguments)}return p}()}}}},43346:function(a,e,n){var s;n.r(e),n.d(e,{demos:function(){return I}});var o=n(15009),i=n.n(o),v=n(99289),_=n.n(v),r=n(67294),f=n(77187),l=n(93967),M=n.n(l),u=n(33770),c=n(53144),I={"docs-demo-deadline-demo-deadline":{component:r.memo(r.lazy(function(){return n.e(433).then(n.bind(n,93797))})),asset:{type:"BLOCK",id:"docs-demo-deadline-demo-deadline",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(42083).Z},classnames:{type:"NPM",value:"2.5.1"},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":c,classnames:l,"rc-motion":u,react:s||(s=n.t(r,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":c},renderOpts:{compile:function(){var E=_()(i()().mark(function h(){var m,d=arguments;return i()().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,n.e(335).then(n.bind(n,37335));case 2:return t.abrupt("return",(m=t.sent).default.apply(m,d));case 3:case"end":return t.stop()}},h)}));function p(){return E.apply(this,arguments)}return p}()}}}},3038:function(a,e,n){var s;n.r(e),n.d(e,{demos:function(){return I}});var o=n(15009),i=n.n(o),v=n(99289),_=n.n(v),r=n(67294),f=n(73406),l=n(93967),M=n.n(l),u=n(33770),c=n(50696),I={"docs-demo-list-demo-list":{component:r.memo(r.lazy(function(){return n.e(433).then(n.bind(n,77277))})),asset:{type:"BLOCK",id:"docs-demo-list-demo-list",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99284).Z},classnames:{type:"NPM",value:"2.5.1"},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"./list.less":{type:"FILE",value:n(20670).Z}},entry:"index.tsx"},context:{"./list.less":c,classnames:l,"rc-motion":u,react:s||(s=n.t(r,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/list.less":c},renderOpts:{compile:function(){var E=_()(i()().mark(function h(){var m,d=arguments;return i()().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,n.e(335).then(n.bind(n,37335));case 2:return t.abrupt("return",(m=t.sent).default.apply(m,d));case 3:case"end":return t.stop()}},h)}));function p(){return E.apply(this,arguments)}return p}()}}}},78627:function(a,e,n){var s;n.r(e),n.d(e,{demos:function(){return I}});var o=n(15009),i=n.n(o),v=n(99289),_=n.n(v),r=n(67294),f=n(72679),l=n(93967),M=n.n(l),u=n(33770),c=n(53144),I={"docs-demo-provider-demo-provider":{component:r.memo(r.lazy(function(){return n.e(433).then(n.bind(n,80375))})),asset:{type:"BLOCK",id:"docs-demo-provider-demo-provider",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(75994).Z},classnames:{type:"NPM",value:"2.5.1"},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":c,classnames:l,"rc-motion":u,react:s||(s=n.t(r,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":c},renderOpts:{compile:function(){var E=_()(i()().mark(function h(){var m,d=arguments;return i()().wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return t.next=2,n.e(335).then(n.bind(n,37335));case 2:return t.abrupt("return",(m=t.sent).default.apply(m,d));case 3:case"end":return t.stop()}},h)}));function p(){return E.apply(this,arguments)}return p}()}}}},74927:function(a,e,n){var s,o,i;n.r(e),n.d(e,{demos:function(){return d}});var v=n(15009),_=n.n(v),r=n(99289),f=n.n(r),l=n(67294),M=n(86890),u=n(93967),c=n.n(u),I=n(33770),E=n(86291),p=n(73935),h=n(97762),m=n(53144),d={"docs-demo-ssr-demo-ssr":{component:l.memo(l.lazy(function(){return n.e(433).then(n.bind(n,72079))})),asset:{type:"BLOCK",id:"docs-demo-ssr-demo-ssr",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(22191).Z},classnames:{type:"NPM",value:"2.5.1"},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"react-dom":{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":m,classnames:u,"rc-motion":I,"rc-motion/es/CSSMotion":E,react:s||(s=n.t(l,2)),"react-dom":o||(o=n.t(p,2)),"react-dom/server":i||(i=n.t(h,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":m},renderOpts:{compile:function(){var C=f()(_()().mark(function O(){var P,D=arguments;return _()().wrap(function(y){for(;;)switch(y.prev=y.next){case 0:return y.next=2,n.e(335).then(n.bind(n,37335));case 2:return y.abrupt("return",(P=y.sent).default.apply(P,D));case 3:case"end":return y.stop()}},O)}));function t(){return C.apply(this,arguments)}return t}()}}}},65471:function(a,e,n){var s;n.r(e),n.d(e,{demos:function(){return u}});var o=n(15009),i=n.n(o),v=n(99289),_=n.n(v),r=n(67294),f=n(36886),l=n(33770),M=n(37299),u={"docs-demo-transition-inside-debug-demo-transition-inside-debug":{component:r.memo(r.lazy(function(){return n.e(433).then(n.bind(n,13828))})),asset:{type:"BLOCK",id:"docs-demo-transition-inside-debug-demo-transition-inside-debug",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(61018).Z},"@rc-component/motion":{type:"NPM",value:"1.1.4"},react:{type:"NPM",value:"18.3.1"},"./transition-inside-debug.less":{type:"FILE",value:n(18939).Z}},entry:"index.tsx"},context:{"./transition-inside-debug.less":M,"rc-motion":l,react:s||(s=n.t(r,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/transition-inside-debug.less":M},renderOpts:{compile:function(){var c=_()(i()().mark(function E(){var p,h=arguments;return i()().wrap(function(d){for(;;)switch(d.prev=d.next){case 0:return d.next=2,n.e(335).then(n.bind(n,37335));case 2:return d.abrupt("return",(p=d.sent).default.apply(p,h));case 3:case"end":return d.stop()}},E)}));function I(){return c.apply(this,arguments)}return I}()}}}},11171:function(a,e,n){n.r(e),n.d(e,{demos:function(){return i}});var s=n(67294),o=n(68537),i={}},53144:function(a,e,n){n.r(e)},50696:function(a,e,n){n.r(e)},37299:function(a,e,n){n.r(e)},55469:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(81935);const o=[]},46131:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(77187);const o=[]},84559:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(73406);const o=[]},70639:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(72679);const o=[]},85645:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(86890);const o=[]},36747:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(36886);const o=[]},51446:function(a,e,n){n.r(e),n.d(e,{texts:function(){return o}});var s=n(68537);const o=[{value:"React lifecycle controlled motion library.",paraId:0,tocIndex:0},{value:"https://react-component.github.io/motion/",paraId:1,tocIndex:1},{value:`import CSSMotion from 'rc-motion';
+"use strict";(self.webpackChunk_rc_component_motion=self.webpackChunk_rc_component_motion||[]).push([[904],{33147:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-basic-demo-basic":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,6536))})),asset:{type:"BLOCK",id:"docs-demo-basic-demo-basic",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99306).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},43346:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-deadline-demo-deadline":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,93797))})),asset:{type:"BLOCK",id:"docs-demo-deadline-demo-deadline",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(42083).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},3038:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(50696),I={"docs-demo-list-demo-list":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,77277))})),asset:{type:"BLOCK",id:"docs-demo-list-demo-list",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99284).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./list.less":{type:"FILE",value:n(20670).Z}},entry:"index.tsx"},context:{"./list.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/list.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},78627:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-provider-demo-provider":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,80375))})),asset:{type:"BLOCK",id:"docs-demo-provider-demo-provider",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(75994).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},74927:function(a,e,n){var t,d,r;n.r(e),n.d(e,{demos:function(){return E}});var v=n(15009),c=n.n(v),s=n(99289),_=n.n(s),m=n(67294),l=n(90512),I=n(33770),h=n(91331),f=n(73935),u=n(97762),i=n(53144),E={"docs-demo-ssr-demo-ssr":{component:m.memo(m.lazy(function(){return n.e(433).then(n.bind(n,72079))})),asset:{type:"BLOCK",id:"docs-demo-ssr-demo-ssr",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(22191).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"react-dom":{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":i,clsx:l,"rc-motion":I,"rc-motion/es/CSSMotion":h,react:t||(t=n.t(m,2)),"react-dom":d||(d=n.t(f,2)),"react-dom/server":r||(r=n.t(u,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":i},renderOpts:{compile:function(){var p=_()(c()().mark(function P(){var y,x=arguments;return c()().wrap(function(M){for(;;)switch(M.prev=M.next){case 0:return M.next=2,n.e(250).then(n.bind(n,90250));case 2:return M.abrupt("return",(y=M.sent).default.apply(y,x));case 3:case"end":return M.stop()}},P)}));function o(){return p.apply(this,arguments)}return o}()}}}},65471:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return l}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(33770),m=n(37299),l={"docs-demo-transition-inside-debug-demo-transition-inside-debug":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,13828))})),asset:{type:"BLOCK",id:"docs-demo-transition-inside-debug-demo-transition-inside-debug",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(61018).Z},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./transition-inside-debug.less":{type:"FILE",value:n(18939).Z}},entry:"index.tsx"},context:{"./transition-inside-debug.less":m,"rc-motion":_,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/transition-inside-debug.less":m},renderOpts:{compile:function(){var I=c()(r()().mark(function f(){var u,i=arguments;return r()().wrap(function(p){for(;;)switch(p.prev=p.next){case 0:return p.next=2,n.e(250).then(n.bind(n,90250));case 2:return p.abrupt("return",(u=p.sent).default.apply(u,i));case 3:case"end":return p.stop()}},f)}));function h(){return I.apply(this,arguments)}return h}()}}}},11171:function(a,e,n){n.r(e),n.d(e,{demos:function(){return d}});var t=n(67294),d={}},53144:function(a,e,n){n.r(e)},50696:function(a,e,n){n.r(e)},37299:function(a,e,n){n.r(e)},55469:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},46131:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},84559:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},70639:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},85645:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},36747:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},51446:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[{value:"React lifecycle controlled motion library.",paraId:0,tocIndex:0},{value:"https://react-component.github.io/motion/",paraId:1,tocIndex:1},{value:`import CSSMotion from '@rc-component/motion';
 
 export default ({ visible }) => (
   <CSSMotion visible={visible} motionName="my-motion">
@@ -7,7 +7,7 @@ export default ({ visible }) => (
 );
 `,paraId:2,tocIndex:3},{value:"Property",paraId:3,tocIndex:5},{value:"Type",paraId:3,tocIndex:5},{value:"Default",paraId:3,tocIndex:5},{value:"Description",paraId:3,tocIndex:5},{value:"motionName",paraId:3,tocIndex:5},{value:"string",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Config motion name, will dynamic update when status changed",paraId:3,tocIndex:5},{value:"visible",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"true",paraId:3,tocIndex:5},{value:"Trigger motion events",paraId:3,tocIndex:5},{value:"motionAppear",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"true",paraId:3,tocIndex:5},{value:"Use motion when appear",paraId:3,tocIndex:5},{value:"motionEnter",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"true",paraId:3,tocIndex:5},{value:"Use motion when enter",paraId:3,tocIndex:5},{value:"motionLeave",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"true",paraId:3,tocIndex:5},{value:"Use motion when leave",paraId:3,tocIndex:5},{value:"motionLeaveImmediately",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Will trigger leave even on mount",paraId:3,tocIndex:5},{value:"motionDeadline",paraId:3,tocIndex:5},{value:"number",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger motion status change even when motion event not fire",paraId:3,tocIndex:5},{value:"removeOnLeave",paraId:3,tocIndex:5},{value:"boolean",paraId:3,tocIndex:5},{value:"true",paraId:3,tocIndex:5},{value:"Remove element when motion leave end",paraId:3,tocIndex:5},{value:"leavedClassName",paraId:3,tocIndex:5},{value:"string",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Set leaved element className",paraId:3,tocIndex:5},{value:"onAppearStart",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when appear start, return style will patch to element",paraId:3,tocIndex:5},{value:"onEnterStart",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when enter start, return style will patch to element",paraId:3,tocIndex:5},{value:"onLeaveStart",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when leave start, return style will patch to element",paraId:3,tocIndex:5},{value:"onAppearActive",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when appear active, return style will patch to element",paraId:3,tocIndex:5},{value:"onEnterActive",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when enter active, return style will patch to element",paraId:3,tocIndex:5},{value:"onLeaveActive",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => CSSProperties | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when leave active, return style will patch to element",paraId:3,tocIndex:5},{value:"onAppearEnd",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => boolean | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when appear end, will not finish when return false",paraId:3,tocIndex:5},{value:"onEnterEnd",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => boolean | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when enter end, will not finish when return false",paraId:3,tocIndex:5},{value:"onLeaveEnd",paraId:3,tocIndex:5},{value:"(HTMLElement, Event) => boolean | void;",paraId:3,tocIndex:5},{value:"-",paraId:3,tocIndex:5},{value:"Trigger when leave end, will not finish when return false",paraId:3,tocIndex:5},{value:"extends all the props from ",paraId:4,tocIndex:6},{value:"CSSMotion",paraId:5,tocIndex:6},{value:"Property",paraId:6,tocIndex:6},{value:"Type",paraId:6,tocIndex:6},{value:"Default",paraId:6,tocIndex:6},{value:"Description",paraId:6,tocIndex:6},{value:"keys",paraId:6,tocIndex:6},{value:"React.Key[]",paraId:6,tocIndex:6},{value:"-",paraId:6,tocIndex:6},{value:"Motion list keys",paraId:6,tocIndex:6},{value:"component",paraId:6,tocIndex:6},{value:"string | React.ComponentType",paraId:6,tocIndex:6},{value:"div",paraId:6,tocIndex:6},{value:"wrapper component",paraId:6,tocIndex:6},{value:`npm install
 npm start
-`,paraId:7,tocIndex:7},{value:"rc-motion is released under the MIT license.",paraId:8,tocIndex:8}]},45188:function(a,e){e.Z=`.grid {
+`,paraId:7,tocIndex:7},{value:"@rc-component/motion is released under the MIT license.",paraId:8,tocIndex:8}]},45188:function(a,e){e.Z=`.grid {
   display: table;
 
   > div {
@@ -98,7 +98,7 @@ npm start
     opacity: 0;
   }
 }
-`},99306:function(a,e){e.Z=`import classNames from 'classnames';
+`},99306:function(a,e){e.Z=`import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -264,7 +264,7 @@ class App extends React.Component<{}, DemoState> {
               {({ style, className }, ref) => (
                 <Div
                   ref={ref}
-                  className={classNames('demo-block', className)}
+                  className={clsx('demo-block', className)}
                   style={style}
                 />
               )}
@@ -282,10 +282,7 @@ class App extends React.Component<{}, DemoState> {
               onLeaveActive={this.styleGreen}
             >
               {({ style, className }) => (
-                <div
-                  className={classNames('demo-block', className)}
-                  style={style}
-                />
+                <div className={clsx('demo-block', className)} style={style} />
               )}
             </CSSMotion>
           </div>
@@ -309,7 +306,7 @@ class App extends React.Component<{}, DemoState> {
               >
                 {({ style, className }) => (
                   <div
-                    className={classNames('demo-block', className)}
+                    className={clsx('demo-block', className)}
                     style={style}
                   />
                 )}
@@ -323,7 +320,7 @@ class App extends React.Component<{}, DemoState> {
 }
 
 export default App;
-`},42083:function(a,e){e.Z=`import classNames from 'classnames';
+`},42083:function(a,e){e.Z=`import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -377,7 +374,7 @@ class App extends React.Component<{}, DemoState> {
               {({ style, className }, ref) => (
                 <div
                   ref={ref}
-                  className={classNames('demo-block', className)}
+                  className={clsx('demo-block', className)}
                   style={style}
                 />
               )}
@@ -414,7 +411,7 @@ export default App;
 .transition {
   transition: all 0.5s;
 }
-`},99284:function(a,e){e.Z=`import classNames from 'classnames';
+`},99284:function(a,e){e.Z=`import { clsx } from 'clsx';
 import { CSSMotionList } from 'rc-motion';
 import React from 'react';
 import './list.less';
@@ -520,11 +517,8 @@ class App extends React.Component<{}, DemoState> {
           {({ key, background, className, style }) => {
             return (
               <div
-                className={classNames('list-demo-block', className)}
-                style={{
-                  ...style,
-                  background,
-                }}
+                className={clsx('list-demo-block', className)}
+                style={{ ...style, background }}
               >
                 <span>{key}</span>
               </div>
@@ -541,7 +535,7 @@ export default () => (
     <App />
   </React.StrictMode>
 );
-`},75994:function(a,e){e.Z=`import classNames from 'classnames';
+`},75994:function(a,e){e.Z=`import { clsx } from 'clsx';
 import CSSMotion, { Provider } from 'rc-motion';
 import React from 'react';
 import './basic.less';
@@ -581,7 +575,7 @@ export default () => {
           <>
             <div
               ref={ref}
-              className={classNames('demo-block', className)}
+              className={clsx('demo-block', className)}
               style={style}
             />
             <ul>
@@ -594,7 +588,7 @@ export default () => {
     </Provider>
   );
 };
-`},22191:function(a,e){e.Z=`import classNames from 'classnames';
+`},22191:function(a,e){e.Z=`import { clsx } from 'clsx';
 import CSSMotion from 'rc-motion';
 import { genCSSMotion } from 'rc-motion/es/CSSMotion';
 import React from 'react';
@@ -623,7 +617,7 @@ const MotionAppear = ({ supportMotion }: MotionAppearProps) => {
       {({ style, className }, ref) => (
         <div
           ref={ref}
-          className={classNames('demo-block', className)}
+          className={clsx('demo-block', className)}
           style={style}
         />
       )}
