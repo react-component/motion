@@ -93,7 +93,7 @@ class App extends React.Component<{}, DemoState> {
         {/* Motion List */}
         <CSSMotionList
           keys={keyList}
-          motionName="transition"
+          motionName="list-transition"
           onAppearStart={this.onCollapse}
           onEnterStart={this.onCollapse}
           onLeaveActive={this.onCollapse}
