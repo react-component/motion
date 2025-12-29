@@ -260,7 +260,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
         }
 
         return motionChildren;
-      }, [idRef.current]);
+      }, [idRef.current]) as React.ReactElement;
     },
   );
 
