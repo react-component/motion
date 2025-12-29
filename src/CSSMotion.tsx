@@ -146,12 +146,8 @@ export function genCSSMotion(config: CSSMotionConfig) {
         return getDOM(nodeRef.current) as HTMLElement;
       }
 
-      const [getStatus, statusStep, statusStyle, mergedVisible] = useStatus(
-        supportMotion,
-        visible,
-        getDomElement,
-        props,
-      );
+      const [getStatus, statusStep, statusStyle, mergedVisible, styleReady] =
+        useStatus(supportMotion, visible, getDomElement, props);
       const status = getStatus();
 
       // Record whether content has rendered
@@ -186,73 +182,85 @@ export function genCSSMotion(config: CSSMotionConfig) {
       React.useImperativeHandle(ref, () => refObj, []);
 
       // ===================== Render =====================
-      let motionChildren: React.ReactNode;
-      const mergedProps = { ...eventProps, visible };
+      // return motionChildren as React.ReactElement;
+      const idRef = React.useRef(0);
+      if (styleReady) {
+        idRef.current += 1;
+      }
 
-      if (!children) {
-        // No children
-        motionChildren = null;
-      } else if (status === STATUS_NONE) {
-        // Stable children
-        if (mergedVisible) {
-          motionChildren = children({ ...mergedProps }, nodeRef);
-        } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
-          motionChildren = children(
-            { ...mergedProps, className: leavedClassName },
-            nodeRef,
-          );
-        } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
-          motionChildren = children(
-            { ...mergedProps, style: { display: 'none' } },
-            nodeRef,
-          );
-        } else {
+      // We should render children when motionStyle is sync with stepStatus
+      return React.useMemo(() => {
+        let motionChildren: React.ReactNode;
+        const mergedProps = { ...eventProps, visible };
+
+        if (!children) {
+          // No children
           motionChildren = null;
-        }
-      } else {
-        // In motion
-        let statusSuffix: string;
-        if (statusStep === STEP_PREPARE) {
-          statusSuffix = 'prepare';
-        } else if (isActive(statusStep)) {
-          statusSuffix = 'active';
-        } else if (statusStep === STEP_START) {
-          statusSuffix = 'start';
-        }
+        } else if (status === STATUS_NONE) {
+          // Stable children
+          if (mergedVisible) {
+            motionChildren = children({ ...mergedProps }, nodeRef);
+          } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
+            motionChildren = children(
+              { ...mergedProps, className: leavedClassName },
+              nodeRef,
+            );
+          } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
+            motionChildren = children(
+              { ...mergedProps, style: { display: 'none' } },
+              nodeRef,
+            );
+          } else {
+            motionChildren = null;
+          }
+        } else {
+          // In motion
+          let statusSuffix: string;
+          if (statusStep === STEP_PREPARE) {
+            statusSuffix = 'prepare';
+          } else if (isActive(statusStep)) {
+            statusSuffix = 'active';
+          } else if (statusStep === STEP_START) {
+            statusSuffix = 'start';
+          }
 
-        const motionCls = getTransitionName(
-          motionName,
-          `${status}-${statusSuffix}`,
-        );
+          const motionCls = getTransitionName(
+            motionName,
+            `${status}-${statusSuffix}`,
+          );
 
-        motionChildren = children(
-          {
-            ...mergedProps,
-            className: clsx(getTransitionName(motionName, status), {
-              [motionCls]: motionCls && statusSuffix,
-              [motionName as string]: typeof motionName === 'string',
-            }),
-            style: statusStyle,
-          },
-          nodeRef,
-        );
-      }
-
-      // Auto inject ref if child node not have `ref` props
-      if (React.isValidElement(motionChildren) && supportRef(motionChildren)) {
-        const originNodeRef = getNodeRef(motionChildren);
-
-        if (!originNodeRef) {
-          motionChildren = React.cloneElement(
-            motionChildren as React.ReactElement,
+          motionChildren = children(
             {
-              ref: nodeRef,
+              ...mergedProps,
+              className: clsx(getTransitionName(motionName, status), {
+                [motionCls]: motionCls && statusSuffix,
+                [motionName as string]: typeof motionName === 'string',
+              }),
+              style: statusStyle,
             },
+            nodeRef,
           );
         }
-      }
 
-      return motionChildren as React.ReactElement;
+        // Auto inject ref if child node not have `ref` props
+        if (
+          React.isValidElement(motionChildren) &&
+          supportRef(motionChildren)
+        ) {
+          const originNodeRef = getNodeRef(motionChildren);
+
+          if (!originNodeRef) {
+            motionChildren = React.cloneElement(
+              motionChildren as React.ReactElement,
+              {
+                ref: nodeRef,
+              },
+            );
+          }
+        }
+
+        return motionChildren;
+      }, [idRef.current]);
     },
   );
 

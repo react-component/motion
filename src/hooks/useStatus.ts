@@ -1,5 +1,4 @@
 import { useEvent } from '@rc-component/util';
-import useState from '@rc-component/util/lib/hooks/useState';
 import useSyncState from '@rc-component/util/lib/hooks/useSyncState';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
@@ -49,11 +48,19 @@ export default function useStatus(
     onLeaveEnd,
     onVisibleChanged,
   }: CSSMotionProps,
-): [() => MotionStatus, StepStatus, React.CSSProperties, boolean] {
+): [
+  status: () => MotionStatus,
+  stepStatus: StepStatus,
+  style: React.CSSProperties,
+  visible: boolean,
+  styleReady: boolean,
+] {
   // Used for outer render usage to avoid `visible: false & status: none` to render nothing
-  const [asyncVisible, setAsyncVisible] = useState<boolean>();
+  const [asyncVisible, setAsyncVisible] = React.useState<boolean>();
   const [getStatus, setStatus] = useSyncState<MotionStatus>(STATUS_NONE);
-  const [style, setStyle] = useState<React.CSSProperties | undefined>(null);
+  const [style, setStyle] = React.useState<
+    [style: React.CSSProperties | undefined, step: StepStatus]
+  >([null, null]);
 
   const currentStatus = getStatus();
 
@@ -73,7 +80,7 @@ export default function useStatus(
    */
   function updateMotionEndStatus() {
     setStatus(STATUS_NONE);
-    setStyle(null, true);
+    setStyle([null, null]);
   }
 
   const onInternalMotionEnd = useEvent((event: MotionEvent) => {
@@ -161,11 +168,14 @@ export default function useStatus(
       }
 
       // Rest step is sync update
-      if (step in eventHandlers) {
-        setStyle(eventHandlers[step]?.(getDomElement(), null) || null);
+      if (newStep in eventHandlers) {
+        setStyle([
+          eventHandlers[newStep]?.(getDomElement(), null) || null,
+          newStep,
+        ]);
       }
 
-      if (step === STEP_ACTIVE && currentStatus !== STATUS_NONE) {
+      if (newStep === STEP_ACTIVE && currentStatus !== STATUS_NONE) {
         // Patch events when motion needed
         patchMotionEvents(getDomElement());
 
@@ -179,7 +189,7 @@ export default function useStatus(
         }
       }
 
-      if (step === STEP_PREPARED) {
+      if (newStep === STEP_PREPARED) {
         updateMotionEndStatus();
       }
 
@@ -286,7 +296,7 @@ export default function useStatus(
   }, [asyncVisible, currentStatus]);
 
   // ============================ Styles ============================
-  let mergedStyle = style;
+  let mergedStyle = style[0];
   if (eventHandlers[STEP_PREPARE] && step === STEP_START) {
     mergedStyle = {
       transition: 'none',
@@ -294,5 +304,13 @@ export default function useStatus(
     };
   }
 
-  return [getStatus, step, mergedStyle, asyncVisible ?? visible];
+  const styleStep = style[1];
+
+  return [
+    getStatus,
+    step,
+    mergedStyle,
+    asyncVisible ?? visible,
+    step === STEP_START || step === STEP_ACTIVE ? styleStep === step : true,
+  ];
 }
