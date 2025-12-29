@@ -2,10 +2,9 @@
   react/no-render-return-value, max-classes-per-file,
   react/prefer-stateless-function, react/no-multi-comp
 */
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { clsx } from 'clsx';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { genCSSMotion, type CSSMotionRef } from '../src/CSSMotion';
 
 describe('StrictMode', () => {
@@ -52,6 +51,9 @@ describe('StrictMode', () => {
 
     // Trigger End
     fireEvent.transitionEnd(node);
+    act(() => {
+      jest.runAllTimers();
+    });
     expect(node).not.toHaveClass('transition-appear');
 
     expect(ref.current.inMotion()).toBeFalsy();

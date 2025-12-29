@@ -1,0 +1,18 @@
+.debug-demo-block {
+  overflow: hidden;
+  box-shadow: 0 0 0 3px red;
+}
+
+.debug-motion {
+  &-appear,
+  &-enter {
+    &-start {
+      opacity: 0;
+    }
+
+    &-active {
+      opacity: 1;
+      transition: background 0.3s, height 1.3s, opacity 1.3s;
+    }
+  }
+}
