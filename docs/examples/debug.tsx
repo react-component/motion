@@ -13,7 +13,7 @@ const onExpand: CSSMotionProps['onAppearActive'] = node => {
   return { height: node.scrollHeight };
 };
 
-export default function DebugDemo() {
+function DebugDemo() {
   const [key, setKey] = useState(0);
 
   return (
@@ -57,3 +57,9 @@ export default function DebugDemo() {
     </div>
   );
 }
+
+export default () => (
+  <React.StrictMode>
+    <DebugDemo />
+  </React.StrictMode>
+);
