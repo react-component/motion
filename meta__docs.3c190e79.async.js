@@ -1,4 +1,4 @@
-"use strict";(self.webpackChunk_rc_component_motion=self.webpackChunk_rc_component_motion||[]).push([[904],{33147:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-basic-demo-basic":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,6536))})),asset:{type:"BLOCK",id:"docs-demo-basic-demo-basic",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99306).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},43346:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-deadline-demo-deadline":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,93797))})),asset:{type:"BLOCK",id:"docs-demo-deadline-demo-deadline",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(42083).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},3038:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(50696),I={"docs-demo-list-demo-list":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,77277))})),asset:{type:"BLOCK",id:"docs-demo-list-demo-list",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99284).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./list.less":{type:"FILE",value:n(20670).Z}},entry:"index.tsx"},context:{"./list.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/list.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},78627:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return I}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(90512),m=n(33770),l=n(53144),I={"docs-demo-provider-demo-provider":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,80375))})),asset:{type:"BLOCK",id:"docs-demo-provider-demo-provider",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(75994).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:_,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,E=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,E));case 3:case"end":return o.stop()}},u)}));function f(){return h.apply(this,arguments)}return f}()}}}},74927:function(a,e,n){var t,d,r;n.r(e),n.d(e,{demos:function(){return E}});var v=n(15009),c=n.n(v),s=n(99289),_=n.n(s),m=n(67294),l=n(90512),I=n(33770),h=n(91331),f=n(73935),u=n(97762),i=n(53144),E={"docs-demo-ssr-demo-ssr":{component:m.memo(m.lazy(function(){return n.e(433).then(n.bind(n,72079))})),asset:{type:"BLOCK",id:"docs-demo-ssr-demo-ssr",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(22191).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"react-dom":{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":i,clsx:l,"rc-motion":I,"rc-motion/es/CSSMotion":h,react:t||(t=n.t(m,2)),"react-dom":d||(d=n.t(f,2)),"react-dom/server":r||(r=n.t(u,2)),"/Users/afc163/Projects/motion/docs/examples/basic.less":i},renderOpts:{compile:function(){var p=_()(c()().mark(function P(){var y,x=arguments;return c()().wrap(function(M){for(;;)switch(M.prev=M.next){case 0:return M.next=2,n.e(250).then(n.bind(n,90250));case 2:return M.abrupt("return",(y=M.sent).default.apply(y,x));case 3:case"end":return M.stop()}},P)}));function o(){return p.apply(this,arguments)}return o}()}}}},65471:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return l}});var d=n(15009),r=n.n(d),v=n(99289),c=n.n(v),s=n(67294),_=n(33770),m=n(37299),l={"docs-demo-transition-inside-debug-demo-transition-inside-debug":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,13828))})),asset:{type:"BLOCK",id:"docs-demo-transition-inside-debug-demo-transition-inside-debug",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(61018).Z},"@rc-component/motion":{type:"NPM",value:"1.1.6"},react:{type:"NPM",value:"18.3.1"},"./transition-inside-debug.less":{type:"FILE",value:n(18939).Z}},entry:"index.tsx"},context:{"./transition-inside-debug.less":m,"rc-motion":_,react:t||(t=n.t(s,2)),"/Users/afc163/Projects/motion/docs/examples/transition-inside-debug.less":m},renderOpts:{compile:function(){var I=c()(r()().mark(function f(){var u,i=arguments;return r()().wrap(function(p){for(;;)switch(p.prev=p.next){case 0:return p.next=2,n.e(250).then(n.bind(n,90250));case 2:return p.abrupt("return",(u=p.sent).default.apply(u,i));case 3:case"end":return p.stop()}},f)}));function h(){return I.apply(this,arguments)}return h}()}}}},11171:function(a,e,n){n.r(e),n.d(e,{demos:function(){return d}});var t=n(67294),d={}},53144:function(a,e,n){n.r(e)},50696:function(a,e,n){n.r(e)},37299:function(a,e,n){n.r(e)},55469:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},46131:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},84559:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},70639:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},85645:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},36747:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},51446:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[{value:"React lifecycle controlled motion library.",paraId:0,tocIndex:0},{value:"https://react-component.github.io/motion/",paraId:1,tocIndex:1},{value:`import CSSMotion from '@rc-component/motion';
+"use strict";(self.webpackChunk_rc_component_motion=self.webpackChunk_rc_component_motion||[]).push([[904],{33147:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return _}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(90512),m=n(33770),l=n(53144),_={"docs-demo-basic-demo-basic":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,6536))})),asset:{type:"BLOCK",id:"docs-demo-basic-demo-basic",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99306).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:v,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,M=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,M));case 3:case"end":return o.stop()}},u)}));function I(){return h.apply(this,arguments)}return I}()}}}},43346:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return _}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(90512),m=n(33770),l=n(53144),_={"docs-demo-deadline-demo-deadline":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,93797))})),asset:{type:"BLOCK",id:"docs-demo-deadline-demo-deadline",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(42083).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:v,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,M=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,M));case 3:case"end":return o.stop()}},u)}));function I(){return h.apply(this,arguments)}return I}()}}}},94530:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return _}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(90512),m=n(33770),l=n(16383),_={"docs-demo-debug-demo-debug":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,57349))})),asset:{type:"BLOCK",id:"docs-demo-debug-demo-debug",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(28643).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./debug.less":{type:"FILE",value:n(69643).Z}},entry:"index.tsx"},context:{"./debug.less":l,clsx:v,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/debug.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,M=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,M));case 3:case"end":return o.stop()}},u)}));function I(){return h.apply(this,arguments)}return I}()}}}},3038:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return _}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(90512),m=n(33770),l=n(50696),_={"docs-demo-list-demo-list":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,77277))})),asset:{type:"BLOCK",id:"docs-demo-list-demo-list",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(99284).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./list.less":{type:"FILE",value:n(20670).Z}},entry:"index.tsx"},context:{"./list.less":l,clsx:v,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/list.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,M=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,M));case 3:case"end":return o.stop()}},u)}));function I(){return h.apply(this,arguments)}return I}()}}}},78627:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return _}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(90512),m=n(33770),l=n(53144),_={"docs-demo-provider-demo-provider":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,80375))})),asset:{type:"BLOCK",id:"docs-demo-provider-demo-provider",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(75994).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":l,clsx:v,"rc-motion":m,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":l},renderOpts:{compile:function(){var h=c()(r()().mark(function u(){var i,M=arguments;return r()().wrap(function(o){for(;;)switch(o.prev=o.next){case 0:return o.next=2,n.e(250).then(n.bind(n,90250));case 2:return o.abrupt("return",(i=o.sent).default.apply(i,M));case 3:case"end":return o.stop()}},u)}));function I(){return h.apply(this,arguments)}return I}()}}}},74927:function(a,e,n){var t,d,r;n.r(e),n.d(e,{demos:function(){return M}});var p=n(15009),c=n.n(p),s=n(99289),v=n.n(s),m=n(67294),l=n(90512),_=n(33770),h=n(91331),I=n(73935),u=n(97762),i=n(53144),M={"docs-demo-ssr-demo-ssr":{component:m.memo(m.lazy(function(){return n.e(433).then(n.bind(n,72079))})),asset:{type:"BLOCK",id:"docs-demo-ssr-demo-ssr",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(22191).Z},clsx:{type:"NPM",value:"2.1.1"},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"react-dom":{type:"NPM",value:"18.3.1"},"./basic.less":{type:"FILE",value:n(45188).Z}},entry:"index.tsx"},context:{"./basic.less":i,clsx:l,"rc-motion":_,"rc-motion/es/CSSMotion":h,react:t||(t=n.t(m,2)),"react-dom":d||(d=n.t(I,2)),"react-dom/server":r||(r=n.t(u,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/basic.less":i},renderOpts:{compile:function(){var E=v()(c()().mark(function b(){var y,x=arguments;return c()().wrap(function(f){for(;;)switch(f.prev=f.next){case 0:return f.next=2,n.e(250).then(n.bind(n,90250));case 2:return f.abrupt("return",(y=f.sent).default.apply(y,x));case 3:case"end":return f.stop()}},b)}));function o(){return E.apply(this,arguments)}return o}()}}}},65471:function(a,e,n){var t;n.r(e),n.d(e,{demos:function(){return l}});var d=n(15009),r=n.n(d),p=n(99289),c=n.n(p),s=n(67294),v=n(33770),m=n(37299),l={"docs-demo-transition-inside-debug-demo-transition-inside-debug":{component:s.memo(s.lazy(function(){return n.e(433).then(n.bind(n,13828))})),asset:{type:"BLOCK",id:"docs-demo-transition-inside-debug-demo-transition-inside-debug",refAtomIds:[],dependencies:{"index.tsx":{type:"FILE",value:n(61018).Z},"@rc-component/motion":{type:"NPM",value:"1.2.0"},react:{type:"NPM",value:"18.3.1"},"./transition-inside-debug.less":{type:"FILE",value:n(18939).Z}},entry:"index.tsx"},context:{"./transition-inside-debug.less":m,"rc-motion":v,react:t||(t=n.t(s,2)),"/Users/jilin/projects/antd/rc-motion/docs/examples/transition-inside-debug.less":m},renderOpts:{compile:function(){var _=c()(r()().mark(function I(){var u,i=arguments;return r()().wrap(function(E){for(;;)switch(E.prev=E.next){case 0:return E.next=2,n.e(250).then(n.bind(n,90250));case 2:return E.abrupt("return",(u=E.sent).default.apply(u,i));case 3:case"end":return E.stop()}},I)}));function h(){return _.apply(this,arguments)}return h}()}}}},11171:function(a,e,n){n.r(e),n.d(e,{demos:function(){return d}});var t=n(67294),d={}},53144:function(a,e,n){n.r(e)},16383:function(a,e,n){n.r(e)},50696:function(a,e,n){n.r(e)},37299:function(a,e,n){n.r(e)},55469:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},46131:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},45041:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},84559:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},70639:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},85645:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},36747:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[]},51446:function(a,e,n){n.r(e),n.d(e,{texts:function(){return t}});const t=[{value:"React lifecycle controlled motion library.",paraId:0,tocIndex:0},{value:"https://react-component.github.io/motion/",paraId:1,tocIndex:1},{value:`import CSSMotion from '@rc-component/motion';
 
 export default ({ visible }) => (
   <CSSMotion visible={visible} motionName="my-motion">
@@ -387,7 +387,90 @@ class App extends React.Component<{}, DemoState> {
 }
 
 export default App;
-`},20670:function(a,e){e.Z=`@import './basic.less';
+`},69643:function(a,e){e.Z=`.debug-demo-block {
+  overflow: hidden;
+  box-shadow: 0 0 0 3px red;
+}
+
+.debug-motion {
+  &-appear,
+  &-enter {
+    &-start {
+      opacity: 0;
+    }
+
+    &-active {
+      opacity: 1;
+      transition: background 0.3s, height 1.3s, opacity 1.3s;
+    }
+  }
+}
+`},28643:function(a,e){e.Z=`import { clsx } from 'clsx';
+import CSSMotion, { type CSSMotionProps } from 'rc-motion';
+import React, { useState } from 'react';
+import './debug.less';
+
+const onCollapse = () => {
+  console.log('\u{1F525} Collapse');
+  return { height: 0 };
+};
+
+const onExpand: CSSMotionProps['onAppearActive'] = node => {
+  console.log('\u{1F525} Expand');
+  return { height: node.scrollHeight };
+};
+
+function DebugDemo() {
+  const [key, setKey] = useState(0);
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          setKey(prev => prev + 1);
+        }}
+      >
+        Start
+      </button>
+
+      <CSSMotion
+        visible
+        motionName="debug-motion"
+        motionAppear
+        onAppearStart={onCollapse}
+        onAppearActive={onExpand}
+        key={key}
+      >
+        {({ style, className }, ref) => {
+          console.log('render', className, style);
+
+          return (
+            <div
+              ref={ref}
+              className={clsx('debug-demo-block', className)}
+              style={style}
+            >
+              <div
+                style={{
+                  height: 100,
+                  width: 100,
+                  background: 'blue',
+                }}
+              />
+            </div>
+          );
+        }}
+      </CSSMotion>
+    </div>
+  );
+}
+
+export default () => (
+  <React.StrictMode>
+    <DebugDemo />
+  </React.StrictMode>
+);
+`},20670:function(a,e){e.Z=`// @import './basic.less';
 
 .list-demo-block {
   position: relative;
@@ -408,8 +491,28 @@ export default App;
   }
 }
 
-.transition {
-  transition: all 0.5s;
+.list-transition {
+  &-appear,
+  &-enter {
+    &-start {
+      width: 0;
+      opacity: 0;
+    }
+
+    &-active {
+      width: 100px;
+      opacity: 1;
+      transition: all 0.5s;
+    }
+  }
+
+  &-leave {
+    &-active {
+      width: 0;
+      opacity: 0;
+      transition: all 0.5s;
+    }
+  }
 }
 `},99284:function(a,e){e.Z=`import { clsx } from 'clsx';
 import { CSSMotionList } from 'rc-motion';
@@ -506,7 +609,7 @@ class App extends React.Component<{}, DemoState> {
         {/* Motion List */}
         <CSSMotionList
           keys={keyList}
-          motionName="transition"
+          motionName="list-transition"
           onAppearStart={this.onCollapse}
           onEnterStart={this.onCollapse}
           onLeaveActive={this.onCollapse}
