@@ -194,6 +194,9 @@ describe('CSSMotion', () => {
       });
 
       fireEvent.transitionEnd(container.querySelector('.motion-box'));
+      act(() => {
+        jest.runAllTimers();
+      });
 
       expect(container.querySelector('.motion-box')).toHaveClass('removed');
 
@@ -805,6 +808,9 @@ describe('CSSMotion', () => {
     });
 
     fireEvent.transitionEnd(container.querySelector('.motion-box'));
+    act(() => {
+      jest.runAllTimers();
+    });
 
     expect(container.querySelector('.motion-box')).toBeTruthy();
     expect(container.querySelector('.motion-box')).toHaveClass('removed');
