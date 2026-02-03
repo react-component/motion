@@ -6,9 +6,16 @@ interface MotionContextProps {
 
 export const Context = React.createContext<MotionContextProps>({});
 
-export default function MotionProvider({
-  children,
-  ...props
-}: MotionContextProps & { children?: React.ReactNode }) {
-  return <Context.Provider value={props}>{children}</Context.Provider>;
-}
+const MotionProvider: React.FC<
+  React.PropsWithChildren<MotionContextProps>
+> = props => {
+  const { children, ...rest } = props;
+
+  const memoizedValue = React.useMemo<MotionContextProps>(() => {
+    return { motion: rest.motion };
+  }, [rest.motion]);
+
+  return <Context.Provider value={memoizedValue}>{children}</Context.Provider>;
+};
+
+export default MotionProvider;
