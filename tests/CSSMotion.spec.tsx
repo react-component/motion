@@ -510,6 +510,26 @@ describe('CSSMotion', () => {
     );
   });
 
+  it('renders content on first mount when motionName is not provided but motionAppear is true', () => {
+    const mockRender = jest.fn(() => <div>content</div>) as jest.Mock;
+    (mockRender as any).mock.calls = [] as any;
+
+    render(
+      <CSSMotion visible motionAppear>
+        {mockRender}
+      </CSSMotion>,
+    );
+
+    // When motionName is not provided, styleReady should not be 'NONE',
+    // so content should render immediately
+    expect(mockRender).toHaveBeenCalled();
+    expect(mockRender.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        visible: true,
+      }),
+    );
+  });
+
   describe('immediately', () => {
     it('motionLeaveImmediately', async () => {
       const { container } = render(

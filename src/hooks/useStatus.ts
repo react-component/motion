@@ -312,10 +312,13 @@ export default function useStatus(
     mergedStyle,
     asyncVisible ?? visible,
 
-    !mountedRef.current && currentStatus === STATUS_NONE && motionAppear
-      ? // Appear
-        'NONE'
-      : // Enter or Leave
+    // Appear Check
+    !mountedRef.current &&
+    currentStatus === STATUS_NONE &&
+    supportMotion &&
+    motionAppear
+      ? 'NONE'
+      : // Enter or Leave check
       step === STEP_START || step === STEP_ACTIVE
       ? styleStep === step
       : true,
