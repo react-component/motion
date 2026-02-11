@@ -312,7 +312,7 @@ export default function useStatus(
     mergedStyle,
     asyncVisible ?? visible,
 
-    !mountedRef.current && currentStatus === STATUS_NONE
+    !mountedRef.current && currentStatus === STATUS_NONE && motionAppear
       ? // Appear
         'NONE'
       : // Enter or Leave
