@@ -53,7 +53,7 @@ export default function useStatus(
   stepStatus: StepStatus,
   style: React.CSSProperties,
   visible: boolean,
-  styleReady: boolean,
+  styleReady: 'NONE' | boolean,
 ] {
   // Used for outer render usage to avoid `visible: false & status: none` to render nothing
   const [asyncVisible, setAsyncVisible] = React.useState<boolean>();
@@ -311,6 +311,13 @@ export default function useStatus(
     step,
     mergedStyle,
     asyncVisible ?? visible,
-    step === STEP_START || step === STEP_ACTIVE ? styleStep === step : true,
+
+    !mountedRef.current && currentStatus === STATUS_NONE
+      ? // Appear
+        'NONE'
+      : // Enter or Leave
+      step === STEP_START || step === STEP_ACTIVE
+      ? styleStep === step
+      : true,
   ];
 }
