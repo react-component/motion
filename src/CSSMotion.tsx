@@ -190,6 +190,10 @@ export function genCSSMotion(config: CSSMotionConfig) {
 
       // We should render children when motionStyle is sync with stepStatus
       return React.useMemo(() => {
+        if (styleReady === 'NONE') {
+          return null;
+        }
+
         let motionChildren: React.ReactNode;
         const mergedProps = { ...eventProps, visible };
 

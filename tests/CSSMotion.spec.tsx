@@ -492,6 +492,24 @@ describe('CSSMotion', () => {
     expect(activeBoxNode).toHaveClass(`animation-leave-active`);
   });
 
+  it('styleReady returns NONE on first mount when status is STATUS_NONE', () => {
+    const mockRender = jest.fn(() => null);
+
+    render(
+      <CSSMotion visible motionAppear motionName="test">
+        {mockRender}
+      </CSSMotion>,
+    );
+
+    expect(mockRender).toHaveBeenCalledTimes(1);
+    expect(mockRender).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // TODO: update with correct className
+        className: '',
+      }),
+    );
+  });
+
   describe('immediately', () => {
     it('motionLeaveImmediately', async () => {
       const { container } = render(
