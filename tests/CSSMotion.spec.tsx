@@ -493,7 +493,8 @@ describe('CSSMotion', () => {
   });
 
   it('styleReady returns NONE on first mount when status is STATUS_NONE', () => {
-    const mockRender = jest.fn(() => null);
+    const mockRender = jest.fn(() => null) as jest.Mock;
+    (mockRender as any).mock.calls = [] as any;
 
     render(
       <CSSMotion visible motionAppear motionName="test">
