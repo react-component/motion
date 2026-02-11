@@ -501,11 +501,10 @@ describe('CSSMotion', () => {
       </CSSMotion>,
     );
 
-    expect(mockRender).toHaveBeenCalledTimes(1);
-    expect(mockRender).toHaveBeenCalledWith(
+    // First render (prepare stage)
+    expect(mockRender.mock.calls[0][0]).toEqual(
       expect.objectContaining({
-        // TODO: update with correct className
-        className: '',
+        className: 'test-appear test-appear-prepare test',
       }),
     );
   });
