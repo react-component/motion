@@ -306,17 +306,35 @@ export default function useStatus(
 
   const styleStep = style[1];
 
+  // Check if we need to wait for prepare callback on first mount
+  // Only for appear animation - we need to know if there's a prepare handler
+  // to decide whether to return 'NONE' (wait) or render immediately
+  const hasPrepareOnFirstMount = React.useMemo(() => {
+    if (
+      mountedRef.current ||
+      currentStatus !== STATUS_NONE ||
+      !supportMotion ||
+      !motionAppear
+    ) {
+      return false;
+    }
+    // Check if any appear motion has a prepare handler
+    const appearHandlers = getEventHandlers(STATUS_APPEAR);
+    return !!appearHandlers[STEP_PREPARE];
+  }, [supportMotion, motionAppear, currentStatus]);
+
   return [
     getStatus,
     step,
     mergedStyle,
     asyncVisible ?? visible,
 
-    // Appear Check
+    // Appear Check: only return 'NONE' when there's a prepare callback to wait for
     !mountedRef.current &&
     currentStatus === STATUS_NONE &&
     supportMotion &&
-    motionAppear
+    motionAppear &&
+    hasPrepareOnFirstMount
       ? 'NONE'
       : // Enter or Leave check
       step === STEP_START || step === STEP_ACTIVE

@@ -190,7 +190,17 @@ export function genCSSMotion(config: CSSMotionConfig) {
 
       // We should render children when motionStyle is sync with stepStatus
       return React.useMemo(() => {
+        // When styleReady is 'NONE', we still render content in hidden state
+        // This ensures the DOM element exists for measurements while waiting for prepare
         if (styleReady === 'NONE') {
+          const mergedProps = {
+            ...eventProps,
+            visible: false,
+            style: { display: 'none' },
+          };
+          if (children) {
+            return children(mergedProps, nodeRef);
+          }
           return null;
         }
 

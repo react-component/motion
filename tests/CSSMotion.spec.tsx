@@ -492,8 +492,32 @@ describe('CSSMotion', () => {
     expect(activeBoxNode).toHaveClass(`animation-leave-active`);
   });
 
-  it('styleReady returns NONE on first mount when status is STATUS_NONE', () => {
+  it('styleReady returns NONE on first mount when status is STATUS_NONE with prepare callback', () => {
     const mockRender = jest.fn(() => null) as jest.Mock;
+    (mockRender as any).mock.calls = [] as any;
+
+    render(
+      <CSSMotion
+        visible
+        motionAppear
+        motionName="test"
+        onAppearPrepare={jest.fn()}
+      >
+        {mockRender}
+      </CSSMotion>,
+    );
+
+    // First render (prepare stage) - with prepare callback, render hidden content for measurement
+    expect(mockRender.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        visible: false,
+        style: { display: 'none' },
+      }),
+    );
+  });
+
+  it('renders content on first mount when motionName is provided but no prepare callback', () => {
+    const mockRender = jest.fn(() => <div>content</div>) as jest.Mock;
     (mockRender as any).mock.calls = [] as any;
 
     render(
@@ -502,10 +526,12 @@ describe('CSSMotion', () => {
       </CSSMotion>,
     );
 
-    // First render (prepare stage)
+    // When motionName is provided but no prepare callback,
+    // styleReady should not be 'NONE', so content should render immediately
+    expect(mockRender).toHaveBeenCalled();
     expect(mockRender.mock.calls[0][0]).toEqual(
       expect.objectContaining({
-        className: 'test-appear test-appear-prepare test',
+        visible: true,
       }),
     );
   });
