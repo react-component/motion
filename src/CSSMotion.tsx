@@ -198,10 +198,25 @@ export function genCSSMotion(config: CSSMotionConfig) {
             visible: false,
             style: { display: 'none' },
           };
-          if (children) {
-            return children(mergedProps, nodeRef);
+          const hiddenChildren = children
+            ? children(mergedProps, nodeRef)
+            : null;
+
+          // Auto inject ref if child node not have `ref` props
+          if (
+            React.isValidElement(hiddenChildren) &&
+            supportRef(hiddenChildren)
+          ) {
+            const originNodeRef = getNodeRef(hiddenChildren);
+
+            if (!originNodeRef) {
+              return React.cloneElement(hiddenChildren as React.ReactElement, {
+                ref: nodeRef,
+              });
+            }
           }
-          return null;
+
+          return hiddenChildren;
         }
 
         let motionChildren: React.ReactNode;
