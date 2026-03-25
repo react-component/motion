@@ -1,6 +1,10 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import { getNodeRef, supportRef } from '@rc-component/util/lib/ref';
+import {
+  composeRef,
+  getNodeRef,
+  supportNodeRef,
+} from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -106,6 +110,10 @@ export interface CSSMotionState {
   prevProps?: CSSMotionProps;
 }
 
+export function isRefNotConsumed(children?: CSSMotionProps['children']) {
+  return children?.length < 2;
+}
+
 /**
  * `transitionSupport` is used for none transition test case.
  * Default we use browser transition event support check.
@@ -189,12 +197,12 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // We should render children when motionStyle is sync with stepStatus
-      return React.useMemo(() => {
+      const returnNode = React.useMemo<React.ReactElement | null>(() => {
         if (styleReady === 'NONE') {
           return null;
         }
 
-        let motionChildren: React.ReactNode;
+        let motionChildren: React.ReactElement | null;
         const mergedProps = { ...eventProps, visible };
 
         if (!children) {
@@ -246,25 +254,20 @@ export function genCSSMotion(config: CSSMotionConfig) {
           );
         }
 
-        // Auto inject ref if child node not have `ref` props
-        if (
-          React.isValidElement(motionChildren) &&
-          supportRef(motionChildren)
-        ) {
-          const originNodeRef = getNodeRef(motionChildren);
-
-          if (!originNodeRef) {
-            motionChildren = React.cloneElement(
-              motionChildren as React.ReactElement,
-              {
-                ref: nodeRef,
-              },
-            );
-          }
-        }
-
         return motionChildren;
-      }, [idRef.current]) as React.ReactElement;
+      }, [idRef.current]);
+
+      if (isRefNotConsumed(children) && supportNodeRef(returnNode)) {
+        const originNodeRef = getNodeRef(returnNode);
+
+        if (originNodeRef !== nodeRef) {
+          return React.cloneElement(returnNode as any, {
+            ref: composeRef(originNodeRef, nodeRef),
+          });
+        }
+      }
+
+      return returnNode;
     },
   );
 

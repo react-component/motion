@@ -1,7 +1,7 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
 import type { CSSMotionProps } from './CSSMotion';
-import OriginCSSMotion from './CSSMotion';
+import OriginCSSMotion, { isRefNotConsumed } from './CSSMotion';
 import type { KeyObject } from './util/diff';
 import {
   diffKeys,
@@ -58,6 +58,10 @@ export interface CSSMotionListProps
     ref: React.Ref<any>,
   ) => React.ReactElement;
 }
+
+type ChildrenWithoutRef = (
+  props: Parameters<CSSMotionListProps['children']>[0],
+) => ReturnType<CSSMotionListProps['children']>;
 
 export interface CSSMotionListState {
   keyEntities: KeyObject[];
@@ -174,7 +178,13 @@ export function genCSSMotionList(
                   }
                 }}
               >
-                {(props, ref) => children({ ...props, index }, ref)}
+                {isRefNotConsumed(children)
+                  ? props =>
+                      (children as ChildrenWithoutRef)({
+                        ...props,
+                        index,
+                      })
+                  : (props, ref) => children({ ...props, index }, ref)}
               </CSSMotion>
             );
           })}
