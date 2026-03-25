@@ -1,7 +1,7 @@
 /* eslint react/prop-types: 0 */
 import * as React from 'react';
 import type { CSSMotionProps } from './CSSMotion';
-import OriginCSSMotion, { isRefConsume } from './CSSMotion';
+import OriginCSSMotion, { isRefNotConsumed } from './CSSMotion';
 import type { KeyObject } from './util/diff';
 import {
   diffKeys,
@@ -178,7 +178,7 @@ export function genCSSMotionList(
                   }
                 }}
               >
-                {isRefConsume(children)
+                {isRefNotConsumed(children)
                   ? props =>
                       (children as ChildrenWithoutRef)({
                         ...props,

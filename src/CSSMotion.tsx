@@ -110,7 +110,7 @@ export interface CSSMotionState {
   prevProps?: CSSMotionProps;
 }
 
-export function isRefConsume(children?: CSSMotionProps['children']) {
+export function isRefNotConsumed(children?: CSSMotionProps['children']) {
   return children?.length < 2;
 }
 
@@ -257,7 +257,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
         return motionChildren;
       }, [idRef.current]) as React.ReactElement;
 
-      if (isRefConsume(children) && supportNodeRef(returnNode)) {
+      if (isRefNotConsumed(children) && supportNodeRef(returnNode)) {
         const originNodeRef = getNodeRef(returnNode);
 
         if (originNodeRef !== nodeRef) {
