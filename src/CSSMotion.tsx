@@ -261,7 +261,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
         const originNodeRef = getNodeRef(returnNode);
 
         if (originNodeRef !== nodeRef) {
-          return React.cloneElement(returnNode, {
+          return React.cloneElement(returnNode as any, {
             ref: composeRef(originNodeRef, nodeRef),
           });
         }
