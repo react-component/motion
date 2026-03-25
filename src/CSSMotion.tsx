@@ -197,12 +197,12 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // We should render children when motionStyle is sync with stepStatus
-      const returnNode = React.useMemo(() => {
+      const returnNode = React.useMemo<React.ReactElement | null>(() => {
         if (styleReady === 'NONE') {
           return null;
         }
 
-        let motionChildren: React.ReactNode;
+        let motionChildren: React.ReactElement | null;
         const mergedProps = { ...eventProps, visible };
 
         if (!children) {
@@ -255,7 +255,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
         }
 
         return motionChildren;
-      }, [idRef.current]) as React.ReactElement;
+      }, [idRef.current]);
 
       if (isRefNotConsumed(children) && supportNodeRef(returnNode)) {
         const originNodeRef = getNodeRef(returnNode);
