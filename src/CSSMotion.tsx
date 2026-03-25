@@ -110,6 +110,10 @@ export interface CSSMotionState {
   prevProps?: CSSMotionProps;
 }
 
+export function isRefConsume(children?: CSSMotionProps['children']) {
+  return children?.length < 2;
+}
+
 /**
  * `transitionSupport` is used for none transition test case.
  * Default we use browser transition event support check.
@@ -193,33 +197,33 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // We should render children when motionStyle is sync with stepStatus
-      const motionChildren = React.useMemo(() => {
+      const returnNode = React.useMemo(() => {
         if (styleReady === 'NONE') {
           return null;
         }
 
-        let nextMotionChildren: React.ReactNode;
+        let motionChildren: React.ReactNode;
         const mergedProps = { ...eventProps, visible };
 
         if (!children) {
           // No children
-          nextMotionChildren = null;
+          motionChildren = null;
         } else if (status === STATUS_NONE) {
           // Stable children
           if (mergedVisible) {
-            nextMotionChildren = children({ ...mergedProps }, nodeRef);
+            motionChildren = children({ ...mergedProps }, nodeRef);
           } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
-            nextMotionChildren = children(
+            motionChildren = children(
               { ...mergedProps, className: leavedClassName },
               nodeRef,
             );
           } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
-            nextMotionChildren = children(
+            motionChildren = children(
               { ...mergedProps, style: { display: 'none' } },
               nodeRef,
             );
           } else {
-            nextMotionChildren = null;
+            motionChildren = null;
           }
         } else {
           // In motion
@@ -237,7 +241,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
             `${status}-${statusSuffix}`,
           );
 
-          nextMotionChildren = children(
+          motionChildren = children(
             {
               ...mergedProps,
               className: clsx(getTransitionName(motionName, status), {
@@ -250,22 +254,20 @@ export function genCSSMotion(config: CSSMotionConfig) {
           );
         }
 
-        return nextMotionChildren;
+        return motionChildren;
       }, [idRef.current]) as React.ReactElement;
 
-      const shouldAutoInjectRef = children?.length < 2;
-
-      if (shouldAutoInjectRef && supportNodeRef(motionChildren)) {
-        const originNodeRef = getNodeRef(motionChildren);
+      if (isRefConsume(children) && supportNodeRef(returnNode)) {
+        const originNodeRef = getNodeRef(returnNode);
 
         if (originNodeRef !== nodeRef) {
-          return React.cloneElement(motionChildren, {
+          return React.cloneElement(returnNode, {
             ref: composeRef(originNodeRef, nodeRef),
           });
         }
       }
 
-      return motionChildren;
+      return returnNode;
     },
   );
 
