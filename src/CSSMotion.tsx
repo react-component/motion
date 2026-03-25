@@ -1,6 +1,10 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import { composeRef, getNodeRef, supportRef } from '@rc-component/util/lib/ref';
+import {
+  getNodeRef,
+  supportRef,
+  useComposeRef,
+} from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -189,7 +193,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       }
 
       // We should render children when motionStyle is sync with stepStatus
-      return React.useMemo(() => {
+      const motionChildren = React.useMemo(() => {
         if (styleReady === 'NONE') {
           return null;
         }
@@ -246,23 +250,27 @@ export function genCSSMotion(config: CSSMotionConfig) {
           );
         }
 
-        // Auto inject ref if child node not have `ref` props
-        if (
-          React.isValidElement(motionChildren) &&
-          supportRef(motionChildren)
-        ) {
-          const originNodeRef = getNodeRef(motionChildren);
-
-          motionChildren = React.cloneElement(
-            motionChildren as React.ReactElement,
-            {
-              ref: originNodeRef ? composeRef(originNodeRef, nodeRef) : nodeRef,
-            },
-          );
-        }
-
         return motionChildren;
       }, [idRef.current]) as React.ReactElement;
+
+      const canHoldRef =
+        React.isValidElement(motionChildren) && supportRef(motionChildren);
+      const originNodeRef = canHoldRef ? getNodeRef(motionChildren) : null;
+      const shouldInjectRef = canHoldRef && originNodeRef !== nodeRef;
+      const mergedNodeRef = useComposeRef(
+        shouldInjectRef ? originNodeRef : null,
+        nodeRef,
+      );
+
+      // Preserve original behavior when child already uses motion's ref directly.
+      // Only compose refs when child owns another ref or misses the motion ref.
+      if (shouldInjectRef) {
+        return React.cloneElement(motionChildren, {
+          ref: mergedNodeRef,
+        });
+      }
+
+      return motionChildren;
     },
   );
 
