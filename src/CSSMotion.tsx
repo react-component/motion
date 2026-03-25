@@ -1,9 +1,9 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import {
+  composeRef,
   getNodeRef,
-  supportRef,
-  useComposeRef,
+  supportNodeRef,
 } from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
@@ -198,28 +198,28 @@ export function genCSSMotion(config: CSSMotionConfig) {
           return null;
         }
 
-        let motionChildren: React.ReactNode;
+        let nextMotionChildren: React.ReactNode;
         const mergedProps = { ...eventProps, visible };
 
         if (!children) {
           // No children
-          motionChildren = null;
+          nextMotionChildren = null;
         } else if (status === STATUS_NONE) {
           // Stable children
           if (mergedVisible) {
-            motionChildren = children({ ...mergedProps }, nodeRef);
+            nextMotionChildren = children({ ...mergedProps }, nodeRef);
           } else if (!removeOnLeave && renderedRef.current && leavedClassName) {
-            motionChildren = children(
+            nextMotionChildren = children(
               { ...mergedProps, className: leavedClassName },
               nodeRef,
             );
           } else if (forceRender || (!removeOnLeave && !leavedClassName)) {
-            motionChildren = children(
+            nextMotionChildren = children(
               { ...mergedProps, style: { display: 'none' } },
               nodeRef,
             );
           } else {
-            motionChildren = null;
+            nextMotionChildren = null;
           }
         } else {
           // In motion
@@ -237,7 +237,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
             `${status}-${statusSuffix}`,
           );
 
-          motionChildren = children(
+          nextMotionChildren = children(
             {
               ...mergedProps,
               className: clsx(getTransitionName(motionName, status), {
@@ -250,24 +250,17 @@ export function genCSSMotion(config: CSSMotionConfig) {
           );
         }
 
-        return motionChildren;
+        return nextMotionChildren;
       }, [idRef.current]) as React.ReactElement;
 
-      const canHoldRef =
-        React.isValidElement(motionChildren) && supportRef(motionChildren);
-      const originNodeRef = canHoldRef ? getNodeRef(motionChildren) : null;
-      const shouldInjectRef = canHoldRef && originNodeRef !== nodeRef;
-      const mergedNodeRef = useComposeRef(
-        shouldInjectRef ? originNodeRef : null,
-        nodeRef,
-      );
+      if (supportNodeRef(motionChildren)) {
+        const originNodeRef = getNodeRef(motionChildren);
 
-      // Preserve original behavior when child already uses motion's ref directly.
-      // Only compose refs when child owns another ref or misses the motion ref.
-      if (shouldInjectRef) {
-        return React.cloneElement(motionChildren, {
-          ref: mergedNodeRef,
-        });
+        if (originNodeRef !== nodeRef) {
+          return React.cloneElement(motionChildren, {
+            ref: composeRef(originNodeRef, nodeRef),
+          });
+        }
       }
 
       return motionChildren;
