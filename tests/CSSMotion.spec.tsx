@@ -942,6 +942,51 @@ describe('CSSMotion', () => {
 
       expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
     });
+
+    it('supports existing child refs for motion end', () => {
+      const motionRef = React.createRef<CSSMotionRef>();
+      const childRef = React.createRef<HTMLDivElement>();
+
+      const Demo = ({ visible }: { visible: boolean }) => (
+        <CSSMotion
+          motionName="transition"
+          motionAppear={false}
+          visible={visible}
+          ref={motionRef}
+        >
+          {({ style, className }) => (
+            <div
+              ref={childRef}
+              style={style}
+              className={clsx('motion-box', className)}
+            />
+          )}
+        </CSSMotion>
+      );
+
+      const { container, rerender } = render(<Demo visible />);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(motionRef.current.nativeElement).toBe(childRef.current);
+
+      rerender(<Demo visible={false} />);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.transitionEnd(childRef.current!);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(container.querySelector('.motion-box')).toBeFalsy();
+      expect(ReactDOM.findDOMNode).not.toHaveBeenCalled();
+    });
   });
 
   describe('onVisibleChanged', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
 import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
-import { getNodeRef, supportRef } from '@rc-component/util/lib/ref';
+import { composeRef, getNodeRef, supportRef } from '@rc-component/util/lib/ref';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import { useRef } from 'react';
@@ -253,14 +253,12 @@ export function genCSSMotion(config: CSSMotionConfig) {
         ) {
           const originNodeRef = getNodeRef(motionChildren);
 
-          if (!originNodeRef) {
-            motionChildren = React.cloneElement(
-              motionChildren as React.ReactElement,
-              {
-                ref: nodeRef,
-              },
-            );
-          }
+          motionChildren = React.cloneElement(
+            motionChildren as React.ReactElement,
+            {
+              ref: originNodeRef ? composeRef(originNodeRef, nodeRef) : nodeRef,
+            },
+          );
         }
 
         return motionChildren;
