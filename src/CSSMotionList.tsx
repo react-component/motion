@@ -174,7 +174,9 @@ export function genCSSMotionList(
                   }
                 }}
               >
-                {(props, ref) => children({ ...props, index }, ref)}
+                {children.length < 2
+                  ? props => children({ ...props, index }, undefined as any)
+                  : (props, ref) => children({ ...props, index }, ref)}
               </CSSMotion>
             );
           })}

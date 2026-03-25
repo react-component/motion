@@ -253,7 +253,9 @@ export function genCSSMotion(config: CSSMotionConfig) {
         return nextMotionChildren;
       }, [idRef.current]) as React.ReactElement;
 
-      if (supportNodeRef(motionChildren)) {
+      const shouldAutoInjectRef = children?.length < 2;
+
+      if (shouldAutoInjectRef && supportNodeRef(motionChildren)) {
         const originNodeRef = getNodeRef(motionChildren);
 
         if (originNodeRef !== nodeRef) {
