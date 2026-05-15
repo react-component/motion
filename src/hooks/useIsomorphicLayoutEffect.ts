@@ -1,4 +1,4 @@
-import canUseDom from '@rc-component/util/lib/Dom/canUseDom';
+import { canUseDom } from '@rc-component/util';
 import { useEffect, useLayoutEffect } from 'react';
 
 // It's safe to use `useLayoutEffect` but the warning is annoying
