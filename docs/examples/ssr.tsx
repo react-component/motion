@@ -1,6 +1,5 @@
 import { clsx } from 'clsx';
-import CSSMotion from 'rc-motion';
-import { genCSSMotion } from 'rc-motion/es/CSSMotion';
+import CSSMotion, { genCSSMotion } from 'rc-motion';
 import React from 'react';
 import { hydrate } from 'react-dom';
 import ReactDOMServer from 'react-dom/server';
