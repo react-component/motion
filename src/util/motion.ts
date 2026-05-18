@@ -1,4 +1,4 @@
-import canUseDOM from '@rc-component/util/lib/Dom/canUseDom';
+import { canUseDom } from '@rc-component/util';
 import type { MotionName } from '../CSSMotion';
 
 // ================= Transition =================
@@ -38,13 +38,13 @@ export function getVendorPrefixes(domSupport: boolean, win: object) {
 }
 
 const vendorPrefixes = getVendorPrefixes(
-  canUseDOM(),
+  canUseDom(),
   typeof window !== 'undefined' ? window : {},
 );
 
 let style = {};
 
-if (canUseDOM()) {
+if (canUseDom()) {
   ({ style } = document.createElement('div'));
 }
 

@@ -1,4 +1,4 @@
-import useState from '@rc-component/util/lib/hooks/useState';
+import { useState } from '@rc-component/util';
 import * as React from 'react';
 import type { MotionStatus, StepStatus } from '../interface';
 import {

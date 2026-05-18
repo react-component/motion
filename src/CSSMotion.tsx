@@ -1,10 +1,10 @@
 /* eslint-disable react/default-props-match-prop-types, react/no-multi-comp, react/prop-types */
-import { getDOM } from '@rc-component/util/lib/Dom/findDOMNode';
 import {
   composeRef,
+  getDOM,
   getNodeRef,
   supportNodeRef,
-} from '@rc-component/util/lib/ref';
+} from '@rc-component/util';
 import { clsx } from 'clsx';
 import * as React from 'react';
 import { useRef } from 'react';
