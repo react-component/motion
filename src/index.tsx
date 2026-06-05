@@ -1,4 +1,8 @@
-import type { CSSMotionConfig, CSSMotionProps } from './CSSMotion';
+import type {
+  CSSMotionConfig,
+  CSSMotionProps,
+  CSSMotionRef,
+} from './CSSMotion';
 import CSSMotion, { genCSSMotion } from './CSSMotion';
 import type { CSSMotionListProps } from './CSSMotionList';
 import CSSMotionList from './CSSMotionList';
@@ -8,6 +12,7 @@ export { CSSMotionList, genCSSMotion };
 export type {
   CSSMotionConfig,
   CSSMotionProps,
+  CSSMotionRef,
   CSSMotionListProps,
   MotionEventHandler,
   MotionEndEventHandler,
