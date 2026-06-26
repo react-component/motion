@@ -141,17 +141,15 @@ npm run build
 
 ## Release
 
-The package is published with [`@rc-component/np`](https://github.com/react-component/np):
-
 ```bash
 npm run prepublishOnly
 ```
 
-This runs the package build before the release helper. The `postpublish` script builds and deploys the documentation site.
+The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
 
 ## License
 
-`@rc-component/motion` is released under the MIT license.
+@rc-component/motion is released under the [MIT](./LICENSE.md) license.
 
 [npm-image]: https://img.shields.io/npm/v/@rc-component/motion.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@rc-component/motion
