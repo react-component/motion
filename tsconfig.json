@@ -15,5 +15,5 @@
     }
   },
   "include": ["src", "docs", ".dumirc.ts", ".fatherrc.ts"],
-  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist", ".dumi"]
+  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist"]
 }
