@@ -1,53 +1,80 @@
-# @rc-component/motion
+<div align="center">
+  <h1>@rc-component/motion</h1>
+  <p>🎞️ Lifecycle-driven motion primitives for React enter, leave, and list animations.</p>
+</div>
 
-<!-- prettier-ignore -->
-[![NPM version][npm-image]][npm-url]
-[![npm download][download-image]][download-url]
-[![build status][github-actions-image]][github-actions-url]
-[![Codecov][codecov-image]][codecov-url]
-[![bundle size][bundlephobia-image]][bundlephobia-url]
-[![dumi][dumi-image]][dumi-url]
+<div align="center">
 
-[npm-image]: http://img.shields.io/npm/v/@rc-component/motion.svg?style=flat-square
-[npm-url]: http://npmjs.org/package/@rc-component/motion
-[travis-image]: https://img.shields.io/travis/react-component/motion/master?style=flat-square
-[travis-url]: https://travis-ci.com/react-component/motion
-[github-actions-image]: https://github.com/react-component/motion/actions/workflows/main.yml/badge.svg
-[github-actions-url]: https://github.com/react-component/motion/actions/workflows/main.yml
-[codecov-image]: https://img.shields.io/codecov/c/github/react-component/motion/master.svg?style=flat-square
-[codecov-url]: https://app.codecov.io/gh/react-component/motion
-[david-url]: https://david-dm.org/react-component/motion
-[david-image]: https://david-dm.org/react-component/motion/status.svg?style=flat-square
-[david-dev-url]: https://david-dm.org/react-component/motion?type=dev
-[david-dev-image]: https://david-dm.org/react-component/motion/dev-status.svg?style=flat-square
-[download-image]: https://img.shields.io/npm/dm/@rc-component/motion.svg?style=flat-square
-[download-url]: https://npmjs.org/package/@rc-component/motion
-[bundlephobia-url]: https://bundlephobia.com/package/@rc-component/motion
-[bundlephobia-image]: https://badgen.net/bundlephobia/minzip/@rc-component/motion
-[dumi-url]: https://github.com/umijs/dumi
-[dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square
+[![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][github-actions-image]][github-actions-url] [![Codecov][codecov-image]][codecov-url] [![bundle size][bundlephobia-image]][bundlephobia-url] [![dumi][dumi-image]][dumi-url]
 
-React lifecycle controlled motion library.
+</div>
 
-## Live Demo
+<div align="center">
+  <sub>
+    Part of the <a href="https://ant.design">Ant Design</a> ecosystem
+    <img
+      alt="Ant Design"
+      height="14"
+      src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+    />
+  </sub>
+</div>
 
-https://react-component.github.io/motion/
+## Highlights
+
+- Declarative `CSSMotion` component for appear, enter, and leave states.
+- `CSSMotionList` for keyed list transitions.
+- CSS class lifecycle hooks and inline style patching callbacks.
+- Optional deadline fallback when transition or animation events do not fire.
+- TypeScript definitions and React ref support.
+- Used by Ant Design components that need predictable motion lifecycles.
 
 ## Install
 
-[![@rc-component/motion](https://nodei.co/npm/@rc-component/motion.png)](https://npmjs.org/package/@rc-component/motion)
+```bash
+npm install @rc-component/motion
+```
 
-## Example
+## Usage
 
-```js
+```tsx | pure
 import CSSMotion from '@rc-component/motion';
 
-export default ({ visible }) => (
-  <CSSMotion visible={visible} motionName="my-motion">
-    {({ className, style }) => <div className={className} style={style} />}
+export default ({ visible }: { visible: boolean }) => (
+  <CSSMotion visible={visible} motionName="fade">
+    {({ className, style }, ref) => (
+      <div ref={ref} className={className} style={style}>
+        Content
+      </div>
+    )}
   </CSSMotion>
 );
 ```
+
+```tsx | pure
+import { CSSMotionList } from '@rc-component/motion';
+
+export default ({ keys }: { keys: React.Key[] }) => (
+  <CSSMotionList keys={keys} motionName="fade">
+    {({ key, className, style }, ref) => (
+      <div ref={ref} key={key} className={className} style={style}>
+        {key}
+      </div>
+    )}
+  </CSSMotionList>
+);
+```
+
+## Examples
+
+Run the examples locally:
+
+```bash
+npm install
+npm start
+```
+
+Then open the dumi dev server in your browser.
 
 ## API
 
@@ -55,41 +82,85 @@ export default ({ visible }) => (
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| motionName | string | - | Config motion name, will dynamic update when status changed |
-| visible | boolean | true | Trigger motion events |
-| motionAppear | boolean | true | Use motion when appear |
-| motionEnter | boolean | true | Use motion when enter |
-| motionLeave | boolean | true | Use motion when leave |
-| motionLeaveImmediately | boolean | - | Will trigger leave even on mount |
-| motionDeadline | number | - | Trigger motion status change even when motion event not fire |
-| removeOnLeave | boolean | true | Remove element when motion leave end |
-| leavedClassName | string | - | Set leaved element className |
-| onAppearStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when appear start, return style will patch to element |
-| onEnterStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when enter start, return style will patch to element |
-| onLeaveStart | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when leave start, return style will patch to element |
-| onAppearActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when appear active, return style will patch to element |
-| onEnterActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when enter active, return style will patch to element |
-| onLeaveActive | (HTMLElement, Event) => CSSProperties \| void; | - | Trigger when leave active, return style will patch to element |
-| onAppearEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when appear end, will not finish when return false |
-| onEnterEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when enter end, will not finish when return false |
-| onLeaveEnd | (HTMLElement, Event) => boolean \| void; | - | Trigger when leave end, will not finish when return false |
+| children | `(props, ref) => ReactElement` | - | Render function that receives motion class, style, and ref. |
+| forceRender | `boolean` | `false` | Keep the element rendered even when invisible. |
+| leavedClassName | `string` | - | Class name applied after leave when the element remains. |
+| motionAppear | `boolean` | `true` | Enable appear motion. |
+| motionDeadline | `number` | - | Fallback timeout in milliseconds for motion completion. |
+| motionEnter | `boolean` | `true` | Enable enter motion. |
+| motionLeave | `boolean` | `true` | Enable leave motion. |
+| motionLeaveImmediately | `boolean` | - | Trigger leave immediately after mount. |
+| motionName | `string \| MotionName` | - | CSS class name prefix or per-phase class names. |
+| removeOnLeave | `boolean` | `true` | Remove the element after leave. Ignored when `forceRender` is set. |
+| visible | `boolean` | `true` | Controls whether the element is visible. |
+| onAppearActive | `MotionEventHandler` | - | Triggered during appear active phase. |
+| onAppearEnd | `MotionEndEventHandler` | - | Triggered when appear finishes. Return `false` to keep waiting. |
+| onAppearPrepare | `MotionPrepareEventHandler` | - | Prepare callback before appear starts. |
+| onAppearStart | `MotionEventHandler` | - | Triggered when appear starts. |
+| onEnterActive | `MotionEventHandler` | - | Triggered during enter active phase. |
+| onEnterEnd | `MotionEndEventHandler` | - | Triggered when enter finishes. Return `false` to keep waiting. |
+| onEnterPrepare | `MotionPrepareEventHandler` | - | Prepare callback before enter starts. |
+| onEnterStart | `MotionEventHandler` | - | Triggered when enter starts. |
+| onLeaveActive | `MotionEventHandler` | - | Triggered during leave active phase. |
+| onLeaveEnd | `MotionEndEventHandler` | - | Triggered when leave finishes. Return `false` to keep waiting. |
+| onLeavePrepare | `MotionPrepareEventHandler` | - | Prepare callback before leave starts. |
+| onLeaveStart | `MotionEventHandler` | - | Triggered when leave starts. |
+| onVisibleChanged | `(visible: boolean) => void` | - | Triggered after the final visible state changes. |
 
 ### CSSMotionList
 
-extends all the props from [CSSMotion](#CSSMotion)
+`CSSMotionList` accepts the motion props above, except `children` is a list render function.
 
-| Property  | Type                          | Default | Description       |
-| --------- | ----------------------------- | ------- | ----------------- |
-| keys      | React.Key[]                   | -       | Motion list keys  |
-| component | string \| React.ComponentType | div     | wrapper component |
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| children | `(props, ref) => ReactElement` | - | Render function for each keyed item. |
+| component | `string \| ComponentType \| false` | `div` | Wrapper component. Use `false` for no wrapper. |
+| keys | `(React.Key \| { key: React.Key })[]` | - | Keys to animate. |
+| onAllRemoved | `() => void` | - | Triggered after every leaving item is removed. |
+| onVisibleChanged | `(visible, info: { key: React.Key }) => void` | - | Triggered after an item visibility changes. |
+
+### Ref
+
+| Ref method | Type | Description |
+| --- | --- | --- |
+| `enableMotion` | `() => boolean` | Whether motion is currently enabled. |
+| `inMotion` | `() => boolean` | Whether the element is in a motion lifecycle. |
+| `nativeElement` | `HTMLElement` | Current DOM element. |
 
 ## Development
 
-```
+```bash
 npm install
 npm start
+npm test
+npm run tsc
+npm run compile
+npm run build
 ```
+
+## Release
+
+The package is published with [`@rc-component/np`](https://github.com/react-component/np):
+
+```bash
+npm run prepublishOnly
+```
+
+This runs the package build before the release helper. The `postpublish` script builds and deploys the documentation site.
 
 ## License
 
-@rc-component/motion is released under the MIT license.
+`@rc-component/motion` is released under the MIT license.
+
+[npm-image]: https://img.shields.io/npm/v/@rc-component/motion.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@rc-component/motion
+[github-actions-image]: https://github.com/react-component/motion/actions/workflows/react-component-ci.yml/badge.svg
+[github-actions-url]: https://github.com/react-component/motion/actions/workflows/react-component-ci.yml
+[codecov-image]: https://img.shields.io/codecov/c/github/react-component/motion/master.svg?style=flat-square
+[codecov-url]: https://app.codecov.io/gh/react-component/motion
+[download-image]: https://img.shields.io/npm/dm/@rc-component/motion.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@rc-component/motion
+[bundlephobia-url]: https://bundlephobia.com/package/@rc-component/motion
+[bundlephobia-image]: https://img.shields.io/bundlephobia/minzip/@rc-component/motion?style=flat-square
+[dumi-url]: https://github.com/umijs/dumi
+[dumi-image]: https://img.shields.io/badge/docs%20by-dumi-blue?style=flat-square

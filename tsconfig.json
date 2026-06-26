@@ -9,8 +9,11 @@
     "esModuleInterop": true,
     "paths": {
       "@/*": ["src/*"],
-      "@@/*": ["src/.umi/*"],
+      "@@/*": [".dumi/tmp/*"],
+      "@rc-component/motion": ["src/index.tsx"],
       "rc-motion": ["src/index.tsx"]
     }
-  }
+  },
+  "include": ["src", "docs", ".dumirc.ts", ".fatherrc.ts"],
+  "exclude": ["node_modules", "lib", "es", "dist", "docs-dist", ".dumi"]
 }
