@@ -61,14 +61,14 @@ export default ({ keys }: { keys: string[] }) => (
 
 ## 示例
 
-本地运行示例：
+运行本地 dumi 站点：
 
 ```bash
 npm install
 npm start
 ```
 
-然后在浏览器中打开 dumi 开发服务地址。
+然后打开 `http://localhost:8000`。
 
 ## API
 

@@ -3,7 +3,7 @@ import { defineConfig } from 'dumi';
 import path from 'path';
 
 const basePath = process.env.GH_PAGES ? '/motion/' : '/';
-const publicPath = process.env.GH_PAGES ? '/motion/' : '/';
+const publicPath = basePath;
 
 export default defineConfig({
   alias: {
