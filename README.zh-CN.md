@@ -1,11 +1,11 @@
 <div align="center">
   <h1>@rc-component/motion</h1>
-  <p><sub>Part of the Ant Design ecosystem.</sub></p>
+  <p><sub>Ant Design 生态的一部分。</sub></p>
   <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" />
-  <p>🎞️ Lifecycle-driven motion primitives for React enter, leave, and list animations.</p>
+  <p>🎞️ React 动效基础组件，封装 CSS 动画、过渡和生命周期状态。</p>
 </div>
 
-<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+<p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
 
 <div align="center">
@@ -15,22 +15,22 @@
 </div>
 
 
-## Highlights
+## 特性
 
 - Declarative `CSSMotion` component for appear, enter, and leave states.
 - `CSSMotionList` for keyed list transitions.
 - CSS class lifecycle hooks and inline style patching callbacks.
 - Optional deadline fallback when transition or animation events do not fire.
 - TypeScript definitions and React ref support.
-- Used by Ant Design components that need predictable motion lifecycles.
+- 被 Ant Design 使用 components that need predictable motion lifecycles.
 
-## Install
+## 安装
 
 ```bash
 npm install @rc-component/motion
 ```
 
-## Usage
+## 使用
 
 ```tsx | pure
 import CSSMotion from '@rc-component/motion';
@@ -60,22 +60,22 @@ export default ({ keys }: { keys: string[] }) => (
 );
 ```
 
-## Examples
+## 示例
 
-Run the examples locally:
+本地运行示例：
 
 ```bash
 npm install
 npm start
 ```
 
-Then open the dumi dev server in your browser.
+然后在浏览器中打开 dumi 开发服务地址。
 
 ## API
 
 ### CSSMotion
 
-| Property | Type | Default | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | children | `(props, ref) => ReactElement` | - | Render function that receives motion class, style, and ref. |
 | forceRender | `boolean` | `false` | Keep the element rendered even when invisible. |
@@ -106,7 +106,7 @@ Then open the dumi dev server in your browser.
 
 `CSSMotionList` accepts the motion props above, except `children` is a list render function.
 
-| Property | Type | Default | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | children | `(props, ref) => ReactElement` | - | Render function for each keyed item. |
 | component | `string \| ComponentType \| false` | `div` | Wrapper component. Use `false` for no wrapper. |
@@ -116,13 +116,13 @@ Then open the dumi dev server in your browser.
 
 ### Ref
 
-| Ref method | Type | Description |
+| Ref method | 类型 | 说明 |
 | --- | --- | --- |
 | `enableMotion` | `() => boolean` | Whether motion is currently enabled. |
 | `inMotion` | `() => boolean` | Whether the element is in a motion lifecycle. |
 | `nativeElement` | `HTMLElement` | Current DOM element. |
 
-## Development
+## 本地开发
 
 ```bash
 npm install
@@ -133,7 +133,7 @@ npm run compile
 npm run build
 ```
 
-## Release
+## 发布
 
 ```bash
 npm run prepublishOnly
@@ -141,7 +141,7 @@ npm run prepublishOnly
 
 The release flow is handled by `@rc-component/np` through the `rc-np` command after the package build.
 
-## License
+## 许可证
 
 @rc-component/motion is released under the [MIT](./LICENSE.md) license.
 
