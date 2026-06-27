@@ -1,17 +1,10 @@
 <div align="center">
   <h1>@rc-component/motion</h1>
+  <p><sub>Part of the Ant Design ecosystem.</sub></p>
   <img alt="Ant Design" height="32" src="https://gw.alipayobjects.com/zos/bmw-prod/ae669a89-0c24-40ff-a91d-2b83497170f6.svg" />
   <p>🎞️ Lifecycle-driven motion primitives for React enter, leave, and list animations.</p>
 </div>
 
-<p align="center">
-  <sub>
-    <a href="https://ant.design">
-      <img alt="Ant Design" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" height="16">
-    </a>
-    Part of the Ant Design ecosystem.
-  </sub>
-</p>
 
 <div align="center">
 
@@ -64,7 +57,7 @@ export default ({ visible }: { visible: boolean }) => (
 ```tsx | pure
 import { CSSMotionList } from '@rc-component/motion';
 
-export default ({ keys }: { keys: React.Key[] }) => (
+export default ({ keys }: { keys: string[] }) => (
   <CSSMotionList keys={keys} motionName="fade">
     {({ key, className, style }, ref) => (
       <div ref={ref} key={key} className={className} style={style}>
