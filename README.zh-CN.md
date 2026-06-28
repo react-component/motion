@@ -106,7 +106,7 @@ npm start
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | children | `(props, ref) => ReactElement` | - | 每个关键项目的渲染函数。 |
-| component | `string \| ComponentType \| false` | `div` | Wrapper component. Use `false` for no wrapper. |
+| component | `string \| ComponentType \| false` | `div` | 包装组件。设为 `false` 时不渲染包装节点。 |
 | keys | `(React.Key \| { key: React.Key })[]` | - | Keys to animate. |
 | onAllRemoved | `() => void` | - | 在移除每个留下的项目后触发。 |
 | onVisibleChanged | `(visible, info: { key: React.Key }) => void` | - | 项目可见性更改后触发。 |
