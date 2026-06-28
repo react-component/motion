@@ -75,7 +75,7 @@ function getDerivedKeyEntities(
   const parsedKeyObjects = parseKeys(keys);
   const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
 
-  return mixedKeyEntities.filter(entity => {
+  const nextKeyEntities = mixedKeyEntities.filter(entity => {
     const prevEntity = keyEntities.find(({ key }) => entity.key === key);
 
     // Remove if already mark as removed
@@ -88,6 +88,10 @@ function getDerivedKeyEntities(
     }
     return true;
   });
+
+  return isSameKeyEntities(keyEntities, nextKeyEntities)
+    ? keyEntities
+    : nextKeyEntities;
 }
 
 function shallowEqualKeyObject(origin: KeyObject, target: KeyObject) {

@@ -174,6 +174,77 @@ describe('CSSMotionList', () => {
     );
   });
 
+  it('should support children ref when component is false', () => {
+    const CSSMotionList = genCSSMotionList(false);
+
+    const { container } = render(
+      <CSSMotionList motionName="transition" component={false} keys={['a']}>
+        {({ key }, ref) => (
+          <div ref={ref as React.Ref<HTMLDivElement>} className="motion-box">
+            {key}
+          </div>
+        )}
+      </CSSMotionList>,
+    );
+
+    expect(container.children).toHaveLength(1);
+    expect(container.querySelector('.motion-box')).toHaveTextContent('a');
+  });
+
+  it('should not require onAllRemoved', () => {
+    const CSSMotionList = genCSSMotionList(false);
+
+    const Demo = ({ keys }: { keys: string[] }) => (
+      <CSSMotionList motionName="transition" keys={keys}>
+        {({ key }) => <div className="motion-box">{key}</div>}
+      </CSSMotionList>
+    );
+
+    const { rerender } = render(<Demo keys={['a']} />);
+
+    act(() => {
+      jest.runAllTimers();
+    });
+
+    expect(() => {
+      rerender(<Demo keys={[]} />);
+      act(() => {
+        jest.runAllTimers();
+      });
+    }).not.toThrow();
+  });
+
+  it('should skip state update when removed key is already removed', () => {
+    const CSSMotion = React.forwardRef<any, any>(
+      ({ children, eventProps, onVisibleChanged }, _ref) => (
+        <button
+          className="trigger"
+          type="button"
+          onClick={() => {
+            onVisibleChanged(false);
+            onVisibleChanged(false);
+          }}
+        >
+          {children(eventProps)}
+        </button>
+      ),
+    );
+    const CSSMotionList = genCSSMotionList(false, CSSMotion);
+
+    const Demo = ({ keys }: { keys: string[] }) => (
+      <CSSMotionList motionName="transition" keys={keys}>
+        {({ key }) => <span className="motion-box">{key}</span>}
+      </CSSMotionList>
+    );
+
+    const { container, rerender } = render(<Demo keys={['a']} />);
+    rerender(<Demo keys={[]} />);
+    const trigger = container.querySelector('.trigger');
+    fireEvent.click(trigger);
+
+    expect(container.querySelector('.motion-box')).toBeFalsy();
+  });
+
   it('should update event props when key object shape changes', () => {
     const CSSMotionList = genCSSMotionList(false);
     const hasOwn = Object.prototype.hasOwnProperty;
