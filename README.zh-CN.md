@@ -6,13 +6,11 @@
 
 <p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
-
 <div align="center">
 
 [![NPM version][npm-image]][npm-url] [![npm download][download-image]][download-url] [![build status][github-actions-image]][github-actions-url] [![Codecov][codecov-image]][codecov-url] [![bundle size][bundlephobia-image]][bundlephobia-url] [![dumi][dumi-image]][dumi-url]
 
 </div>
-
 
 ## 特性
 
@@ -76,7 +74,7 @@ npm start
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| children们 | `(props, ref) => ReactElement` | - | 接收运动类、样式和引用的渲染函数。 |
+| children | `(props, ref) => ReactElement` | - | 接收运动类、样式和引用的渲染函数。 |
 | forceRender | `boolean` | `false` | 即使元素不可见也保持渲染。 |
 | leavedClassName | `string` | - | 当元素保留时，在离开后应用className称。 |
 | motionAppear | `boolean` | `true` | 启用出现运动。 |
@@ -86,7 +84,7 @@ npm start
 | motionLeaveImmediately | `boolean` | - | 安装后立即触发离开。 |
 | motionName | `string \| MotionName` | - | CSS className前缀或每阶段className。 |
 | removeOnLeave | `boolean` | `true` | 离开后删除该元素。设置 `forceRender` 时忽略。 |
-| 可见的 | `boolean` | `true` | 控制元素是否可见。 |
+| visible | `boolean` | `true` | 控制元素是否可见。 |
 | onAppearActive | `MotionEventHandler` | - | 在出现活跃阶段期间触发。 |
 | onAppearEnd | `MotionEndEventHandler` | - | 出现完成时触发。返回`false`继续等待。 |
 | onAppearPrepare | `MotionPrepareEventHandler` | - | 在出现开始之前准备回调。 |
@@ -107,7 +105,7 @@ npm start
 
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| children们 | `(props, ref) => ReactElement` | - | 每个关键项目的渲染函数。 |
+| children | `(props, ref) => ReactElement` | - | 每个关键项目的渲染函数。 |
 | component | `string \| ComponentType \| false` | `div` | Wrapper component. Use `false` for no wrapper. |
 | keys | `(React.Key \| { key: React.Key })[]` | - | Keys to animate. |
 | onAllRemoved | `() => void` | - | 在移除每个留下的项目后触发。 |
@@ -115,11 +113,11 @@ npm start
 
 ### Ref
 
-| Ref method | 类型 | 说明 |
-| --- | --- | --- |
-| `enableMotion` | `() => boolean` | 当前是否启用运动。 |
-| `inMotion` | `() => boolean` | 元素是否处于运动生命周期中。 |
-| `nativeElement` | `HTMLElement` | 当前 DOM 元素。 |
+| Ref method      | 类型            | 说明                         |
+| --------------- | --------------- | ---------------------------- |
+| `enableMotion`  | `() => boolean` | 当前是否启用运动。           |
+| `inMotion`      | `() => boolean` | 元素是否处于运动生命周期中。 |
+| `nativeElement` | `HTMLElement`   | 当前 DOM 元素。              |
 
 ## 本地开发
 
