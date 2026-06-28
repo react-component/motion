@@ -12,11 +12,11 @@
   ],
   "homepage": "https://react-component.github.io/motion",
   "bugs": {
-    "url": "http://github.com/react-component/motion/issues"
+    "url": "https://github.com/react-component/motion/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/motion.git"
+    "url": "https://github.com/react-component/motion.git"
   },
   "license": "MIT",
   "main": "./lib/index",
@@ -86,5 +86,8 @@
   },
   "tnpm": {
     "mode": "npm"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
