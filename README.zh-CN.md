@@ -76,13 +76,13 @@ npm start
 | --- | --- | --- | --- |
 | children | `(props, ref) => ReactElement` | - | 接收运动类、样式和引用的渲染函数。 |
 | forceRender | `boolean` | `false` | 即使元素不可见也保持渲染。 |
-| leavedClassName | `string` | - | 当元素保留时，在离开后应用className称。 |
+| leavedClassName | `string` | - | 当元素保留时，在离开后应用 className。 |
 | motionAppear | `boolean` | `true` | 启用出现运动。 |
 | motionDeadline | `number` | - | 运动完成的回退超时（以毫秒为单位）。 |
 | motionEnter | `boolean` | `true` | 启用进入运动。 |
 | motionLeave | `boolean` | `true` | 启用离开动作。 |
 | motionLeaveImmediately | `boolean` | - | 安装后立即触发离开。 |
-| motionName | `string \| MotionName` | - | CSS className前缀或每阶段className。 |
+| motionName | `string \| MotionName` | - | CSS className 前缀或每阶段 className。 |
 | removeOnLeave | `boolean` | `true` | 离开后删除该元素。设置 `forceRender` 时忽略。 |
 | visible | `boolean` | `true` | 控制元素是否可见。 |
 | onAppearActive | `MotionEventHandler` | - | 在出现活跃阶段期间触发。 |
