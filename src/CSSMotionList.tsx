@@ -91,6 +91,10 @@ function getDerivedKeyEntities(
 }
 
 function shallowEqualKeyObject(origin: KeyObject, target: KeyObject) {
+  if (origin === target) {
+    return true;
+  }
+
   const originRecord = origin as Record<string, any>;
   const targetRecord = target as Record<string, any>;
   const originKeys = Object.keys(originRecord);
@@ -98,11 +102,19 @@ function shallowEqualKeyObject(origin: KeyObject, target: KeyObject) {
 
   return (
     originKeys.length === targetKeys.length &&
-    originKeys.every(key => originRecord[key] === targetRecord[key])
+    originKeys.every(
+      key =>
+        Object.prototype.hasOwnProperty.call(targetRecord, key) &&
+        Object.is(originRecord[key], targetRecord[key]),
+    )
   );
 }
 
 function isSameKeyEntities(origin: KeyObject[], target: KeyObject[]) {
+  if (origin === target) {
+    return true;
+  }
+
   return (
     origin.length === target.length &&
     origin.every((entity, index) =>
@@ -133,36 +145,37 @@ export function genCSSMotionList(
     const [keyEntities, setKeyEntities] = React.useState<KeyObject[]>(() =>
       getDerivedKeyEntities(keys, []),
     );
-    const restKeysCountRef = React.useRef<number | null>(null);
+    const prevKeyEntitiesRef = React.useRef<KeyObject[]>(keyEntities);
     const onAllRemovedRef = React.useRef(onAllRemoved);
 
     onAllRemovedRef.current = onAllRemoved;
 
-    useIsomorphicLayoutEffect(() => {
-      setKeyEntities(prevKeyEntities => {
-        const nextKeyEntities = getDerivedKeyEntities(keys, prevKeyEntities);
-
-        return isSameKeyEntities(prevKeyEntities, nextKeyEntities)
-          ? prevKeyEntities
-          : nextKeyEntities;
-      });
-    });
+    let mergedKeyEntities = keyEntities;
+    const nextKeyEntities = getDerivedKeyEntities(keys, keyEntities);
+    if (!isSameKeyEntities(keyEntities, nextKeyEntities)) {
+      setKeyEntities(nextKeyEntities);
+      mergedKeyEntities = nextKeyEntities;
+    }
 
     useIsomorphicLayoutEffect(() => {
-      if (restKeysCountRef.current !== null) {
-        const restKeysCount = restKeysCountRef.current;
-        restKeysCountRef.current = null;
+      const prevActiveCount = prevKeyEntitiesRef.current.filter(
+        ({ status }) => status !== STATUS_REMOVED,
+      ).length;
+      const currentActiveCount = mergedKeyEntities.filter(
+        ({ status }) => status !== STATUS_REMOVED,
+      ).length;
 
-        if (restKeysCount === 0) {
-          onAllRemovedRef.current?.();
-        }
+      if (prevActiveCount > 0 && currentActiveCount === 0) {
+        onAllRemovedRef.current?.();
       }
-    }, [keyEntities]);
+
+      prevKeyEntitiesRef.current = mergedKeyEntities;
+    }, [mergedKeyEntities]);
 
     // ZombieJ: Return the count of rest keys. It's safe to refactor if need more info.
     const removeKey = React.useCallback((removedKey: React.Key) => {
       setKeyEntities(prevKeyEntities => {
-        const nextKeyEntities = prevKeyEntities.map(entity => {
+        const nextRemovedKeyEntities = prevKeyEntities.map(entity => {
           if (entity.key !== removedKey) return entity;
           return {
             ...entity,
@@ -170,13 +183,9 @@ export function genCSSMotionList(
           };
         });
 
-        restKeysCountRef.current = nextKeyEntities.filter(
-          ({ status }) => status !== STATUS_REMOVED,
-        ).length;
-
-        return isSameKeyEntities(prevKeyEntities, nextKeyEntities)
+        return isSameKeyEntities(prevKeyEntities, nextRemovedKeyEntities)
           ? prevKeyEntities
-          : nextKeyEntities;
+          : nextRemovedKeyEntities;
       });
     }, []);
 
@@ -191,7 +200,7 @@ export function genCSSMotionList(
 
     return (
       <Component {...restProps}>
-        {keyEntities.map(({ status, ...eventProps }, index) => {
+        {mergedKeyEntities.map(({ status, ...eventProps }, index) => {
           const visible = status === STATUS_ADD || status === STATUS_KEEP;
           return (
             <CSSMotion

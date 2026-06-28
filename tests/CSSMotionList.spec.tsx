@@ -173,4 +173,34 @@ describe('CSSMotionList', () => {
       '1',
     );
   });
+
+  it('should update event props when key object shape changes', () => {
+    const CSSMotionList = genCSSMotionList(false);
+    const hasOwn = Object.prototype.hasOwnProperty;
+
+    const Demo = ({ keys }: { keys: CSSMotionListProps['keys'] }) => (
+      <CSSMotionList motionName="transition" keys={keys}>
+        {props => (
+          <div
+            className="motion-box"
+            data-has-foo={hasOwn.call(props, 'foo')}
+            data-has-bar={hasOwn.call(props, 'bar')}
+          />
+        )}
+      </CSSMotionList>
+    );
+
+    const { container, rerender } = render(
+      <Demo keys={[{ key: 'a', foo: undefined }]} />,
+    );
+    const getBox = () => container.querySelector<HTMLDivElement>('.motion-box');
+
+    expect(getBox()).toHaveAttribute('data-has-foo', 'true');
+    expect(getBox()).toHaveAttribute('data-has-bar', 'false');
+
+    rerender(<Demo keys={[{ key: 'a', bar: undefined }]} />);
+
+    expect(getBox()).toHaveAttribute('data-has-foo', 'false');
+    expect(getBox()).toHaveAttribute('data-has-bar', 'true');
+  });
 });
