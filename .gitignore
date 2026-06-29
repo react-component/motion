@@ -30,6 +30,7 @@ package-lock.json
 pnpm-lock.yaml
 coverage/
 .doc
+docs-dist/
 
 # dumi
 .dumi/tmp
@@ -38,3 +39,4 @@ coverage/
 .node
 
 bun.lockb
+.vercel
