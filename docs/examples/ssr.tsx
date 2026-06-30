@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import CSSMotion, { genCSSMotion } from 'rc-motion';
 import React from 'react';
-import { hydrate } from 'react-dom';
+import { hydrateRoot } from 'react-dom/client';
 import ReactDOMServer from 'react-dom/server';
 import './basic.less';
 
@@ -44,9 +44,10 @@ const App = () => {
     document.body.appendChild(div);
     div.innerHTML = ssr;
 
-    hydrate(<MotionAppear supportMotion />, div);
+    const root = hydrateRoot(div, <MotionAppear supportMotion />);
 
     return () => {
+      root.unmount();
       document.body.removeChild(div);
     };
   }, []);
