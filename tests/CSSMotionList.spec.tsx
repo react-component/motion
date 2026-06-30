@@ -1,6 +1,7 @@
+import { fireEvent } from '@testing-library/dom';
 /* eslint-disable react/no-render-return-value, react/prefer-stateless-function,
 react/no-multi-comp, @typescript-eslint/no-implied-eval */
-import { fireEvent, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { clsx } from 'clsx';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
