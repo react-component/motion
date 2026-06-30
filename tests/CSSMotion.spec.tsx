@@ -1,9 +1,8 @@
-import { fireEvent } from '@testing-library/dom';
 /* eslint-disable
   react/no-render-return-value, max-classes-per-file,
   react/prefer-stateless-function, react/no-multi-comp
 */
-import { act, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import { clsx } from 'clsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -857,6 +856,12 @@ describe('CSSMotion', () => {
 
   describe('strict mode', () => {
     beforeEach(() => {
+      if (!('findDOMNode' in ReactDOM)) {
+        Object.defineProperty(ReactDOM, 'findDOMNode', {
+          value: jest.fn(),
+          configurable: true,
+        });
+      }
       jest.spyOn(ReactDOM, 'findDOMNode');
     });
 
