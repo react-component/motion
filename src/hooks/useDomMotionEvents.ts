@@ -7,7 +7,7 @@ import { animationEndName, transitionEndName } from '../util/motion';
 export default (
   onInternalMotionEnd: (event: MotionEvent) => void,
 ): [(element: HTMLElement) => void, (element: HTMLElement) => void] => {
-  const cacheElementRef = useRef<HTMLElement>();
+  const cacheElementRef = useRef<HTMLElement | undefined>(undefined);
 
   // Remove events
   function removeMotionEvents(element: HTMLElement) {

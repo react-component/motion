@@ -148,7 +148,7 @@ export function genCSSMotion(config: CSSMotionConfig) {
       const supportMotion = isSupportTransition(props, contextMotion);
 
       // Ref to the react node, it may be a HTMLElement
-      const nodeRef = useRef<any>();
+      const nodeRef = useRef<any>(null);
 
       function getDomElement() {
         return getDOM(nodeRef.current) as HTMLElement;
