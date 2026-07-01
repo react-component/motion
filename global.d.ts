@@ -35,24 +35,4 @@ declare namespace jest {
   }
 }
 
-declare const vi: {
-  fn: <T extends (...args: any[]) => any = (...args: any[]) => any>(
-    implementation?: T,
-  ) => jest.MockedFunction<T>;
-  mock: (
-    moduleName: string,
-    factory?: (importOriginal: <T>() => Promise<T>) => unknown,
-  ) => void;
-  spyOn: typeof jest.spyOn;
-  useFakeTimers: () => void;
-  useRealTimers: () => void;
-  advanceTimersByTime: (msToRun: number) => void;
-  clearAllTimers: () => void;
-  runAllTimers: () => void;
-  importActual: <T>(moduleName: string) => Promise<T>;
-  clearAllMocks: () => void;
-  resetAllMocks: () => void;
-  restoreAllMocks: () => void;
-};
-
 declare module 'moment/locale/zh-cn';

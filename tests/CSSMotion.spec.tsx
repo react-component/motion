@@ -859,6 +859,7 @@ describe('CSSMotion', () => {
       if (!('findDOMNode' in ReactDOM)) {
         Object.defineProperty(ReactDOM, 'findDOMNode', {
           value: jest.fn(),
+          writable: true,
           configurable: true,
         });
       }
