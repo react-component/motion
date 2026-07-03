@@ -6,11 +6,14 @@ import { animationEndName, transitionEndName } from '../util/motion';
 
 export default (
   onInternalMotionEnd: (event: MotionEvent) => void,
-): [(element: HTMLElement) => void, (element: HTMLElement) => void] => {
-  const cacheElementRef = useRef<HTMLElement>();
+): [
+  (element: HTMLElement | null) => void,
+  (element: HTMLElement | null) => void,
+] => {
+  const cacheElementRef = useRef<HTMLElement | null>(null);
 
   // Remove events
-  function removeMotionEvents(element: HTMLElement) {
+  function removeMotionEvents(element: HTMLElement | null) {
     if (element) {
       element.removeEventListener(transitionEndName, onInternalMotionEnd);
       element.removeEventListener(animationEndName, onInternalMotionEnd);
@@ -18,7 +21,7 @@ export default (
   }
 
   // Patch events
-  function patchMotionEvents(element: HTMLElement) {
+  function patchMotionEvents(element: HTMLElement | null) {
     if (cacheElementRef.current && cacheElementRef.current !== element) {
       removeMotionEvents(cacheElementRef.current);
     }
