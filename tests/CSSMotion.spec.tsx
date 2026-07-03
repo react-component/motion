@@ -855,7 +855,13 @@ describe('CSSMotion', () => {
   });
 
   describe('strict mode', () => {
+    let hasFindDOMNode = false;
+    let originalFindDOMNode: unknown;
+
     beforeEach(() => {
+      hasFindDOMNode = 'findDOMNode' in ReactDOM;
+      originalFindDOMNode = (ReactDOM as any).findDOMNode;
+
       if (!('findDOMNode' in ReactDOM)) {
         Object.defineProperty(ReactDOM, 'findDOMNode', {
           value: jest.fn(),
@@ -867,7 +873,17 @@ describe('CSSMotion', () => {
     });
 
     afterEach(() => {
-      jest.resetAllMocks();
+      jest.restoreAllMocks();
+
+      if (hasFindDOMNode) {
+        Object.defineProperty(ReactDOM, 'findDOMNode', {
+          value: originalFindDOMNode,
+          writable: true,
+          configurable: true,
+        });
+      } else {
+        delete (ReactDOM as any).findDOMNode;
+      }
     });
 
     it('not crash when no refs are passed', () => {
