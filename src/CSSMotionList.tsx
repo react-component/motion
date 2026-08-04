@@ -2,6 +2,7 @@
 import * as React from 'react';
 import type { CSSMotionProps } from './CSSMotion';
 import OriginCSSMotion, { isRefNotConsumed } from './CSSMotion';
+import useIsomorphicLayoutEffect from './hooks/useIsomorphicLayoutEffect';
 import type { KeyObject } from './util/diff';
 import {
   diffKeys,
@@ -67,6 +68,65 @@ export interface CSSMotionListState {
   keyEntities: KeyObject[];
 }
 
+function getDerivedKeyEntities(
+  keys: CSSMotionListProps['keys'],
+  keyEntities: KeyObject[],
+) {
+  const parsedKeyObjects = parseKeys(keys);
+  const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
+
+  const nextKeyEntities = mixedKeyEntities.filter(entity => {
+    const prevEntity = keyEntities.find(({ key }) => entity.key === key);
+
+    // Remove if already mark as removed
+    if (
+      prevEntity &&
+      prevEntity.status === STATUS_REMOVED &&
+      entity.status === STATUS_REMOVE
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  return isSameKeyEntities(keyEntities, nextKeyEntities)
+    ? keyEntities
+    : nextKeyEntities;
+}
+
+function shallowEqualKeyObject(origin: KeyObject, target: KeyObject) {
+  if (origin === target) {
+    return true;
+  }
+
+  const originRecord = origin as Record<string, any>;
+  const targetRecord = target as Record<string, any>;
+  const originKeys = Object.keys(originRecord);
+  const targetKeys = Object.keys(targetRecord);
+
+  return (
+    originKeys.length === targetKeys.length &&
+    originKeys.every(
+      key =>
+        Object.prototype.hasOwnProperty.call(targetRecord, key) &&
+        Object.is(originRecord[key], targetRecord[key]),
+    )
+  );
+}
+
+function isSameKeyEntities(origin: KeyObject[], target: KeyObject[]) {
+  if (origin === target) {
+    return true;
+  }
+
+  return (
+    origin.length === target.length &&
+    origin.every((entity, index) =>
+      shallowEqualKeyObject(entity, target[index]),
+    )
+  );
+}
+
 /**
  * Generate a CSSMotionList component with config
  * @param transitionSupport No need since CSSMotionList no longer depends on transition support
@@ -75,123 +135,107 @@ export interface CSSMotionListState {
 export function genCSSMotionList(
   transitionSupport: boolean,
   CSSMotion = OriginCSSMotion,
-): React.ComponentClass<CSSMotionListProps> {
-  class CSSMotionList extends React.Component<
-    CSSMotionListProps,
-    CSSMotionListState
-  > {
-    static defaultProps = {
-      component: 'div',
-    };
+): React.ComponentType<CSSMotionListProps> {
+  const CSSMotionList: React.FC<CSSMotionListProps> = props => {
+    const {
+      component = 'div',
+      children,
+      onVisibleChanged,
+      onAllRemoved,
+      ...restProps
+    } = props;
+    const { keys } = restProps;
 
-    state: CSSMotionListState = {
-      keyEntities: [],
-    };
+    const [keyEntities, setKeyEntities] = React.useState<KeyObject[]>(() =>
+      getDerivedKeyEntities(keys, []),
+    );
+    const prevKeyEntitiesRef = React.useRef<KeyObject[]>(keyEntities);
+    const onAllRemovedRef = React.useRef(onAllRemoved);
 
-    static getDerivedStateFromProps(
-      { keys }: CSSMotionListProps,
-      { keyEntities }: CSSMotionListState,
-    ) {
-      const parsedKeyObjects = parseKeys(keys);
-      const mixedKeyEntities = diffKeys(keyEntities, parsedKeyObjects);
+    onAllRemovedRef.current = onAllRemoved;
 
-      return {
-        keyEntities: mixedKeyEntities.filter(entity => {
-          const prevEntity = keyEntities.find(({ key }) => entity.key === key);
-
-          // Remove if already mark as removed
-          if (
-            prevEntity &&
-            prevEntity.status === STATUS_REMOVED &&
-            entity.status === STATUS_REMOVE
-          ) {
-            return false;
-          }
-          return true;
-        }),
-      };
+    let mergedKeyEntities = keyEntities;
+    const nextKeyEntities = getDerivedKeyEntities(keys, keyEntities);
+    if (!isSameKeyEntities(keyEntities, nextKeyEntities)) {
+      setKeyEntities(nextKeyEntities);
+      mergedKeyEntities = nextKeyEntities;
     }
+
+    useIsomorphicLayoutEffect(() => {
+      const prevActiveCount = prevKeyEntitiesRef.current.filter(
+        ({ status }) => status !== STATUS_REMOVED,
+      ).length;
+      const currentActiveCount = mergedKeyEntities.filter(
+        ({ status }) => status !== STATUS_REMOVED,
+      ).length;
+
+      if (prevActiveCount > 0 && currentActiveCount === 0) {
+        onAllRemovedRef.current?.();
+      }
+
+      prevKeyEntitiesRef.current = mergedKeyEntities;
+    }, [mergedKeyEntities]);
 
     // ZombieJ: Return the count of rest keys. It's safe to refactor if need more info.
-    removeKey = (removeKey: React.Key) => {
-      this.setState(
-        prevState => {
-          const nextKeyEntities = prevState.keyEntities.map(entity => {
-            if (entity.key !== removeKey) return entity;
-            return {
-              ...entity,
-              status: STATUS_REMOVED,
-            };
-          });
-
+    const removeKey = React.useCallback((removedKey: React.Key) => {
+      setKeyEntities(prevKeyEntities => {
+        const nextRemovedKeyEntities = prevKeyEntities.map(entity => {
+          if (entity.key !== removedKey) return entity;
           return {
-            keyEntities: nextKeyEntities,
+            ...entity,
+            status: STATUS_REMOVED,
           };
-        },
-        () => {
-          const { keyEntities } = this.state;
-          const restKeysCount = keyEntities.filter(
-            ({ status }) => status !== STATUS_REMOVED,
-          ).length;
+        });
 
-          if (restKeysCount === 0 && this.props.onAllRemoved) {
-            this.props.onAllRemoved();
-          }
-        },
-      );
-    };
-
-    render() {
-      const { keyEntities } = this.state;
-      const {
-        component,
-        children,
-        onVisibleChanged,
-        onAllRemoved,
-        ...restProps
-      } = this.props;
-
-      const Component = component || React.Fragment;
-
-      const motionProps: CSSMotionProps = {};
-      MOTION_PROP_NAMES.forEach(prop => {
-        motionProps[prop] = restProps[prop];
-        delete restProps[prop];
+        return isSameKeyEntities(prevKeyEntities, nextRemovedKeyEntities)
+          ? prevKeyEntities
+          : nextRemovedKeyEntities;
       });
-      delete restProps.keys;
+    }, []);
 
-      return (
-        <Component {...restProps}>
-          {keyEntities.map(({ status, ...eventProps }, index) => {
-            const visible = status === STATUS_ADD || status === STATUS_KEEP;
-            return (
-              <CSSMotion
-                {...motionProps}
-                key={eventProps.key}
-                visible={visible}
-                eventProps={eventProps}
-                onVisibleChanged={changedVisible => {
-                  onVisibleChanged?.(changedVisible, { key: eventProps.key });
+    const Component = component || React.Fragment;
 
-                  if (!changedVisible) {
-                    this.removeKey(eventProps.key);
-                  }
-                }}
-              >
-                {isRefNotConsumed(children)
-                  ? props =>
-                      (children as ChildrenWithoutRef)({
-                        ...props,
-                        index,
-                      })
-                  : (props, ref) => children({ ...props, index }, ref)}
-              </CSSMotion>
-            );
-          })}
-        </Component>
-      );
-    }
-  }
+    const motionProps: CSSMotionProps = {};
+    MOTION_PROP_NAMES.forEach(prop => {
+      motionProps[prop] = restProps[prop];
+      delete restProps[prop];
+    });
+    delete restProps.keys;
+
+    return (
+      <Component {...restProps}>
+        {mergedKeyEntities.map(({ status, ...eventProps }, index) => {
+          const visible = status === STATUS_ADD || status === STATUS_KEEP;
+          return (
+            <CSSMotion
+              {...motionProps}
+              key={eventProps.key}
+              visible={visible}
+              eventProps={eventProps}
+              onVisibleChanged={changedVisible => {
+                onVisibleChanged?.(changedVisible, { key: eventProps.key });
+
+                if (!changedVisible) {
+                  removeKey(eventProps.key);
+                }
+              }}
+            >
+              {isRefNotConsumed(children)
+                ? motionChildrenProps =>
+                    (children as ChildrenWithoutRef)({
+                      ...motionChildrenProps,
+                      index,
+                    })
+                : (motionChildrenProps, ref) =>
+                    children({ ...motionChildrenProps, index }, ref)}
+            </CSSMotion>
+          );
+        })}
+      </Component>
+    );
+  };
+
+  CSSMotionList.displayName = 'CSSMotionList';
 
   return CSSMotionList;
 }
