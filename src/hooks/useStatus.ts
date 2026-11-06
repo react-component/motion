@@ -63,6 +63,7 @@ export default function useStatus(
 
   const currentStatus = getStatus();
 
+  // This tracks the component instance, not whether its effects are connected.
   const mountedRef = useRef(false);
   const deadlineRef = useRef(null);
 
@@ -201,16 +202,21 @@ export default function useStatus(
 
   // ============================ Status ============================
   const visibleRef = useRef<boolean | null>(null);
+  const pendingVisibleChangeRef = useRef(false);
 
   // Update with new status
   useIsomorphicLayoutEffect(() => {
-    // When use Suspense, the `visible` will repeat trigger,
-    // But not real change of the `visible`, we need to skip it.
-    // https://github.com/ant-design/ant-design/issues/44379
+    // Activity and Suspense reconnect effects without creating a new instance.
+    // Keep settled content intact. Restart interrupted motion on the same node
+    // so its frame queue, end listeners and deadline can be connected again.
     if (mountedRef.current && visibleRef.current === visible) {
+      if (getStatus() !== STATUS_NONE) {
+        startStep();
+      }
       return;
     }
 
+    pendingVisibleChangeRef.current = true;
     setAsyncVisible(visible);
 
     const isMounted = mountedRef.current;
@@ -271,7 +277,6 @@ export default function useStatus(
 
   useEffect(
     () => () => {
-      mountedRef.current = false;
       clearTimeout(deadlineRef.current);
     },
     [],
@@ -285,14 +290,23 @@ export default function useStatus(
       firstMountChangeRef.current = true;
     }
 
-    if (asyncVisible !== undefined && currentStatus === STATUS_NONE) {
+    // Consume each visibility transition once. Activity can reconnect this effect
+    // without a new transition. Read the live status to avoid notifying an old
+    // render when a layout effect has already started the next motion.
+    if (
+      pendingVisibleChangeRef.current &&
+      asyncVisible !== undefined &&
+      asyncVisible === visibleRef.current &&
+      getStatus() === STATUS_NONE
+    ) {
+      pendingVisibleChangeRef.current = false;
       // Skip first render is invisible since it's nothing changed
       if (firstMountChangeRef.current || asyncVisible) {
         onVisibleChanged?.(asyncVisible);
       }
       firstMountChangeRef.current = true;
     }
-  }, [asyncVisible, currentStatus]);
+  }, [asyncVisible, currentStatus, getStatus, onVisibleChanged]);
 
   // ============================ Styles ============================
   let mergedStyle = style[0];
@@ -318,8 +332,8 @@ export default function useStatus(
     motionAppear
       ? 'NONE'
       : // Enter or Leave check
-      step === STEP_START || step === STEP_ACTIVE
-      ? styleStep === step
-      : true,
+        step === STEP_START || step === STEP_ACTIVE
+        ? styleStep === step
+        : true,
   ];
 }

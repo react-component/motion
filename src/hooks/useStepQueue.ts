@@ -1,4 +1,3 @@
-import { useState } from '@rc-component/util';
 import * as React from 'react';
 import type { MotionStatus, StepStatus } from '../interface';
 import {
@@ -37,12 +36,14 @@ export default (
     step: StepStatus,
   ) => Promise<void> | void | typeof SkipStep | typeof DoStep,
 ): [() => void, StepStatus] => {
-  const [step, setStep] = useState<StepStatus>(STEP_NONE);
+  const [step, setStep] = React.useState<StepStatus>(STEP_NONE);
 
   const [nextFrame, cancelNextFrame] = useNextFrame();
 
   function startQueue() {
-    setStep(STEP_PREPARE, true);
+    // Effect reconnection runs layout effects before passive effects. A passive
+    // "destroyed" flag would discard this restart even though the instance lives.
+    setStep(STEP_PREPARE);
   }
 
   const STEP_QUEUE = prepareOnly ? SIMPLE_STEP_QUEUE : FULL_STEP_QUEUE;
@@ -56,7 +57,7 @@ export default (
 
       if (result === SkipStep) {
         // Skip when no needed
-        setStep(nextStep, true);
+        setStep(nextStep);
       } else if (nextStep) {
         // Do as frame for step update
         nextFrame(info => {
@@ -64,7 +65,7 @@ export default (
             // Skip since current queue is ood
             if (info.isCanceled()) return;
 
-            setStep(nextStep, true);
+            setStep(nextStep);
           }
 
           if (result === true) {
