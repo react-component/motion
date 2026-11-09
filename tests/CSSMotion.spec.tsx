@@ -1059,6 +1059,33 @@ describe('CSSMotion', () => {
       unmount();
     });
 
+    it('removes the node before notifying a new callback when leave is disabled', () => {
+      const motion = (props: CSSMotionProps) => (
+        <CSSMotion motionName="transition" motionAppear={false} {...props}>
+          {({ className }, ref) => (
+            <div className={className} ref={ref} data-testid="panel" />
+          )}
+        </CSSMotion>
+      );
+
+      const { queryByTestId, rerender } = render(motion({ visible: true }));
+      rerender(motion({ visible: false }));
+      act(() => {
+        jest.runAllTimers();
+      });
+      expect(queryByTestId('panel')).toHaveClass('transition-leave-active');
+
+      const onVisibleChanged = jest.fn(() => {
+        expect(queryByTestId('panel')).toBeNull();
+      });
+      rerender(
+        motion({ visible: false, motionLeave: false, onVisibleChanged }),
+      );
+
+      expect(onVisibleChanged).toHaveBeenCalledTimes(1);
+      expect(onVisibleChanged).toHaveBeenCalledWith(false);
+    });
+
     it('fast visible to !visible', () => {
       const onVisibleChanged = jest.fn();
 
