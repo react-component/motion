@@ -9,6 +9,9 @@ export default (): [
 
   function cancelNextFrame() {
     raf.cancel(nextFrameRef.current);
+    // A frame may already be waiting for an asynchronous prepare callback.
+    // Invalidate it as well, so resolving after cleanup cannot advance the queue.
+    nextFrameRef.current = null;
   }
 
   function nextFrame(
