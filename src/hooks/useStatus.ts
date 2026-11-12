@@ -291,12 +291,13 @@ export default function useStatus(
     }
 
     // Consume each visibility transition once. Activity can reconnect this effect
-    // without a new transition. Read the live status to avoid notifying an old
-    // render when a layout effect has already started the next motion.
+    // without a new transition. Wait for the settled render to commit, and
+    // check the live status in case an effect has already started another motion.
     if (
       pendingVisibleChangeRef.current &&
       asyncVisible !== undefined &&
       asyncVisible === visibleRef.current &&
+      currentStatus === STATUS_NONE &&
       getStatus() === STATUS_NONE
     ) {
       pendingVisibleChangeRef.current = false;
