@@ -147,11 +147,11 @@ export default function useStatus(
     }
   };
 
-  const eventHandlers = React.useMemo<{
+  const eventHandlers: {
     [STEP_PREPARE]?: MotionPrepareEventHandler;
     [STEP_START]?: MotionEventHandler;
     [STEP_ACTIVE]?: MotionEventHandler;
-  }>(() => getEventHandlers(currentStatus), [currentStatus]);
+  } = getEventHandlers(currentStatus);
 
   const [startStep, step] = useStepQueue(
     currentStatus,

@@ -161,6 +161,45 @@ describe('CSSMotion', () => {
       },
     );
 
+    it('uses the latest active handler during a motion', () => {
+      const firstActive = jest.fn(() => ({ opacity: 0.1 }));
+      const latestActive = jest.fn(() => ({ opacity: 0.9 }));
+      const Demo = ({
+        visible,
+        onEnterActive,
+      }: {
+        visible: boolean;
+        onEnterActive: CSSMotionProps['onEnterActive'];
+      }) => (
+        <CSSMotion
+          motionName="transition"
+          motionAppear={false}
+          visible={visible}
+          onEnterActive={onEnterActive}
+        >
+          {({ style, className }) => (
+            <div className={clsx('motion-box', className)} style={style} />
+          )}
+        </CSSMotion>
+      );
+
+      const { container, rerender } = render(
+        <Demo visible={false} onEnterActive={firstActive} />,
+      );
+      rerender(<Demo visible onEnterActive={firstActive} />);
+      rerender(<Demo visible onEnterActive={latestActive} />);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(firstActive).not.toHaveBeenCalled();
+      expect(latestActive).toHaveBeenCalledTimes(1);
+      expect(container.querySelector('.motion-box')).toHaveStyle({
+        opacity: '0.9',
+      });
+    });
+
     it('leaveClassName should add to dom', () => {
       const genMotion = props => {
         const { visible, leavedClassName } = props;
